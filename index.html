@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a0a2e">
+    <title>芒果庄园 - Mango Paradise</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥭</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- 加载画面 -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-content">
+            <div class="game-logo">
+                <span class="logo-icon">🥭</span>
+                <h1 class="logo-text">芒果庄园</h1>
+                <p class="logo-subtitle">MANGO PARADISE</p>
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <p class="loading-text">正在召唤艾泽拉斯的力量...</p>
+            </div>
+            <div class="loading-tips">
+                <p id="loading-tip">💡 提示：连接4个以上可以产生特殊宝石！</p>
+            </div>
+        </div>
+        <div class="particles" id="loading-particles"></div>
+    </div>
+
+    <!-- 主菜单 -->
+    <div id="main-menu" class="screen">
+        <div class="menu-background">
+            <div class="floating-elements"></div>
+        </div>
+        <div class="menu-content">
+            <div class="menu-header">
+                <div class="player-info">
+                    <div class="player-avatar" id="menu-avatar">🧙‍♂️</div>
+                    <div class="player-details">
+                        <span class="player-name" id="menu-player-name">冒险者</span>
+                        <span class="player-level">Lv.<span id="menu-player-level">1</span></span>
+                    </div>
+                </div>
+                <div class="currency-display">
+                    <div class="currency gold">
+                        <span class="currency-icon">💰</span>
+                        <span class="currency-amount" id="menu-gold">0</span>
+                    </div>
+                    <div class="currency gems">
+                        <span class="currency-icon">💎</span>
+                        <span class="currency-amount" id="menu-gems">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-logo">
+                <div class="logo-glow"></div>
+                <span class="menu-logo-icon">🥭</span>
+                <h1>芒果庄园</h1>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="menu-btn primary" id="btn-adventure" data-sound="click">
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">开始冒险</span>
+                    <span class="btn-subtitle">第 <span id="current-level-display">1</span> 关</span>
+                </button>
+                <button class="menu-btn" id="btn-collection" data-sound="click">
+                    <span class="btn-icon">📖</span>
+                    <span class="btn-text">图鉴收集</span>
+                </button>
+                <button class="menu-btn" id="btn-achievements" data-sound="click">
+                    <span class="btn-icon">🏆</span>
+                    <span class="btn-text">成就殿堂</span>
+                </button>
+                <button class="menu-btn" id="btn-daily" data-sound="click">
+                    <span class="btn-icon">🎁</span>
+                    <span class="btn-text">每日签到</span>
+                    <span class="btn-badge" id="daily-badge" style="display:none">!</span>
+                </button>
+                <button class="menu-btn" id="btn-leaderboard" data-sound="click">
+                    <span class="btn-icon">👑</span>
+                    <span class="btn-text">排行榜</span>
+                </button>
+                <button class="menu-btn" id="btn-settings" data-sound="click">
+                    <span class="btn-icon">⚙️</span>
+                    <span class="btn-text">设置</span>
+                </button>
+            </div>
+
+            <div class="offline-reward" id="offline-reward" style="display:none">
+                <div class="reward-content">
+                    <h3>🌙 离线收益</h3>
+                    <p>你离开了 <span id="offline-time">0</span></p>
+                    <div class="reward-items">
+                        <div class="reward-item">💰 +<span id="offline-gold">0</span></div>
+                    </div>
+                    <button class="btn-claim" id="btn-claim-offline">领取奖励</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 关卡选择 -->
+    <div id="level-select" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-levels">
+                <span>←</span>
+            </button>
+            <h2>选择关卡</h2>
+            <div class="header-currency">
+                <span class="currency gold">💰 <span id="levels-gold">0</span></span>
+                <span class="currency gems">💎 <span id="levels-gems">0</span></span>
+            </div>
+        </div>
+        <div class="chapter-tabs" id="chapter-tabs">
+            <!-- 章节标签将由JS生成 -->
+        </div>
+        <div class="levels-grid" id="levels-grid">
+            <!-- 关卡按钮将由JS生成 -->
+        </div>
+        <div class="chapter-info" id="chapter-info">
+            <h3 id="chapter-name">第一章：艾尔文森林</h3>
+            <p id="chapter-desc">芒果树林中潜伏着神秘的力量...</p>
+        </div>
+    </div>
+
+    <!-- 游戏主界面 -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <button class="btn-pause" id="btn-pause">⏸️</button>
+            <div class="level-info">
+                <span class="level-chapter" id="game-chapter">第一章</span>
+                <span class="level-number">关卡 <span id="game-level">1</span></span>
+            </div>
+            <div class="game-stats">
+                <div class="stat moves">
+                    <span class="stat-icon">👆</span>
+                    <span class="stat-value" id="moves-left">30</span>
+                </div>
+                <div class="stat score">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-value" id="current-score">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-objectives" id="game-objectives">
+            <!-- 目标将由JS生成 -->
+        </div>
+
+        <div class="game-board-container">
+            <div class="board-frame">
+                <div class="board-corner tl"></div>
+                <div class="board-corner tr"></div>
+                <div class="board-corner bl"></div>
+                <div class="board-corner br"></div>
+                <div id="game-board" class="game-board">
+                    <!-- 游戏棋盘将由JS生成 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="game-powerups">
+            <button class="powerup-btn" id="powerup-hammer" data-powerup="hammer">
+                <span class="powerup-icon">🔨</span>
+                <span class="powerup-count" id="hammer-count">3</span>
+            </button>
+            <button class="powerup-btn" id="powerup-shuffle" data-powerup="shuffle">
+                <span class="powerup-icon">🔀</span>
+                <span class="powerup-count" id="shuffle-count">3</span>
+            </button>
+            <button class="powerup-btn" id="powerup-hint" data-powerup="hint">
+                <span class="powerup-icon">💡</span>
+                <span class="powerup-count" id="hint-count">5</span>
+            </button>
+        </div>
+
+        <div class="combo-display" id="combo-display" style="display:none">
+            <span class="combo-text">COMBO</span>
+            <span class="combo-count" id="combo-count">x2</span>
+        </div>
+
+        <div class="game-particles" id="game-particles"></div>
+    </div>
+
+    <!-- 暂停菜单 -->
+    <div id="pause-menu" class="modal">
+        <div class="modal-content pause-content">
+            <h2>⏸️ 游戏暂停</h2>
+            <div class="pause-stats">
+                <p>当前分数: <span id="pause-score">0</span></p>
+                <p>剩余步数: <span id="pause-moves">0</span></p>
+            </div>
+            <div class="pause-buttons">
+                <button class="modal-btn primary" id="btn-resume">继续游戏</button>
+                <button class="modal-btn" id="btn-restart">重新开始</button>
+                <button class="modal-btn danger" id="btn-quit">退出关卡</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 胜利界面 -->
+    <div id="victory-screen" class="modal">
+        <div class="modal-content victory-content">
+            <div class="victory-stars" id="victory-stars">
+                <span class="star" data-star="1">⭐</span>
+                <span class="star" data-star="2">⭐</span>
+                <span class="star" data-star="3">⭐</span>
+            </div>
+            <h2 class="victory-title">🎉 胜利！</h2>
+            <div class="victory-stats">
+                <div class="stat-row">
+                    <span>得分</span>
+                    <span id="victory-score">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>最高连击</span>
+                    <span id="victory-combo">0</span>
+                </div>
+                <div class="stat-row highlight">
+                    <span>获得金币</span>
+                    <span>💰 +<span id="victory-gold">0</span></span>
+                </div>
+            </div>
+            <div class="victory-buttons">
+                <button class="modal-btn" id="btn-victory-menu">返回菜单</button>
+                <button class="modal-btn primary" id="btn-next-level">下一关 ➡️</button>
+            </div>
+        </div>
+        <div class="confetti" id="confetti"></div>
+    </div>
+
+    <!-- 失败界面 -->
+    <div id="defeat-screen" class="modal">
+        <div class="modal-content defeat-content">
+            <div class="defeat-icon">😢</div>
+            <h2>挑战失败</h2>
+            <p class="defeat-message">别灰心，再试一次！</p>
+            <div class="defeat-stats">
+                <p>得分: <span id="defeat-score">0</span></p>
+                <p>目标完成: <span id="defeat-progress">0%</span></p>
+            </div>
+            <div class="defeat-buttons">
+                <button class="modal-btn" id="btn-defeat-menu">返回菜单</button>
+                <button class="modal-btn primary" id="btn-retry">
+                    <span>🔄 重新挑战</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 每日签到 -->
+    <div id="daily-checkin" class="modal">
+        <div class="modal-content checkin-content">
+            <button class="modal-close" id="close-daily">×</button>
+            <h2>📅 每日签到</h2>
+            <p class="checkin-streak">连续签到: <span id="checkin-streak">0</span> 天</p>
+            <div class="checkin-calendar" id="checkin-calendar">
+                <!-- 签到日历将由JS生成 -->
+            </div>
+            <button class="modal-btn primary" id="btn-checkin" disabled>今日已签到</button>
+        </div>
+    </div>
+
+    <!-- 成就界面 -->
+    <div id="achievements-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-achievements">←</button>
+            <h2>🏆 成就殿堂</h2>
+            <div class="achievement-progress">
+                <span id="achievements-unlocked">0</span>/<span id="achievements-total">0</span>
+            </div>
+        </div>
+        <div class="achievements-list" id="achievements-list">
+            <!-- 成就列表将由JS生成 -->
+        </div>
+    </div>
+
+    <!-- 图鉴界面 -->
+    <div id="collection-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-collection">←</button>
+            <h2>📖 芒果图鉴</h2>
+            <div class="collection-progress">
+                <span id="collection-unlocked">0</span>/<span id="collection-total">0</span>
+            </div>
+        </div>
+        <div class="collection-tabs">
+            <button class="tab-btn active" data-tab="creatures">种族</button>
+            <button class="tab-btn" data-tab="items">道具</button>
+            <button class="tab-btn" data-tab="specials">特殊</button>
+        </div>
+        <div class="collection-grid" id="collection-grid">
+            <!-- 图鉴内容将由JS生成 -->
+        </div>
+        <div class="collection-detail" id="collection-detail" style="display:none">
+            <!-- 图鉴详情将由JS生成 -->
+        </div>
+    </div>
+
+    <!-- 排行榜 -->
+    <div id="leaderboard-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-leaderboard">←</button>
+            <h2>👑 排行榜</h2>
+        </div>
+        <div class="leaderboard-tabs">
+            <button class="tab-btn active" data-tab="score">总分榜</button>
+            <button class="tab-btn" data-tab="level">关卡榜</button>
+            <button class="tab-btn" data-tab="streak">连胜榜</button>
+        </div>
+        <div class="leaderboard-list" id="leaderboard-list">
+            <!-- 排行榜将由JS生成 -->
+        </div>
+        <div class="my-rank" id="my-rank">
+            <!-- 我的排名 -->
+        </div>
+    </div>
+
+    <!-- 设置界面 -->
+    <div id="settings-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-settings">←</button>
+            <h2>⚙️ 设置</h2>
+        </div>
+        <div class="settings-content">
+            <div class="setting-group">
+                <h3>🎵 音效</h3>
+                <div class="setting-item">
+                    <span>音效</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="setting-sfx" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>背景音乐</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="setting-music" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>音量</span>
+                    <input type="range" id="setting-volume" min="0" max="100" value="80">
+                </div>
+            </div>
+            <div class="setting-group">
+                <h3>🎮 游戏</h3>
+                <div class="setting-item">
+                    <span>震动反馈</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="setting-vibration" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>粒子效果</span>
+                    <label class="toggle">
+                        <input type="checkbox" id="setting-particles" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="setting-group">
+                <h3>👤 玩家</h3>
+                <div class="setting-item">
+                    <span>昵称</span>
+                    <input type="text" id="setting-name" placeholder="输入昵称" maxlength="12">
+                </div>
+                <div class="setting-item">
+                    <span>头像</span>
+                    <div class="avatar-selector" id="avatar-selector">
+                        <span class="avatar-option selected" data-avatar="🧙‍♂️">🧙‍♂️</span>
+                        <span class="avatar-option" data-avatar="🧝‍♀️">🧝‍♀️</span>
+                        <span class="avatar-option" data-avatar="🧟">🧟</span>
+                        <span class="avatar-option" data-avatar="🧛">🧛</span>
+                        <span class="avatar-option" data-avatar="🐉">🐉</span>
+                        <span class="avatar-option" data-avatar="👹">👹</span>
+                        <span class="avatar-option" data-avatar="🦹">🦹</span>
+                        <span class="avatar-option" data-avatar="🥭">🥭</span>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-group danger-zone">
+                <h3>⚠️ 数据</h3>
+                <button class="btn-danger" id="btn-reset-progress">重置游戏进度</button>
+                <button class="btn-export" id="btn-export-save">导出存档</button>
+                <button class="btn-import" id="btn-import-save">导入存档</button>
+                <input type="file" id="import-file" accept=".json" style="display:none">
+            </div>
+        </div>
+    </div>
+
+    <!-- 新手教程 -->
+    <div id="tutorial-overlay" class="tutorial-overlay" style="display:none">
+        <div class="tutorial-spotlight" id="tutorial-spotlight"></div>
+        <div class="tutorial-dialog" id="tutorial-dialog">
+            <div class="tutorial-character">🥭</div>
+            <div class="tutorial-text" id="tutorial-text"></div>
+            <div class="tutorial-buttons">
+                <button class="tutorial-btn" id="tutorial-skip">跳过教程</button>
+                <button class="tutorial-btn primary" id="tutorial-next">下一步</button>
+            </div>
+            <div class="tutorial-progress" id="tutorial-progress"></div>
+        </div>
+    </div>
+
+    <!-- 成就解锁提示 -->
+    <div id="achievement-popup" class="achievement-popup">
+        <div class="achievement-content">
+            <span class="achievement-icon" id="popup-achievement-icon">🏆</span>
+            <div class="achievement-info">
+                <span class="achievement-label">成就解锁！</span>
+                <span class="achievement-name" id="popup-achievement-name"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通用提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 脚本 -->
+    <script src="js/utils.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/collection.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/tutorial.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

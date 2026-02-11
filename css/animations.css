@@ -1,0 +1,759 @@
+/* ==========================================
+   芒果庄园 - 动画效果
+   Mango Paradise - Animations
+   ========================================== */
+
+/* ==========================================
+   Base Keyframes
+   ========================================== */
+
+/* Float Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+/* Glow Pulse */
+@keyframes glow-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 20px rgba(247, 147, 30, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 40px rgba(247, 147, 30, 0.8));
+    }
+}
+
+/* Loading Shimmer */
+@keyframes loading-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Fade In */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Fade Out */
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Slide Up */
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Slide Down */
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Pop */
+@keyframes modal-pop {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Badge Pulse */
+@keyframes badge-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Current Level Pulse */
+@keyframes current-level-pulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(247, 147, 30, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(247, 147, 30, 0.8), 0 0 40px rgba(255, 209, 0, 0.4);
+    }
+}
+
+/* ==========================================
+   Game Animations
+   ========================================== */
+
+/* Gem Match */
+@keyframes gem-match {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Gem Fall */
+@keyframes gem-fall {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(10%);
+    }
+    80% {
+        transform: translateY(-5%);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Gem Spawn */
+@keyframes gem-spawn {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.2) rotate(10deg);
+    }
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+/* Gem Swap */
+@keyframes gem-swap {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Hint Glow */
+@keyframes hint-glow {
+    0%, 100% {
+        box-shadow: inset 0 0 10px rgba(255, 209, 0, 0.3);
+    }
+    50% {
+        box-shadow: inset 0 0 25px rgba(255, 209, 0, 0.6), 0 0 15px rgba(255, 209, 0, 0.4);
+    }
+}
+
+/* Shake */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-8px);
+    }
+    40% {
+        transform: translateX(8px);
+    }
+    60% {
+        transform: translateX(-5px);
+    }
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Combo Pop */
+@keyframes combo-pop {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1) translateY(-50px);
+    }
+}
+
+/* Star Earn */
+@keyframes star-earn {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.5) rotate(10deg);
+    }
+    70% {
+        transform: scale(0.9) rotate(-5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+/* ==========================================
+   Special Effect Animations
+   ========================================== */
+
+/* Horizontal Line Clear */
+@keyframes line-clear-horizontal {
+    0% {
+        background-position: -100% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Vertical Line Clear */
+@keyframes line-clear-vertical {
+    0% {
+        background-position: 0 -100%;
+    }
+    100% {
+        background-position: 0 200%;
+    }
+}
+
+/* Bomb Explosion */
+@keyframes bomb-explode {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8);
+    }
+    50% {
+        transform: scale(1.5);
+        box-shadow: 0 0 50px 30px rgba(239, 68, 68, 0.4);
+    }
+    100% {
+        transform: scale(0);
+        box-shadow: 0 0 100px 50px rgba(239, 68, 68, 0);
+    }
+}
+
+/* Rainbow Effect */
+@keyframes rainbow-shimmer {
+    0% {
+        filter: hue-rotate(0deg) brightness(1.2);
+    }
+    100% {
+        filter: hue-rotate(360deg) brightness(1.2);
+    }
+}
+
+/* Score Float */
+@keyframes score-float {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(1.5);
+    }
+}
+
+/* Sparkle */
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1) rotate(180deg);
+    }
+}
+
+/* Ring Expand */
+@keyframes ring-expand {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* ==========================================
+   Particle Animations
+   ========================================== */
+
+/* Confetti Fall */
+@keyframes confetti-fall {
+    0% {
+        opacity: 1;
+        transform: translateY(-100vh) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+    }
+}
+
+/* Particle Float */
+@keyframes particle-float {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0);
+    }
+    10% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--dx, 50px), var(--dy, -100px)) scale(0);
+    }
+}
+
+/* Particle Burst */
+@keyframes particle-burst {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Magic Dust */
+@keyframes magic-dust {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.5);
+    }
+}
+
+/* Orbit */
+@keyframes orbit {
+    from {
+        transform: rotate(0deg) translateX(30px) rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg) translateX(30px) rotate(-360deg);
+    }
+}
+
+/* ==========================================
+   UI Element Animations
+   ========================================== */
+
+/* Button Press */
+@keyframes button-press {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Bounce In */
+@keyframes bounce-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Bounce Out */
+@keyframes bounce-out {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+}
+
+/* Tutorial Bounce */
+@keyframes tutorial-bounce {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(50px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Notification Slide */
+@keyframes notification-slide {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    10% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    90% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Progress Fill */
+@keyframes progress-fill {
+    from {
+        width: 0%;
+    }
+    to {
+        width: var(--progress, 100%);
+    }
+}
+
+/* Heartbeat */
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    10%, 30% {
+        transform: scale(1.1);
+    }
+    20% {
+        transform: scale(1.2);
+    }
+}
+
+/* Wiggle */
+@keyframes wiggle {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
+/* ==========================================
+   Text Animations
+   ========================================== */
+
+/* Typewriter */
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* Text Glow */
+@keyframes text-glow {
+    0%, 100% {
+        text-shadow: 0 0 10px currentColor;
+    }
+    50% {
+        text-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+}
+
+/* Letter Pop */
+@keyframes letter-pop {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0);
+    }
+    60% {
+        transform: translateY(-5px) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================
+   Background Animations
+   ========================================== */
+
+/* Gradient Flow */
+@keyframes gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Stars Twinkle */
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Aurora */
+@keyframes aurora {
+    0% {
+        transform: translateX(-50%) translateY(-50%) rotate(0deg);
+    }
+    100% {
+        transform: translateX(-50%) translateY(-50%) rotate(360deg);
+    }
+}
+
+/* ==========================================
+   Utility Classes
+   ========================================== */
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-bounce {
+    animation: bounce-in 0.6s ease;
+}
+
+.animate-shake {
+    animation: shake 0.5s ease;
+}
+
+.animate-glow {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-wiggle {
+    animation: wiggle 0.5s ease;
+}
+
+.animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* Delay Utilities */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Duration Utilities */
+.duration-fast { animation-duration: 0.2s; }
+.duration-normal { animation-duration: 0.5s; }
+.duration-slow { animation-duration: 1s; }
+
+/* Timing Utilities */
+.ease-bounce {
+    animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ==========================================
+   Special Effects
+   ========================================== */
+
+/* Shimmer Effect */
+.shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    animation: loading-shimmer 2s infinite;
+}
+
+/* Glow Effect */
+.glow {
+    box-shadow: 0 0 20px currentColor;
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Rainbow Border */
+.rainbow-border {
+    position: relative;
+}
+
+.rainbow-border::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff, #ff0000);
+    background-size: 400% 400%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: gradient-flow 3s linear infinite;
+}
+
+/* Floating Elements Container */
+.floating-elements .float-item {
+    position: absolute;
+    animation: float var(--float-duration, 5s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Screen Transitions */
+.screen-enter {
+    animation: fade-in 0.3s ease, slide-down 0.3s ease;
+}
+
+.screen-exit {
+    animation: fade-out 0.3s ease;
+}
+
+/* Level Complete Effects */
+.level-complete-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.level-complete-effect .burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: var(--wow-gold);
+    border-radius: 50%;
+    animation: ring-expand 1s ease-out forwards;
+}

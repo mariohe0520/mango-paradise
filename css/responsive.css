@@ -1,0 +1,741 @@
+/* ==========================================
+   芒果庄园 - 响应式设计
+   Mango Paradise - Responsive Design
+   ========================================== */
+
+/* ==========================================
+   Mobile First Base (< 480px)
+   ========================================== */
+
+/* Very small phones */
+@media screen and (max-width: 359px) {
+    :root {
+        --cell-size: 9vw;
+    }
+    
+    .logo-icon {
+        font-size: 4rem;
+    }
+    
+    .logo-text {
+        font-size: 2rem;
+    }
+    
+    .menu-logo-icon {
+        font-size: 3.5rem;
+    }
+    
+    .menu-logo h1 {
+        font-size: 1.8rem;
+    }
+    
+    .menu-btn {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .btn-icon {
+        font-size: 1.25rem;
+    }
+    
+    .player-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+    
+    .currency {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .level-btn {
+        font-size: 1rem;
+    }
+    
+    .powerup-btn {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .powerup-icon {
+        font-size: 1.5rem;
+    }
+}
+
+/* Small phones (360px - 479px) */
+@media screen and (min-width: 360px) and (max-width: 479px) {
+    :root {
+        --cell-size: 10vw;
+    }
+    
+    .menu-buttons {
+        padding: 0 0.5rem;
+    }
+}
+
+/* ==========================================
+   Standard Mobile (480px - 767px)
+   ========================================== */
+
+@media screen and (min-width: 480px) and (max-width: 767px) {
+    :root {
+        --cell-size: 48px;
+    }
+    
+    .menu-content {
+        padding: 1.5rem;
+    }
+    
+    .menu-buttons {
+        max-width: 450px;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.75rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .collection-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* ==========================================
+   Tablets (768px - 1023px)
+   ========================================== */
+
+@media screen and (min-width: 768px) {
+    :root {
+        --cell-size: 55px;
+    }
+    
+    html {
+        font-size: 17px;
+    }
+    
+    .menu-content {
+        padding: 2rem;
+    }
+    
+    .menu-header {
+        padding: 0 2rem;
+    }
+    
+    .player-info {
+        padding: 0.75rem 1.5rem 0.75rem 0.75rem;
+    }
+    
+    .player-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 2rem;
+    }
+    
+    .player-name {
+        font-size: 1.1rem;
+    }
+    
+    .currency {
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .menu-logo {
+        padding: 2rem 0;
+    }
+    
+    .menu-logo-icon {
+        font-size: 6rem;
+    }
+    
+    .menu-logo h1 {
+        font-size: 3rem;
+    }
+    
+    .menu-buttons {
+        max-width: 500px;
+        gap: 1rem;
+    }
+    
+    .menu-btn {
+        padding: 1.25rem 2rem;
+        font-size: 1.2rem;
+    }
+    
+    .btn-icon {
+        font-size: 1.75rem;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 1.5rem;
+    }
+    
+    .level-btn {
+        font-size: 1.3rem;
+    }
+    
+    .level-stars {
+        font-size: 0.7rem;
+    }
+    
+    .game-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .btn-pause {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .game-stats .stat {
+        padding: 0.6rem 1rem;
+    }
+    
+    .stat-value {
+        font-size: 1.1rem;
+    }
+    
+    .objective {
+        padding: 0.5rem 1rem;
+    }
+    
+    .objective-icon {
+        font-size: 1.5rem;
+    }
+    
+    .board-frame {
+        padding: 12px;
+    }
+    
+    .game-board {
+        padding: 6px;
+    }
+    
+    .powerup-btn {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .powerup-icon {
+        font-size: 2rem;
+    }
+    
+    .powerup-count {
+        font-size: 0.85rem;
+        padding: 3px 8px;
+    }
+    
+    .modal-content {
+        padding: 2.5rem;
+        max-width: 450px;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.75rem;
+    }
+    
+    .modal-btn {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .victory-stars .star {
+        font-size: 4rem;
+    }
+    
+    .collection-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .collection-item {
+        padding: 1rem;
+    }
+    
+    .item-icon {
+        font-size: 2.5rem;
+    }
+    
+    .achievements-list {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .achievement-item {
+        padding: 1.25rem;
+    }
+    
+    .achievement-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .settings-content {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .tutorial-dialog {
+        max-width: 450px;
+        padding: 2rem;
+    }
+    
+    .tutorial-character {
+        font-size: 4rem;
+    }
+    
+    .tutorial-text {
+        font-size: 1.1rem;
+    }
+}
+
+/* ==========================================
+   Small Desktop (1024px - 1279px)
+   ========================================== */
+
+@media screen and (min-width: 1024px) {
+    :root {
+        --cell-size: 58px;
+    }
+    
+    html {
+        font-size: 18px;
+    }
+    
+    .screen {
+        max-width: 100%;
+    }
+    
+    .menu-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 3rem;
+    }
+    
+    .menu-header {
+        padding: 0;
+    }
+    
+    .menu-logo {
+        padding: 3rem 0;
+    }
+    
+    .menu-logo-icon {
+        font-size: 7rem;
+    }
+    
+    .menu-logo h1 {
+        font-size: 3.5rem;
+    }
+    
+    .menu-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 700px;
+        gap: 1rem;
+    }
+    
+    .menu-btn.primary {
+        grid-column: span 2;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(8, 1fr);
+        max-width: 800px;
+        gap: 1rem;
+    }
+    
+    .game-board-container {
+        padding: 1rem 2rem;
+    }
+    
+    .board-frame {
+        padding: 16px;
+    }
+    
+    .collection-grid {
+        grid-template-columns: repeat(8, 1fr);
+        max-width: 800px;
+    }
+    
+    .leaderboard-list {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* Hover effects for desktop */
+    .menu-btn:hover {
+        transform: translateY(-3px) scale(1.02);
+    }
+    
+    .level-btn:hover:not(.locked) {
+        transform: scale(1.08);
+    }
+    
+    .powerup-btn:hover:not(:disabled) {
+        transform: scale(1.15);
+    }
+    
+    .cell:hover {
+        background: var(--cell-highlight);
+    }
+    
+    .collection-item:hover {
+        transform: scale(1.08);
+    }
+}
+
+/* ==========================================
+   Large Desktop (1280px+)
+   ========================================== */
+
+@media screen and (min-width: 1280px) {
+    :root {
+        --cell-size: 62px;
+    }
+    
+    .menu-content {
+        max-width: 1400px;
+    }
+    
+    .menu-logo-icon {
+        font-size: 8rem;
+    }
+    
+    .menu-logo h1 {
+        font-size: 4rem;
+    }
+    
+    .menu-buttons {
+        max-width: 800px;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 1000px;
+    }
+    
+    .collection-grid {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 1000px;
+    }
+    
+    .board-frame {
+        padding: 20px;
+    }
+    
+    .modal-content {
+        max-width: 500px;
+        padding: 3rem;
+    }
+}
+
+/* ==========================================
+   Landscape Mode (Mobile)
+   ========================================== */
+
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    :root {
+        --cell-size: min(8vh, 45px);
+    }
+    
+    .game-header {
+        padding: 0.25rem 1rem;
+    }
+    
+    .game-objectives {
+        padding: 0.25rem;
+    }
+    
+    .objective {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .objective-icon {
+        font-size: 1rem;
+    }
+    
+    .game-board-container {
+        padding: 0.25rem;
+    }
+    
+    .board-frame {
+        padding: 4px;
+    }
+    
+    .game-powerups {
+        padding: 0.5rem;
+    }
+    
+    .powerup-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .powerup-icon {
+        font-size: 1.25rem;
+    }
+    
+    /* Stack layout for landscape */
+    #game-screen {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .game-header {
+        width: 100%;
+        order: 1;
+    }
+    
+    .game-objectives {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        width: auto;
+        z-index: 10;
+    }
+    
+    .game-board-container {
+        flex: 1;
+        order: 2;
+    }
+    
+    .game-powerups {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        width: auto;
+    }
+    
+    /* Menus in landscape */
+    .menu-logo {
+        padding: 0.5rem 0;
+    }
+    
+    .menu-logo-icon {
+        font-size: 3rem;
+    }
+    
+    .menu-logo h1 {
+        font-size: 1.5rem;
+        margin-top: 0.25rem;
+    }
+    
+    .menu-buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .menu-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .menu-btn.primary {
+        grid-column: span 3;
+    }
+    
+    .btn-icon {
+        font-size: 1.25rem;
+    }
+    
+    .levels-grid {
+        grid-template-columns: repeat(10, 1fr);
+        gap: 0.5rem;
+    }
+}
+
+/* ==========================================
+   Tablet Landscape
+   ========================================== */
+
+@media screen and (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+    :root {
+        --cell-size: min(7vh, 50px);
+    }
+    
+    .game-board-container {
+        padding: 0.5rem 2rem;
+    }
+}
+
+/* ==========================================
+   High DPI / Retina Displays
+   ========================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .gem {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* ==========================================
+   Reduced Motion
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .logo-icon,
+    .menu-logo-icon,
+    .tutorial-character {
+        animation: none;
+    }
+}
+
+/* ==========================================
+   Dark Mode Enhancements
+   ========================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Already dark by default, but can add enhancements */
+}
+
+/* ==========================================
+   Print Styles
+   ========================================== */
+
+@media print {
+    .screen {
+        display: none !important;
+    }
+}
+
+/* ==========================================
+   Safe Area Insets (Notch, etc.)
+   ========================================== */
+
+@supports (padding: env(safe-area-inset-top)) {
+    .screen-header {
+        padding-top: calc(env(safe-area-inset-top) + 0.5rem);
+    }
+    
+    .game-header {
+        padding-top: calc(env(safe-area-inset-top) + 0.5rem);
+    }
+    
+    .menu-content {
+        padding-top: calc(env(safe-area-inset-top) + 1rem);
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    }
+    
+    .game-powerups {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
+    }
+    
+    .modal-content {
+        margin-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* ==========================================
+   Touch Device Optimizations
+   ========================================== */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .menu-btn {
+        min-height: 56px;
+    }
+    
+    .level-btn {
+        min-height: 50px;
+    }
+    
+    .powerup-btn {
+        min-width: 52px;
+        min-height: 52px;
+    }
+    
+    .btn-back,
+    .btn-pause {
+        min-width: 48px;
+        min-height: 48px;
+    }
+    
+    /* Remove hover effects */
+    .menu-btn:hover {
+        transform: none;
+    }
+    
+    .level-btn:hover:not(.locked) {
+        transform: none;
+    }
+    
+    .cell:hover {
+        background: inherit;
+    }
+    
+    /* Add active states instead */
+    .menu-btn:active {
+        transform: scale(0.98);
+    }
+    
+    .level-btn:active:not(.locked) {
+        transform: scale(0.95);
+    }
+    
+    .powerup-btn:active:not(:disabled) {
+        transform: scale(0.9);
+    }
+}
+
+/* ==========================================
+   Foldable Devices
+   ========================================== */
+
+@media (horizontal-viewport-segments: 2) {
+    /* Dual screen / foldable support */
+    .game-board-container {
+        margin-left: env(viewport-segment-left 1 0);
+    }
+}
+
+/* ==========================================
+   Container Queries (Modern Browsers)
+   ========================================== */
+
+@supports (container-type: inline-size) {
+    .game-board-container {
+        container-type: inline-size;
+    }
+    
+    @container (max-width: 300px) {
+        :root {
+            --cell-size: 35px;
+        }
+    }
+    
+    @container (min-width: 500px) {
+        :root {
+            --cell-size: 60px;
+        }
+    }
+}
