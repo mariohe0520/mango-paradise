@@ -92,8 +92,18 @@ class Game {
         // Apply Estate Buffs (defensive: never let Estate/Boss errors block board creation)
         try {
             this.scoreMultiplier = Estate.getScoreMultiplier();
+            // Buff notifications — show what buffs are active this level
+            const buffMessages = [];
             if (Estate.hasBuff('extra_moves')) {
                 this.movesLeft += 2;
+                buffMessages.push('🌙 月光树: +2步');
+            }
+            if (this.scoreMultiplier > 1) buffMessages.push(`✨ 幸福度: 分数x${this.scoreMultiplier}`);
+            if (Estate.hasBuff('rainbow_4')) buffMessages.push('🌈 彩虹树: 4消出彩虹');
+            if (Estate.hasBuff('start_bomb')) buffMessages.push('🌟 金芒树: 开局炸弹');
+            // Show buff summary after short delay
+            if (buffMessages.length > 0) {
+                setTimeout(() => UI.showToast(buffMessages.join(' | '), 'success'), 800);
             }
         } catch (e) {
             console.warn('[Game.init] Estate buff error (fallback to defaults):', e);
@@ -689,10 +699,13 @@ class Game {
         // Determine special gem - with rainbow_4 buff check
         if (count === 4) {
             if (Estate.hasBuff('rainbow_4')) {
-                // 4-match creates rainbow instead of line gem!
+                // 4-match creates rainbow instead of line gem! (彩虹树 Buff)
                 specialType = this.SPECIAL_TYPES.RAINBOW;
                 specialPosition = match.cells[2];
                 Collection.checkUnlock('special_create', {specialType:'rainbow'});
+                // Visual: rainbow flash to celebrate buff activation
+                const c = this.getCell(match.cells[2].x, match.cells[2].y);
+                if (c) { const r = c.getBoundingClientRect(); Particles.rainbow(r.left+r.width/2, r.top+r.height/2); }
             } else {
                 specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
                 specialPosition = match.cells[1];
@@ -1093,7 +1106,10 @@ class Game {
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
             const r = boardEl.getBoundingClientRect();
-            Particles.floatingText(r.left+r.width/2, r.top+r.height/2, `+${adjusted}`, '#ffd700');
+            // Show multiplier if active
+            const text = this.scoreMultiplier > 1 ? `+${adjusted} (x${this.scoreMultiplier})` : `+${adjusted}`;
+            const color = this.scoreMultiplier > 1 ? '#ff8800' : '#ffd700';
+            Particles.floatingText(r.left+r.width/2, r.top+r.height/2, text, color);
         }
 
         // Boss damage
