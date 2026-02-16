@@ -1841,7 +1841,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .tutorial-dialog {
     position: absolute;
-    bottom: max(env(safe-area-inset-bottom, 10px), 10px);
+    top: max(env(safe-area-inset-top, 10px), 10px);
     left: 50%;
     transform: translateX(-50%);
     pointer-events: auto; /* Dialog itself IS clickable */
