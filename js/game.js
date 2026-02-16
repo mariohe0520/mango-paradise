@@ -118,9 +118,6 @@ class Game {
             this.scoreMultiplier = 1.0;
         }
 
-        // Show how-to guide if level has special gem objectives
-        this.showSpecialGuide();
-
         // Skill bar
         this.skillCharge = 0;
         this.skillMax = 100;
@@ -140,6 +137,9 @@ class Game {
         this.objectives = Utils.deepClone(this.level.objectives);
         this.objectiveProgress = {};
         this.objectives.forEach((obj, i) => { this.objectiveProgress[i] = 0; });
+
+        // Show how-to guide AFTER objectives are set
+        this.showSpecialGuide();
 
         // Create board
         this.createBoard();
