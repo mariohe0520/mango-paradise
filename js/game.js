@@ -1415,7 +1415,10 @@ class Game {
                 case OBJECTIVE_TYPES.CLEAR:
                     if (obj.gem === gemType || obj.gem === 'any') this.objectiveProgress[i]++;
                     break;
-                case OBJECTIVE_TYPES.COMBO: this.objectiveProgress[i] = Math.max(this.objectiveProgress[i], this.combo); break;
+                case OBJECTIVE_TYPES.COMBO:
+                    // Count total combos (combo >= 2 counts as 1 toward objective)
+                    if (this.combo >= 2) this.objectiveProgress[i]++;
+                    break;
                 case OBJECTIVE_TYPES.SPECIAL:
                     if (specialType) {
                         if (obj.specialType === 'any' || (obj.specialType === 'line' && (specialType === 'horizontal' || specialType === 'vertical')) || obj.specialType === specialType)
@@ -1601,7 +1604,7 @@ class Game {
     }
 
     showSpecialGuide() {
-        const specials = this.objectives?.filter(o => o.type === 'special') || [];
+        const specials = this.objectives?.filter(o => o.type === 'special' || o.type === 'combo') || [];
         if (specials.length === 0) return;
         const guides = {
             line: { icon: '⚡', how: '连续消除4个', desc: '一排4个同色 → 线宝石' },
@@ -1609,11 +1612,16 @@ class Game {
             rainbow: { icon: '🌈', how: '连续消除5个', desc: '一排5个同色 → 彩虹' },
             any: { icon: '✨', how: '连4/连5/T/L形', desc: '制造任意特殊宝石' }
         };
+        const comboGuide = { icon: '🔥', how: '触发连锁反应', desc: '消除后掉落的宝石再次匹配=连击！' };
         const tips = specials.map(s => {
+            if (s.type === 'combo') return `<div style="font-size:1rem;margin:6px 0;">🔥 触发${s.target}次连锁</div>`;
             const g = guides[s.specialType] || guides.any;
             return `<div style="font-size:1rem;margin:6px 0;">${g.icon} ${g.how} → 做${s.target}个</div>`;
         });
-        const descs = [...new Set(specials.map(s => (guides[s.specialType]||guides.any).desc))];
+        const descs = [...new Set(specials.map(s => {
+            if (s.type === 'combo') return comboGuide.desc;
+            return (guides[s.specialType]||guides.any).desc;
+        }))];
         const guide = document.createElement('div');
         guide.id = 'special-guide';
         guide.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;';
