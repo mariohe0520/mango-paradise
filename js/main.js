@@ -4,9 +4,12 @@
    游戏初始化和启动
    ========================================== */
 
-// PWA Service Worker
+// Unregister old Service Workers (was caching stale code)
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.unregister());
+    });
+    caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
 }
 
 // 加载提示
@@ -254,13 +257,7 @@ document.body.addEventListener('touchmove', (e) => {
     // Everything else: allow native scroll
 }, { passive: false });
 
-// PWA 支持 - Service Worker 注册
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // 如果需要离线支持，可以注册 service worker
-        // navigator.serviceWorker.register('/sw.js');
-    });
-}
+// PWA: SW disabled (caching caused stale-code bugs)
 
 // 错误处理
 window.addEventListener('error', (e) => {

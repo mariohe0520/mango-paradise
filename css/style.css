@@ -1921,24 +1921,33 @@ input[type="range"]::-webkit-slider-thumb {
    ========================================== */
 .toast {
     position: fixed;
-    top: -100px;
+    top: -120px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--bg-card);
     border: var(--border-primary);
     border-radius: var(--radius-lg);
-    padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
-    max-width: 90vw;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    max-width: 88vw;
     text-align: center;
     z-index: 1000;
-    transition: top 0.3s ease;
     box-shadow: var(--shadow-lg);
     pointer-events: none;
+    opacity: 0;
+    transition: none;
 }
 
 .toast.show {
-    top: calc(env(safe-area-inset-top, 10px) + 60px);
+    top: calc(env(safe-area-inset-top, 10px) + 50px);
+    opacity: 1;
+    animation: toast-auto-hide 2.5s ease forwards;
+}
+
+@keyframes toast-auto-hide {
+    0% { top: calc(env(safe-area-inset-top, 10px) + 50px); opacity: 1; }
+    75% { top: calc(env(safe-area-inset-top, 10px) + 50px); opacity: 1; }
+    100% { top: -120px; opacity: 0; }
 }
 
 .toast.success {

@@ -896,12 +896,21 @@ const UI = {
         const toast = document.getElementById('toast');
         if (!toast) return;
         
+        // Reset any previous animation
+        toast.className = 'toast';
+        toast.style.display = 'block';
         toast.textContent = message;
+        
+        // Force reflow then show (triggers CSS animation)
+        void toast.offsetHeight;
         toast.className = `toast ${type} show`;
         
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 2500);
+        // JS fallback: force hide after 2.8s (CSS animation is 2.5s)
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => {
+            toast.className = 'toast';
+            toast.style.display = 'none';
+        }, 2800);
     },
 
     // 显示成就解锁弹窗
