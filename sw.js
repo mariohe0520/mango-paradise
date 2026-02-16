@@ -1,5 +1,5 @@
 // Service Worker for Mango Paradise — offline support
-const CACHE_NAME = 'mango-paradise-v2';
+const CACHE_NAME = 'mango-paradise-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -23,7 +23,13 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Network-first: always try fresh, fallback to cache
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('./index.html')))
+    fetch(e.request).then(response => {
+      // Update cache with fresh response
+      const clone = response.clone();
+      caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+      return response;
+    }).catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
   );
 });
