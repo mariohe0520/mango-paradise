@@ -224,7 +224,16 @@ class Game {
         try {
             const boardEl = document.getElementById('game-board');
             if (!boardEl) { console.error('[Game.render] #game-board not found'); return; }
-            boardEl.style.gridTemplateColumns = `repeat(${this.width}, var(--cell-size))`;
+
+            // Compute cell size from CSS variable, with px fallback
+            const cs = getComputedStyle(document.documentElement);
+            let cellPx = parseFloat(cs.getPropertyValue('--cell-size'));
+            if (!cellPx || isNaN(cellPx)) cellPx = Math.min(Math.floor(window.innerWidth * 0.11), 55);
+            if (cellPx < 10) cellPx = 42; // sanity floor
+
+            // Set grid columns via BOTH CSS-var and explicit px (belt + suspenders)
+            boardEl.style.gridTemplateColumns = `repeat(${this.width}, ${cellPx}px)`;
+            boardEl.style.gridTemplateRows    = `repeat(${this.height}, ${cellPx}px)`;
             boardEl.innerHTML = '';
 
             for (let y = 0; y < this.height; y++) {
@@ -234,14 +243,17 @@ class Game {
                     cell.className = 'cell';
                     cell.dataset.x = x;
                     cell.dataset.y = y;
+                    // Inline size guarantee — never 0
+                    cell.style.width  = cellPx + 'px';
+                    cell.style.height = cellPx + 'px';
 
                     // Cell states
-                    const cs = this.cellStates[y] && this.cellStates[y][x];
-                    if (cs) {
-                        if (cs.frozen) cell.classList.add('frozen');
-                        if (cs.locked > 0) {
+                    const cst = this.cellStates[y] && this.cellStates[y][x];
+                    if (cst) {
+                        if (cst.frozen) cell.classList.add('frozen');
+                        if (cst.locked > 0) {
                             cell.classList.add('locked-cell');
-                            cell.dataset.lockLevel = cs.locked;
+                            cell.dataset.lockLevel = cst.locked;
                         }
                     }
 
@@ -259,7 +271,9 @@ class Game {
                 }
             }
 
-            // Verify render succeeded
+            // Store computed cell size for animations
+            this._cellPx = cellPx;
+
             if (boardEl.children.length !== this.width * this.height) {
                 console.warn('[Game.render] cell count mismatch:', boardEl.children.length, 'expected', this.width * this.height);
             }
@@ -435,9 +449,11 @@ class Game {
     async animateSwap(x1, y1, x2, y2) {
         const g1 = this.getGemElement(x1,y1), g2 = this.getGemElement(x2,y2);
         if (!g1 || !g2) return;
-        const dx = (x2-x1)*100, dy = (y2-y1)*100;
+        const px = this._cellPx || 42;
+        const gap = 2; // --board-gap
+        const dx = (x2-x1)*(px+gap), dy = (y2-y1)*(px+gap);
         g1.style.transition = g2.style.transition = 'transform 0.2s ease';
-        g1.style.transform = `translate(${dx}%, ${dy}%)`; g2.style.transform = `translate(${-dx}%, ${-dy}%)`;
+        g1.style.transform = `translate(${dx}px, ${dy}px)`; g2.style.transform = `translate(${-dx}px, ${-dy}px)`;
         await Utils.wait(200);
         g1.style.transition = g2.style.transition = ''; g1.style.transform = g2.style.transform = '';
     }

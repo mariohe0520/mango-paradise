@@ -839,12 +839,10 @@ h1, h2, h3 {
     background: rgba(0, 0, 0, 0.3);
     border-radius: var(--radius-md);
     padding: 4px;
-    /* Explicit sizing so the board never collapses to 0 */
-    min-width: calc(var(--cell-size) * 8 + var(--board-gap) * 7 + 8px);
-    min-height: calc(var(--cell-size) * 8 + var(--board-gap) * 7 + 8px);
     width: max-content;
-    touch-action: none; /* prevent scroll/zoom while playing */
+    touch-action: none;
     -webkit-touch-callout: none;
+    /* grid-template set via JS; rows auto-size from cell height */
 }
 
 .cell {
