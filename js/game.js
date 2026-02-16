@@ -245,20 +245,20 @@ class Game {
             // Height constraint: measure actual non-board elements
             const gameScreen = document.getElementById('game-screen');
             const container = document.querySelector('.game-board-container');
-            let cellFromH = 999; // default: no height constraint
+            let cellFromH = 999;
             if (gameScreen && container) {
-                // Sum heights of all visible siblings (header, objectives, powerups, skill-bar, etc.)
-                let chromeH = 0;
-                for (const el of gameScreen.children) {
-                    if (el === container || el.style.display === 'none' || !el.offsetHeight) continue;
-                    // Skip overlays/popups that float above
-                    const pos = getComputedStyle(el).position;
-                    if (pos === 'absolute' || pos === 'fixed') continue;
-                    chromeH += el.offsetHeight;
+                // Use cached chrome height if available (expensive to recalculate)
+                if (!this._cachedChromeH || this._lastScreenH !== window.innerHeight) {
+                    let chromeH = 0;
+                    for (const el of gameScreen.children) {
+                        if (el === container || el.style.display === 'none' || !el.offsetHeight) continue;
+                        if (el.style.position === 'absolute' || el.style.position === 'fixed') continue;
+                        chromeH += el.offsetHeight;
+                    }
+                    this._cachedChromeH = chromeH + 24;
+                    this._lastScreenH = window.innerHeight;
                 }
-                // Add screen padding + frame padding + small safety margin
-                chromeH += 24; // screen padding + frame + safety
-                const availH = window.innerHeight - chromeH - (this.height - 1) * gap;
+                const availH = window.innerHeight - this._cachedChromeH - (this.height - 1) * gap;
                 cellFromH = Math.floor(availH / this.height);
             }
 
@@ -652,11 +652,21 @@ class Game {
                 Audio.playComboNote(this.combo);
             }
 
+            // ── Apply "matching" visual to all matched gems first ──
+            for (const match of matches) {
+                for (const cell of match.cells) {
+                    const gemEl = this.getGemElement(cell.x, cell.y);
+                    if (gemEl) gemEl.classList.add('matching');
+                }
+            }
+            await Utils.wait(300); // let the pop animation play
+
+            // ── Then process logic (clear, score, specials) ──
             for (const match of matches) await this.processMatch(match);
             Achievements.check('combo', this.combo);
 
-            // "Breathing" pause between chains
-            await Utils.wait(this.combo > 1 ? 280 : 200);
+            // Brief breathing pause between cascade steps
+            await Utils.wait(this.combo > 1 ? 150 : 100);
 
             await this.dropGems();
             await this.fillGems();
@@ -957,7 +967,21 @@ class Game {
                 }
             }
         }
-        if (dropped) { this.render(); Audio.play('cascade'); await Utils.wait(250); }
+        if (dropped) {
+            this.render();
+            Audio.play('cascade');
+            // Apply falling animation to gems that moved
+            const boardEl = document.getElementById('game-board');
+            if (boardEl) {
+                boardEl.querySelectorAll('.gem').forEach(gem => {
+                    if (!gem.classList.contains('matching')) {
+                        gem.classList.add('falling');
+                        setTimeout(() => gem.classList.remove('falling'), 300);
+                    }
+                });
+            }
+            await Utils.wait(250);
+        }
     }
 
     async fillGems() {
