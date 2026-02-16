@@ -803,3 +803,38 @@
     30% { background: rgba(255,255,255,0.8); }
     100% { background: rgba(255,255,255,0); }
 }
+
+/* Special gem pulse */
+@keyframes special-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Badge glow */
+@keyframes badge-glow {
+    0% { box-shadow: 0 0 5px currentColor; }
+    100% { box-shadow: 0 0 15px currentColor, 0 0 25px currentColor; }
+}
+
+/* Rainbow gem glow */
+@keyframes rainbow-glow {
+    0% { box-shadow: inset 0 0 15px rgba(239,68,68,0.4); }
+    25% { box-shadow: inset 0 0 15px rgba(234,179,8,0.4); }
+    50% { box-shadow: inset 0 0 15px rgba(34,197,94,0.4); }
+    75% { box-shadow: inset 0 0 15px rgba(59,130,246,0.4); }
+    100% { box-shadow: inset 0 0 15px rgba(239,68,68,0.4); }
+}
+
+/* Rainbow badge spin */
+@keyframes rainbow-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Gem selection bounce */
+@keyframes gem-select-bounce {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.25); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1.15); }
+}
