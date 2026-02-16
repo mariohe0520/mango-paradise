@@ -88,6 +88,11 @@
                     <span class="btn-text">每日签到</span>
                     <span class="btn-badge" id="daily-badge" style="display:none">!</span>
                 </button>
+                <button class="menu-btn" id="btn-estate" data-sound="click">
+                    <span class="btn-icon">🏡</span>
+                    <span class="btn-text">芒果庄园</span>
+                    <span class="btn-subtitle">种树 · 精灵 · Buff</span>
+                </button>
                 <button class="menu-btn" id="btn-leaderboard" data-sound="click">
                     <span class="btn-icon">👑</span>
                     <span class="btn-text">排行榜</span>
@@ -155,6 +160,27 @@
             </div>
         </div>
 
+        <!-- Boss HP Bar -->
+        <div class="boss-bar" id="boss-bar" style="display:none">
+            <div class="boss-info">
+                <span class="boss-icon" id="boss-icon">👿</span>
+                <span class="boss-name" id="boss-name">Boss</span>
+            </div>
+            <div class="boss-hp-bar">
+                <div class="boss-hp-fill" id="boss-hp-fill"></div>
+            </div>
+            <span class="boss-hp-text" id="boss-hp-text">0/0</span>
+        </div>
+
+        <!-- Active Buffs -->
+        <div class="active-buffs" id="active-buffs" style="display:none"></div>
+
+        <!-- Timer for timed levels -->
+        <div class="stat timer-stat" id="timer-wrap" style="display:none">
+            <span class="stat-icon">⏱️</span>
+            <span class="stat-value" id="timer-display">0</span>
+        </div>
+
         <div class="game-objectives" id="game-objectives">
             <!-- 目标将由JS生成 -->
         </div>
@@ -183,6 +209,16 @@
             <button class="powerup-btn" id="powerup-hint" data-powerup="hint">
                 <span class="powerup-icon">💡</span>
                 <span class="powerup-count" id="hint-count">5</span>
+            </button>
+        </div>
+
+        <!-- Skill Bar (Awakening System) -->
+        <div class="skill-bar-container" id="skill-bar-container">
+            <div class="skill-bar-track">
+                <div class="skill-bar-fill" id="skill-bar-fill"></div>
+            </div>
+            <button class="skill-activate-btn" id="skill-activate-btn" disabled>
+                <span class="skill-spirit-icon" id="skill-spirit-icon">🧚</span>
             </button>
         </div>
 
@@ -403,6 +439,51 @@
         </div>
     </div>
 
+    <!-- 庄园界面 -->
+    <div id="estate-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-estate">←</button>
+            <h2>🏡 芒果庄园</h2>
+            <div class="header-currency">
+                <span class="currency gold">💰 <span id="estate-gold">0</span></span>
+            </div>
+        </div>
+        <div class="estate-content">
+            <!-- Happiness -->
+            <div class="estate-section happiness-section">
+                <h3>💖 庄园幸福度: <span id="estate-happiness">0</span></h3>
+                <div class="happiness-bar"><div class="happiness-fill" id="happiness-fill"></div></div>
+                <p class="happiness-hint" id="happiness-hint">幸福度超过200后，消消乐分数永久1.2倍！</p>
+            </div>
+            <!-- Trees -->
+            <div class="estate-section">
+                <h3>🌳 种植芒果树 → 永久Buff</h3>
+                <div class="tree-grid" id="tree-grid"></div>
+            </div>
+            <!-- Spirits -->
+            <div class="estate-section">
+                <h3>✨ 派遣精灵 → 觉醒大招</h3>
+                <div class="spirit-grid" id="spirit-grid"></div>
+            </div>
+            <!-- Active Buffs Summary -->
+            <div class="estate-section">
+                <h3>🛡️ 当前生效Buff</h3>
+                <div class="buff-summary" id="buff-summary"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 关卡故事对话框 -->
+    <div id="story-dialog" class="modal">
+        <div class="modal-content story-dialog-content">
+            <div class="story-character" id="story-character">🥭</div>
+            <div class="story-text-container">
+                <p class="story-text" id="story-text"></p>
+            </div>
+            <button class="modal-btn primary" id="story-continue-btn">继续 ▶</button>
+        </div>
+    </div>
+
     <!-- 新手教程 -->
     <div id="tutorial-overlay" class="tutorial-overlay" style="display:none">
         <div class="tutorial-spotlight" id="tutorial-spotlight"></div>
@@ -439,6 +520,9 @@
     <script src="js/levels.js"></script>
     <script src="js/achievements.js"></script>
     <script src="js/collection.js"></script>
+    <script src="js/estate.js"></script>
+    <script src="js/boss.js"></script>
+    <script src="js/story.js"></script>
     <script src="js/game.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/tutorial.js"></script>

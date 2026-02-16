@@ -276,10 +276,10 @@ if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
         addGold: (amount) => { Storage.addGold(amount); UI.updateMenuDisplay(); },
         addGems: (amount) => { Storage.addGems(amount); UI.updateMenuDisplay(); },
         unlockAll: () => {
-            Storage.data.progress.maxUnlockedLevel = 60;
+            Storage.data.progress.maxUnlockedLevel = getTotalLevels();
             Storage.save();
             UI.updateMenuDisplay();
-            console.log('All levels unlocked!');
+            console.log(`All ${getTotalLevels()} levels unlocked!`);
         },
         completeLevel: (id, stars = 3) => {
             Storage.completedLevel(id, stars, 50000);

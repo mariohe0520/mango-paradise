@@ -123,6 +123,44 @@ class AudioSystem {
         }
     }
 
+    // Play combo note with progressive pitch (do-re-mi-fa-sol-la-si-do)
+    playComboNote(comboLevel) {
+        if (!this.sfxEnabled || !this.initialized) return;
+        try {
+            this.resume();
+            // C major scale: do-re-mi-fa-sol-la-si-do
+            const scale = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
+            const idx = Math.min(comboLevel - 1, scale.length - 1);
+            const freq = scale[idx];
+
+            const osc = this.context.createOscillator();
+            const gain = this.context.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, this.context.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.2, this.context.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.3, this.context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(this.context.currentTime);
+            osc.stop(this.context.currentTime + 0.35);
+
+            // Add harmony for high combos
+            if (comboLevel >= 4) {
+                const osc2 = this.context.createOscillator();
+                const gain2 = this.context.createGain();
+                osc2.type = 'triangle';
+                osc2.frequency.value = freq * 1.5; // Perfect fifth
+                gain2.gain.setValueAtTime(0.15, this.context.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.3);
+                osc2.connect(gain2);
+                gain2.connect(this.masterGain);
+                osc2.start(this.context.currentTime);
+                osc2.stop(this.context.currentTime + 0.3);
+            }
+        } catch(e) {}
+    }
+
     // 播放音效
     play(name, options = {}) {
         if (!this.sfxEnabled || !this.initialized) return;

@@ -41,6 +41,11 @@ const UI = {
             this.showLeaderboard();
         });
         
+        document.getElementById('btn-estate')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showEstate();
+        });
+
         document.getElementById('btn-settings')?.addEventListener('click', () => {
             Audio.play('click');
             this.showSettings();
@@ -67,6 +72,11 @@ const UI = {
             this.showScreen('main-menu');
         });
         
+        document.getElementById('btn-back-estate')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showScreen('main-menu');
+        });
+
         document.getElementById('btn-back-settings')?.addEventListener('click', () => {
             Audio.play('click');
             this.saveSettings();
@@ -108,6 +118,16 @@ const UI = {
         
         document.getElementById('powerup-hint')?.addEventListener('click', () => {
             game.activatePowerup('hint');
+        });
+
+        // Skill bar
+        document.getElementById('skill-activate-btn')?.addEventListener('click', () => {
+            game.activateSkill();
+        });
+
+        // Story dialog
+        document.getElementById('story-continue-btn')?.addEventListener('click', () => {
+            this.advanceStoryDialog();
         });
 
         // 胜利界面
@@ -759,11 +779,215 @@ const UI = {
     // 显示待处理的成就
     showPendingAchievements() {
         const pending = Achievements.getPendingUnlocks();
-        
         pending.forEach((achievement, index) => {
-            setTimeout(() => {
-                this.showAchievementPopup(achievement);
-            }, index * 3500);
+            setTimeout(() => { this.showAchievementPopup(achievement); }, index * 3500);
         });
+    },
+
+    // ==========================================
+    // 庄园系统 UI
+    // ==========================================
+
+    showEstate() {
+        // Update gold display
+        const goldEl = document.getElementById('estate-gold');
+        if (goldEl) goldEl.textContent = Utils.formatNumber(Storage.getGold());
+
+        // Happiness
+        const happiness = Estate.getHappiness();
+        const hEl = document.getElementById('estate-happiness');
+        if (hEl) hEl.textContent = happiness;
+        const hFill = document.getElementById('happiness-fill');
+        if (hFill) hFill.style.width = `${Math.min(100, (happiness / 300) * 100)}%`;
+        const hHint = document.getElementById('happiness-hint');
+        if (hHint) hHint.textContent = happiness > 200
+            ? '✅ 幸福度已超过200！分数永久1.2倍！'
+            : `幸福度超过200后，消消乐分数永久1.2倍！(还差${200-happiness})`;
+
+        // Trees
+        const treeGrid = document.getElementById('tree-grid');
+        if (treeGrid) {
+            treeGrid.innerHTML = Object.values(Estate.TREES).map(tree => {
+                const planted = Estate.isTreePlanted(tree.id);
+                return `<div class="tree-card ${planted ? 'planted' : ''}" data-tree="${tree.id}">
+                    <div class="tree-emoji">${tree.emoji}</div>
+                    <div class="tree-name">${tree.name}</div>
+                    <div class="tree-desc">${tree.description}</div>
+                    ${planted
+                        ? '<div class="tree-status">✅ 已种植</div>'
+                        : `<button class="tree-plant-btn" data-tree="${tree.id}">种植 💰${tree.cost}</button>`}
+                </div>`;
+            }).join('');
+
+            treeGrid.querySelectorAll('.tree-plant-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const treeId = btn.dataset.tree;
+                    if (Estate.plantTree(treeId)) this.showEstate();
+                });
+            });
+        }
+
+        // Spirits
+        const spiritGrid = document.getElementById('spirit-grid');
+        if (spiritGrid) {
+            const currentSpirit = Estate.getCurrentSpirit();
+            spiritGrid.innerHTML = Object.values(Estate.SPIRITS).map(spirit => {
+                const unlocked = Estate.isSpiritUnlocked(spirit.id);
+                const active = currentSpirit.id === spirit.id;
+                return `<div class="spirit-card ${active ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-spirit="${spirit.id}">
+                    <div class="spirit-emoji">${spirit.emoji}</div>
+                    <div class="spirit-name">${spirit.name}</div>
+                    <div class="spirit-desc">${spirit.description}</div>
+                    <div class="spirit-skill">大招: ${spirit.skillName}</div>
+                    ${active ? '<div class="spirit-status">🌟 已派遣</div>'
+                        : unlocked ? `<button class="spirit-select-btn" data-spirit="${spirit.id}">派遣</button>`
+                        : `<button class="spirit-unlock-btn" data-spirit="${spirit.id}">解锁 💰${spirit.unlockCost}</button>`}
+                </div>`;
+            }).join('');
+
+            spiritGrid.querySelectorAll('.spirit-select-btn, .spirit-unlock-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (Estate.selectSpirit(btn.dataset.spirit)) this.showEstate();
+                });
+            });
+        }
+
+        // Buff summary
+        const buffSummary = document.getElementById('buff-summary');
+        if (buffSummary) {
+            const buffs = Estate.getActiveBuffs();
+            if (buffs.length === 0) {
+                buffSummary.innerHTML = '<p class="no-buffs">还没有Buff，快去种树吧！</p>';
+            } else {
+                buffSummary.innerHTML = buffs.map(b => {
+                    switch(b) {
+                        case 'start_bomb': return '<div class="buff-item">🌟 开局自带炸弹</div>';
+                        case 'extra_moves': return '<div class="buff-item">🌙 每关多2步</div>';
+                        case 'rainbow_4': return '<div class="buff-item">🌈 4消出彩虹</div>';
+                        case 'score_multiplier': return '<div class="buff-item">✨ 分数1.2倍</div>';
+                        default: return '';
+                    }
+                }).join('');
+            }
+        }
+
+        this.showScreen('estate-screen');
+    },
+
+    // ==========================================
+    // 故事对话系统
+    // ==========================================
+
+    storyQueue: [],
+    storyCallback: null,
+
+    async showStoryDialog(texts, callback) {
+        if (!texts || texts.length === 0) { if (callback) callback(); return; }
+        this.storyQueue = Array.isArray(texts) ? [...texts] : [texts];
+        this.storyCallback = callback;
+        this.showNextStoryLine();
+        this.showModal('story-dialog');
+    },
+
+    showNextStoryLine() {
+        if (this.storyQueue.length === 0) {
+            this.hideModal('story-dialog');
+            if (this.storyCallback) { this.storyCallback(); this.storyCallback = null; }
+            return;
+        }
+        const line = this.storyQueue.shift();
+        const textEl = document.getElementById('story-text');
+        if (textEl) textEl.textContent = line;
+        const btnEl = document.getElementById('story-continue-btn');
+        if (btnEl) btnEl.textContent = this.storyQueue.length === 0 ? '开始战斗！ ⚔️' : '继续 ▶';
+    },
+
+    advanceStoryDialog() {
+        Audio.play('click');
+        this.showNextStoryLine();
+    },
+
+    // Modified startLevel to show story
+    startLevel(levelId) {
+        const level = getLevel(levelId);
+        const chapter = getChapter(level.chapter);
+        const chapterNameEl = document.getElementById('game-chapter');
+        const levelNumEl = document.getElementById('game-level');
+        if (chapterNameEl) chapterNameEl.textContent = chapter.name;
+        if (levelNumEl) levelNumEl.textContent = levelId;
+
+        // Update spirit icon in skill bar
+        const spiritIcon = document.getElementById('skill-spirit-icon');
+        if (spiritIcon) spiritIcon.textContent = Estate.getCurrentSpirit().emoji;
+
+        // Show story if available
+        const story = StoryData.getLevel(levelId);
+        if (story) {
+            const introTexts = [];
+            if (story.pre) introTexts.push(story.pre);
+            if (story.bossIntro) introTexts.push(...story.bossIntro);
+
+            if (introTexts.length > 0) {
+                // Show story character based on boss or not
+                const charEl = document.getElementById('story-character');
+                if (charEl) charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.emoji || '🥭') : '🥭';
+
+                this.showStoryDialog(introTexts, () => {
+                    this.doStartLevel(levelId);
+                });
+                return;
+            }
+        }
+
+        this.doStartLevel(levelId);
+    },
+
+    doStartLevel(levelId) {
+        this.showScreen('game-screen');
+        game.init(levelId);
+
+        // Show boss bar if boss level
+        const bossBar = document.getElementById('boss-bar');
+        if (bossBar) bossBar.style.display = Boss.isBossLevel(levelId) ? 'block' : 'none';
+
+        if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
+    },
+
+    // Override showVictory to show post-story
+    showVictory(stars, score, maxCombo, goldReward) {
+        document.getElementById('victory-score').textContent = Utils.formatNumber(score);
+        document.getElementById('victory-combo').textContent = `x${maxCombo}`;
+        document.getElementById('victory-gold').textContent = Utils.formatNumber(goldReward);
+
+        const starsEl = document.getElementById('victory-stars');
+        if (starsEl) {
+            starsEl.querySelectorAll('.star').forEach((star, i) => {
+                star.classList.remove('earned');
+                if (i < stars) setTimeout(() => { star.classList.add('earned'); Audio.play('star'); }, 300 + i * 400);
+            });
+        }
+
+        // Show post-level story
+        const story = StoryData.getLevel(game.level.id);
+        if (story) {
+            const outroTexts = [];
+            if (story.bossOutro) outroTexts.push(...story.bossOutro);
+            else if (story.post) outroTexts.push(story.post);
+
+            if (outroTexts.length > 0) {
+                const charEl = document.getElementById('story-character');
+                if (charEl) charEl.textContent = '🥭';
+                this.showStoryDialog(outroTexts, () => {
+                    this.showModal('victory-screen');
+                    setTimeout(() => this.showPendingAchievements(), 2000);
+                });
+                return;
+            }
+        }
+
+        this.showModal('victory-screen');
+        setTimeout(() => this.showPendingAchievements(), 2000);
     }
 };

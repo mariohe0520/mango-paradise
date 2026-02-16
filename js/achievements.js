@@ -235,11 +235,47 @@ const ACHIEVEMENTS = [
     {
         id: 'level_60',
         name: '冰封王者',
-        description: '通关全部 60 关',
+        description: '通关第 60 关',
         icon: '❄️',
         category: 'level',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'level', target: 60 }
+    },
+    {
+        id: 'level_70',
+        name: '梦境行者',
+        description: '通关第 70 关',
+        icon: '🌿',
+        category: 'level',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'level', target: 70 }
+    },
+    {
+        id: 'level_80',
+        name: '虚空征服者',
+        description: '通关第 80 关',
+        icon: '🌀',
+        category: 'level',
+        reward: { gold: 6000, gems: 100 },
+        condition: { type: 'level', target: 80 }
+    },
+    {
+        id: 'level_90',
+        name: '时光主宰',
+        description: '通关第 90 关',
+        icon: '⏳',
+        category: 'level',
+        reward: { gold: 8000, gems: 120 },
+        condition: { type: 'level', target: 90 }
+    },
+    {
+        id: 'level_100',
+        name: '芒果守护者',
+        description: '通关全部 100 关！',
+        icon: '🥭',
+        category: 'level',
+        reward: { gold: 10000, gems: 200 },
+        condition: { type: 'level', target: 100 }
     },
 
     // ==========================================

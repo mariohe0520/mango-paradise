@@ -148,17 +148,24 @@
     }
 }
 
-/* Gem Fall */
+/* Gem Fall - exaggerated bounce */
 @keyframes gem-fall {
     0% {
-        transform: translateY(-100%);
+        transform: translateY(-120%);
         opacity: 0;
     }
-    60% {
-        transform: translateY(10%);
+    45% {
+        transform: translateY(18%);
+        opacity: 1;
     }
-    80% {
-        transform: translateY(-5%);
+    60% {
+        transform: translateY(-12%);
+    }
+    75% {
+        transform: translateY(6%);
+    }
+    87% {
+        transform: translateY(-3%);
     }
     100% {
         transform: translateY(0);

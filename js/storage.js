@@ -107,6 +107,14 @@ class StorageSystem {
                 lastUpdated: null
             },
             
+            // 庄园系统
+            estate: {
+                trees: { golden_mango: false, moonlight: false, rainbow: false },
+                spirits: { mango_fairy: true, bee_spirit: false, rainbow_spirit: false },
+                activeSpirit: 'mango_fairy',
+                happiness: 0
+            },
+
             // 离线收益
             offline: {
                 lastOnline: Date.now(),
@@ -627,6 +635,19 @@ class StorageSystem {
             return true;
         }
         return false;
+    }
+
+    // ==========================================
+    // 庄园相关
+    // ==========================================
+
+    getEstate() {
+        return this.data.estate;
+    }
+
+    saveEstate(estate) {
+        this.data.estate = estate;
+        this.save();
     }
 
     // ==========================================
