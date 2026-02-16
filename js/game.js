@@ -841,12 +841,18 @@ class Game {
         let specialPosition = null;
 
         // Determine special gem - with rainbow_4 buff check
+        const hasRainbow4 = Estate.hasBuff('rainbow_4');
         if (count === 4) {
             if (match.direction === 'cross') {
                 // 4-cell cross (T/L shape) → BOMB (easier to make!)
                 specialType = this.SPECIAL_TYPES.BOMB;
                 specialPosition = match.cells[Math.floor(match.cells.length/2)];
                 Collection.checkUnlock('special_create', {specialType:'bomb'});
+            } else if (hasRainbow4) {
+                // 🌈 彩虹树 buff: 4 in a row → RAINBOW instead of line!
+                specialType = this.SPECIAL_TYPES.RAINBOW;
+                specialPosition = match.cells[1];
+                Collection.checkUnlock('special_create', {specialType:'rainbow'});
             } else {
                 // 4 in a row → line gem
                 specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
@@ -1613,11 +1619,12 @@ class Game {
     showSpecialGuide() {
         const specials = this.objectives?.filter(o => o.type === 'special' || o.type === 'combo') || [];
         if (specials.length === 0) return;
+        const hasRainbow4 = Estate.hasBuff('rainbow_4');
         const guides = {
             line: { icon: '⚡', how: '4个排一排', desc: '🟢🟢🟢🟢 → ⚡线宝石' },
             bomb: { icon: '💣', how: '拐个弯', desc: '🟢🟢🟢<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🟢<br>↑ 3个+拐1个就出💣' },
-            rainbow: { icon: '🌈', how: '5个排一排', desc: '🟢🟢🟢🟢🟢 → 🌈彩虹' },
-            any: { icon: '✨', how: '排4个或5个', desc: '4个一排=⚡ 5个一排=🌈 拐弯=💣' }
+            rainbow: { icon: '🌈', how: hasRainbow4 ? '4个排一排就行！' : '5个排一排', desc: hasRainbow4 ? '🌈 你有彩虹树！<br>🟢🟢🟢🟢 四个一排就出彩虹！' : '🟢🟢🟢🟢🟢 → 🌈彩虹' },
+            any: { icon: '✨', how: hasRainbow4 ? '4个一排=🌈 拐弯=💣' : '排4个或5个', desc: hasRainbow4 ? '你有彩虹树加成！4个=🌈 拐弯=💣' : '4个一排=⚡ 5个一排=🌈 拐弯=💣' }
         };
         const comboGuide = { icon: '🔥', how: '连锁反应', desc: '消完之后掉下来的自动又消了=连击！' };
         const tips = specials.map(s => {
