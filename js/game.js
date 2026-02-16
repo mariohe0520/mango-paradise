@@ -267,52 +267,69 @@ class Game {
 
             // Push back to CSS so font-size: calc(var(--cell-size) * 0.65) works
             document.documentElement.style.setProperty('--cell-size', cellPx + 'px');
-
-            // Set grid columns via BOTH CSS-var and explicit px (belt + suspenders)
             boardEl.style.gridTemplateColumns = `repeat(${this.width}, ${cellPx}px)`;
             boardEl.style.gridTemplateRows    = `repeat(${this.height}, ${cellPx}px)`;
-            boardEl.innerHTML = '';
-
-            for (let y = 0; y < this.height; y++) {
-                for (let x = 0; x < this.width; x++) {
-                    const gem = this.board[y][x];
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    cell.dataset.x = x;
-                    cell.dataset.y = y;
-                    // Inline size guarantee — never 0
-                    cell.style.width  = cellPx + 'px';
-                    cell.style.height = cellPx + 'px';
-
-                    // Cell states
-                    const cst = this.cellStates[y] && this.cellStates[y][x];
-                    if (cst) {
-                        if (cst.frozen) cell.classList.add('frozen');
-                        if (cst.locked > 0) {
-                            cell.classList.add('locked-cell');
-                            cell.dataset.lockLevel = cst.locked;
-                        }
-                    }
-
-                    if (gem) {
-                        const gemEl = this.createGemElement(gem);
-                        cell.appendChild(gemEl);
-                    }
-
-                    cell.addEventListener('click', () => this.onCellClick(x, y));
-                    cell.addEventListener('touchstart', (e) => this.onTouchStart(e, x, y), { passive: false });
-                    cell.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
-                    cell.addEventListener('touchend', (e) => this.onTouchEnd(e, x, y), { passive: false });
-
-                    boardEl.appendChild(cell);
-                }
-            }
 
             // Store computed cell size for animations
             this._cellPx = cellPx;
 
-            if (boardEl.children.length !== this.width * this.height) {
-                console.warn('[Game.render] cell count mismatch:', boardEl.children.length, 'expected', this.width * this.height);
+            // ── PERFORMANCE: only rebuild DOM on first render or size change ──
+            const expectedCells = this.width * this.height;
+            const needsRebuild = boardEl.children.length !== expectedCells || this._lastCellPx !== cellPx;
+
+            if (needsRebuild) {
+                boardEl.innerHTML = '';
+                for (let y = 0; y < this.height; y++) {
+                    for (let x = 0; x < this.width; x++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.x = x;
+                        cell.dataset.y = y;
+                        cell.style.width  = cellPx + 'px';
+                        cell.style.height = cellPx + 'px';
+                        cell.addEventListener('click', () => this.onCellClick(x, y));
+                        cell.addEventListener('touchstart', (e) => this.onTouchStart(e, x, y), { passive: false });
+                        cell.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
+                        cell.addEventListener('touchend', (e) => this.onTouchEnd(e, x, y), { passive: false });
+                        boardEl.appendChild(cell);
+                    }
+                }
+                this._lastCellPx = cellPx;
+            }
+
+            // ── Fast update: only swap gem content + cell states (no DOM rebuild) ──
+            for (let y = 0; y < this.height; y++) {
+                for (let x = 0; x < this.width; x++) {
+                    const idx = y * this.width + x;
+                    const cell = boardEl.children[idx];
+                    if (!cell) continue;
+                    const gem = this.board[y][x];
+
+                    // Update cell states
+                    cell.classList.remove('frozen', 'locked-cell');
+                    cell.style.animation = '';
+                    delete cell.dataset.lockLevel;
+                    const cst = this.cellStates[y] && this.cellStates[y][x];
+                    if (cst) {
+                        if (cst.frozen) cell.classList.add('frozen');
+                        if (cst.locked > 0) { cell.classList.add('locked-cell'); cell.dataset.lockLevel = cst.locked; }
+                    }
+
+                    // Update gem content — only if changed
+                    const existingGem = cell.querySelector('.gem');
+                    const existingId = existingGem ? existingGem.dataset.id : null;
+                    if (gem) {
+                        if (existingId !== gem.id) {
+                            cell.innerHTML = '';
+                            cell.appendChild(this.createGemElement(gem));
+                        } else if (existingGem) {
+                            // Same gem, just update special class if needed
+                            existingGem.className = 'gem' + (gem.special !== this.SPECIAL_TYPES.NONE ? ' special ' + gem.special : '');
+                        }
+                    } else if (existingGem) {
+                        cell.innerHTML = '';
+                    }
+                }
             }
         } catch (e) {
             console.error('[Game.render] error:', e);
@@ -1078,7 +1095,8 @@ class Game {
             Particles.comboText(r.left+r.width/2, r.top+r.height/2, this.combo);
             // Extra particles for high combos
             if (this.combo >= 3) {
-                for (let i = 0; i < this.combo * 3; i++) {
+                const sparkCount = Math.min(this.combo * 2, 10); // cap at 10 particles
+                for (let i = 0; i < sparkCount; i++) {
                     Particles.spark(r.left + Math.random()*r.width, r.top + Math.random()*r.height);
                 }
             }
@@ -1088,21 +1106,14 @@ class Game {
         if (this.combo >= 2) Utils.vibrate(20 + this.combo * 15);
     }
 
-    // Screen shake effect
+    // Screen shake effect — lightweight CSS-only version
     screenShake(intensity = 5, duration = 300) {
         const el = document.getElementById('game-board');
         if (!el) return;
-        const startTime = Date.now();
-        const shake = () => {
-            const elapsed = Date.now() - startTime;
-            if (elapsed >= duration) { el.style.transform = ''; return; }
-            const decay = 1 - elapsed / duration;
-            const x = (Math.random() - 0.5) * 2 * intensity * decay;
-            const y = (Math.random() - 0.5) * 2 * intensity * decay;
-            el.style.transform = `translate(${x}px, ${y}px)`;
-            requestAnimationFrame(shake);
-        };
-        requestAnimationFrame(shake);
+        el.style.animation = 'none';
+        el.offsetHeight; // force reflow
+        el.style.animation = `shake ${duration}ms ease`;
+        setTimeout(() => { el.style.animation = ''; }, duration);
     }
 
     // ==========================================
