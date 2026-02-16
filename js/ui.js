@@ -93,6 +93,18 @@ const UI = {
             this.showEstate();
         });
 
+        // Season button
+        const seasonBtn = document.getElementById('btn-season');
+        if (seasonBtn && typeof SeasonSystem !== 'undefined') {
+            const season = SeasonSystem.getCurrentSeason();
+            const sub = document.getElementById('season-subtitle');
+            if (sub) sub.textContent = `${season.emoji} ${season.name} · 剩${season.daysRemaining}天`;
+            seasonBtn.addEventListener('click', () => {
+                Audio.play('click');
+                this.showSeason();
+            });
+        }
+
         document.getElementById('btn-settings')?.addEventListener('click', () => {
             Audio.play('click');
             this.showSettings();
@@ -784,6 +796,64 @@ const UI = {
     },
 
     // 设置界面
+    showSeason() {
+        if (typeof SeasonSystem === 'undefined') return;
+        const season = SeasonSystem.getCurrentSeason();
+        const points = SeasonSystem.getSeasonPoints();
+        const tier = SeasonSystem.getCurrentTier();
+
+        let tiersHtml = SeasonSystem.PASS_TIERS.map((t, i) => {
+            const unlocked = points >= t.points;
+            const claimed = Storage.data?.seasonClaimed?.[`${season.seasonId}-${i}`];
+            return `<div style="display:flex;align-items:center;gap:8px;padding:6px;border-radius:8px;
+                background:${unlocked ? 'rgba(34,197,94,0.15)' : 'rgba(100,100,100,0.1)'};
+                border:1px solid ${unlocked ? '#22c55e' : '#333'};margin-bottom:4px;">
+                <span style="font-size:1.2rem;">${t.icon}</span>
+                <div style="flex:1;">
+                    <div style="font-size:0.75rem;font-weight:700;color:${unlocked ? '#22c55e' : 'var(--text-secondary)'};">${t.points}分 — ${t.reward}</div>
+                </div>
+                ${unlocked && !claimed && i > 0 ? `<button class="season-claim-btn" data-tier="${i}" style="padding:4px 8px;background:var(--wow-gold);color:#000;border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;">领取</button>` : ''}
+                ${claimed ? '<span style="font-size:0.7rem;color:#22c55e;">✅</span>' : ''}
+            </div>`;
+        }).join('');
+
+        const nextTier = SeasonSystem.PASS_TIERS[tier + 1];
+        const progressPct = nextTier ? ((points - SeasonSystem.PASS_TIERS[tier].points) / (nextTier.points - SeasonSystem.PASS_TIERS[tier].points) * 100) : 100;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'season-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:900;overflow-y:auto;padding:20px;';
+        overlay.innerHTML = `<div style="max-width:360px;margin:0 auto;">
+            <div style="text-align:center;margin-bottom:12px;">
+                <div style="font-size:2.5rem;">${season.emoji}</div>
+                <div style="font-weight:900;font-size:1.3rem;color:${season.color};">${season.name}</div>
+                <div style="font-size:0.8rem;color:var(--text-secondary);">剩余${season.daysRemaining}天 · ${season.bonus}</div>
+                ${season.spiritBonus ? `<div style="font-size:0.75rem;color:#f472b6;">本赛季精灵加成: ${Estate.SPIRITS[season.spiritBonus]?.emoji || ''} ${Estate.SPIRITS[season.spiritBonus]?.name || ''}</div>` : ''}
+            </div>
+            <div style="margin-bottom:12px;">
+                <div style="font-size:0.8rem;font-weight:700;">赛季积分: ${points}</div>
+                <div style="background:#333;border-radius:6px;height:8px;margin:4px 0;">
+                    <div style="background:${season.color};height:100%;border-radius:6px;width:${Math.min(progressPct, 100)}%;transition:width 0.3s;"></div>
+                </div>
+                ${nextTier ? `<div style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextTier.points}分 (还差${nextTier.points - points})</div>` : '<div style="font-size:0.7rem;color:var(--wow-gold);">🏆 已达最高等级！</div>'}
+            </div>
+            <div style="font-weight:700;margin-bottom:6px;">赛季通行证</div>
+            ${tiersHtml}
+            <button id="season-close" style="margin-top:12px;width:100%;padding:10px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:10px;font-weight:700;cursor:pointer;">返回</button>
+        </div>`;
+        document.body.appendChild(overlay);
+
+        overlay.querySelectorAll('.season-claim-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                SeasonSystem.claimTierReward(parseInt(btn.dataset.tier));
+                Audio.play('levelUp');
+                overlay.remove();
+                this.showSeason(); // Refresh
+            });
+        });
+        document.getElementById('season-close').addEventListener('click', () => overlay.remove());
+    },
+
     showSettings() {
         const settings = Storage.getSettings();
         const player = Storage.getPlayer();

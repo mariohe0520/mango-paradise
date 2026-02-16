@@ -1618,6 +1618,11 @@ class Game {
             const affinityGain = 5 + stars * 3 + (this.isBossLevel ? 15 : 0);
             Estate.addSpiritAffinity(activeSpirit.id, affinityGain);
         }
+        // 🏅 Season points
+        if (typeof SeasonSystem !== 'undefined') {
+            const seasonPts = 10 + stars * 5 + (this.isBossLevel ? 20 : 0);
+            SeasonSystem.addSeasonPoints(seasonPts);
+        }
         const gameTime = Math.floor((Date.now() - this.gameStartTime) / 1000);
         Storage.addPlayTime(gameTime);
         Achievements.check('win', this.level.id, { noPowerup: this.powerupsUsed===0, time: gameTime });

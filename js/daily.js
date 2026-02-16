@@ -455,3 +455,92 @@ const BossRevenge = {
         };
     }
 };
+
+
+// ══════════════════════════════════════
+// 🏅 Season System — monthly themes + progression
+// ══════════════════════════════════════
+const SeasonSystem = {
+    THEMES: [
+        { name: '烈焰赛季', emoji: '🔥', color: '#ef4444', bonus: 'fire gems deal 2x damage', spiritBonus: 'dragon_spirit' },
+        { name: '冰霜赛季', emoji: '❄️', color: '#3b82f6', bonus: 'frozen cells auto-defrost after 3 turns', spiritBonus: 'frost_spirit' },
+        { name: '混沌赛季', emoji: '🌀', color: '#a855f7', bonus: 'random special gem every 5 matches', spiritBonus: 'chaos_spirit' },
+        { name: '丰收赛季', emoji: '🥭', color: '#f59e0b', bonus: 'gold rewards doubled', spiritBonus: 'mango_fairy' },
+        { name: '暗影赛季', emoji: '👿', color: '#6b7280', bonus: 'boss damage +50%', spiritBonus: 'phoenix_spirit' },
+        { name: '时光赛季', emoji: '⏳', color: '#eab308', bonus: '+3 moves every level', spiritBonus: 'time_spirit' },
+        { name: '彩虹赛季', emoji: '🌈', color: '#ec4899', bonus: 'rainbow gem spawn rate +25%', spiritBonus: 'rainbow_spirit' },
+        { name: '蜂群赛季', emoji: '🐝', color: '#fbbf24', bonus: 'combo multiplier +0.5x', spiritBonus: 'bee_spirit' },
+        { name: '翡翠赛季', emoji: '💚', color: '#22c55e', bonus: 'all tree buffs +20%', spiritBonus: null },
+        { name: '部落赛季', emoji: '🚩', color: '#dc2626', bonus: 'all spirit affinity gain x2', spiritBonus: null },
+        { name: '龙息赛季', emoji: '🐉', color: '#f97316', bonus: 'line gems deal 3x damage', spiritBonus: 'dragon_spirit' },
+        { name: '凤凰赛季', emoji: '🔥', color: '#fb923c', bonus: 'free revive once per level', spiritBonus: 'phoenix_spirit' }
+    ],
+
+    getCurrentSeason() {
+        const now = new Date();
+        const monthIndex = now.getMonth();
+        const theme = this.THEMES[monthIndex];
+        const daysInMonth = new Date(now.getFullYear(), monthIndex + 1, 0).getDate();
+        const dayOfMonth = now.getDate();
+        return {
+            ...theme,
+            month: monthIndex + 1,
+            year: now.getFullYear(),
+            seasonId: `${now.getFullYear()}-${String(monthIndex+1).padStart(2,'0')}`,
+            daysRemaining: daysInMonth - dayOfMonth,
+            progress: dayOfMonth / daysInMonth
+        };
+    },
+
+    PASS_TIERS: [
+        { points: 0,    reward: '开始！', icon: '🎯' },
+        { points: 100,  reward: '500💰', icon: '💰', gold: 500 },
+        { points: 300,  reward: '10💎', icon: '💎', gems: 10 },
+        { points: 600,  reward: '专属装饰', icon: '🎨', decoration: true },
+        { points: 1000, reward: '20💎+赛季称号', icon: '🏅', gems: 20, title: true },
+        { points: 1500, reward: '50💎+赛季精灵皮肤', icon: '👑', gems: 50, skin: true },
+        { points: 2500, reward: '100💎+传说称号', icon: '🔥', gems: 100, legendTitle: true }
+    ],
+
+    getSeasonPoints() {
+        const s = this.getCurrentSeason();
+        return Storage.data?.seasonPoints?.[s.seasonId] || 0;
+    },
+
+    addSeasonPoints(amount) {
+        const s = this.getCurrentSeason();
+        if (!Storage.data.seasonPoints) Storage.data.seasonPoints = {};
+        Storage.data.seasonPoints[s.seasonId] = (Storage.data.seasonPoints[s.seasonId] || 0) + amount;
+        Storage.save();
+    },
+
+    getCurrentTier() {
+        const pts = this.getSeasonPoints();
+        let tier = 0;
+        for (let i = this.PASS_TIERS.length - 1; i >= 0; i--) {
+            if (pts >= this.PASS_TIERS[i].points) { tier = i; break; }
+        }
+        return tier;
+    },
+
+    claimTierReward(tierIndex) {
+        const tier = this.PASS_TIERS[tierIndex];
+        if (!tier) return;
+        const s = this.getCurrentSeason();
+        if (!Storage.data.seasonClaimed) Storage.data.seasonClaimed = {};
+        const key = `${s.seasonId}-${tierIndex}`;
+        if (Storage.data.seasonClaimed[key]) return;
+        Storage.data.seasonClaimed[key] = true;
+        if (tier.gold) Storage.addGold(tier.gold);
+        if (tier.gems) Storage.addGems(tier.gems);
+        if (tier.title) {
+            if (!Storage.data.titles) Storage.data.titles = [];
+            Storage.data.titles.push(`${s.name}征服者`);
+        }
+        if (tier.legendTitle) {
+            if (!Storage.data.titles) Storage.data.titles = [];
+            Storage.data.titles.push(`${s.name}传说`);
+        }
+        Storage.save();
+    }
+};
