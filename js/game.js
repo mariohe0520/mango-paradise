@@ -1576,11 +1576,11 @@ class Game {
                 // Add tooltip for special objectives
                 let hint = '';
                 if (obj.type === 'special') {
-                    if (obj.specialType === 'line') hint = '连4';
-                    else if (obj.specialType === 'bomb') hint = '连T/L';
-                    else if (obj.specialType === 'rainbow') hint = '连5';
+                    if (obj.specialType === 'line') hint = '排4个';
+                    else if (obj.specialType === 'bomb') hint = '拐弯排';
+                    else if (obj.specialType === 'rainbow') hint = '排5个';
                     else hint = '特殊';
-                } else if (obj.type === 'combo') hint = '连击';
+                } else if (obj.type === 'combo') hint = '连锁';
                 const hintHtml = hint ? `<span class="objective-hint">${hint}</span>` : '';
                 return `<div class="objective ${done?'completed':''}"><span class="objective-icon">${icon}</span>${hintHtml}<span class="objective-count"><span class="current">${Utils.formatNumber(Math.min(cur,tar))}</span>/${Utils.formatNumber(tar)}</span></div>`;
             }).join('');
@@ -1607,12 +1607,12 @@ class Game {
         const specials = this.objectives?.filter(o => o.type === 'special' || o.type === 'combo') || [];
         if (specials.length === 0) return;
         const guides = {
-            line: { icon: '⚡', how: '连续消除4个', desc: '一排4个同色 → 线宝石' },
-            bomb: { icon: '💣', how: 'T形或L形排列', desc: 'T/L形排列 → 炸弹' },
-            rainbow: { icon: '🌈', how: '连续消除5个', desc: '一排5个同色 → 彩虹' },
-            any: { icon: '✨', how: '连4/连5/T/L形', desc: '制造任意特殊宝石' }
+            line: { icon: '⚡', how: '4个排一排', desc: '🟢🟢🟢🟢 → ⚡线宝石' },
+            bomb: { icon: '💣', how: '拐弯排5个', desc: '🟢🟢🟢<br>🟢<br>🟢<br>↑ 拐个弯就出💣' },
+            rainbow: { icon: '🌈', how: '5个排一排', desc: '🟢🟢🟢🟢🟢 → 🌈彩虹' },
+            any: { icon: '✨', how: '排4个或5个', desc: '4个一排=⚡ 5个一排=🌈 拐弯=💣' }
         };
-        const comboGuide = { icon: '🔥', how: '触发连锁反应', desc: '消除后掉落的宝石再次匹配=连击！' };
+        const comboGuide = { icon: '🔥', how: '连锁反应', desc: '消完之后掉下来的自动又消了=连击！' };
         const tips = specials.map(s => {
             if (s.type === 'combo') return `<div style="font-size:1rem;margin:6px 0;">🔥 触发${s.target}次连锁</div>`;
             const g = guides[s.specialType] || guides.any;
