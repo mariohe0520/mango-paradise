@@ -524,9 +524,9 @@ class Game {
         const px = this._cellPx || 42;
         const gap = 2; // --board-gap
         const dx = (x2-x1)*(px+gap), dy = (y2-y1)*(px+gap);
-        g1.style.transition = g2.style.transition = 'transform 0.2s ease';
+        g1.style.transition = g2.style.transition = 'transform 0.12s ease-out';
         g1.style.transform = `translate(${dx}px, ${dy}px)`; g2.style.transform = `translate(${-dx}px, ${-dy}px)`;
-        await Utils.wait(200);
+        await Utils.wait(130);
         g1.style.transition = g2.style.transition = ''; g1.style.transform = g2.style.transform = '';
     }
 
@@ -666,22 +666,19 @@ class Game {
                 Audio.playComboNote(this.combo);
             }
 
-            // ── Apply "matching" visual to all matched gems first ──
+            // ── Apply "matching" visual to all matched gems THEN process ──
             for (const match of matches) {
                 for (const cell of match.cells) {
                     const gemEl = this.getGemElement(cell.x, cell.y);
                     if (gemEl) gemEl.classList.add('matching');
                 }
             }
-            await Utils.wait(300); // let the pop animation play
+            await Utils.wait(180); // quick pop animation — fast!
 
-            // ── Then process logic (clear, score, specials) ──
             for (const match of matches) await this.processMatch(match);
             Achievements.check('combo', this.combo);
 
-            // Brief breathing pause between cascade steps
-            await Utils.wait(this.combo > 1 ? 150 : 100);
-
+            // Tight cascade: drop+fill in quick sequence
             await this.dropGems();
             await this.fillGems();
             this.updateUI();
@@ -747,12 +744,12 @@ class Game {
             Collection.checkUnlock('gem_match', {gemType: gem.type});
             Achievements.check('collect', 1, {gem: gem.type});
 
-            // Defrost adjacent frozen cells
+            // Defrost adjacent frozen cells (no particle per cell — too expensive)
             [{x:x-1,y},{x:x+1,y},{x,y:y-1},{x,y:y+1}].forEach(n => {
                 if (this.isValidCell(n.x, n.y) && this.cellStates[n.y][n.x].frozen) {
                     this.cellStates[n.y][n.x].frozen = false;
                     const nc = this.getCell(n.x, n.y);
-                    if (nc) { nc.classList.remove('frozen'); Particles.burst(nc.getBoundingClientRect().left+nc.offsetWidth/2, nc.getBoundingClientRect().top+nc.offsetHeight/2, '#88ddff'); }
+                    if (nc) nc.classList.remove('frozen');
                 }
             });
 
@@ -774,19 +771,9 @@ class Game {
             this.board[y][x] = null;
             if (this.cellStates[y][x]) { this.cellStates[y][x].frozen = false; this.cellStates[y][x].locked = 0; }
 
+            // Lightweight clear: just CSS flash, no per-cell particles (perf)
             const cellEl = this.getCell(x, y);
-            if (cellEl) {
-                const gd = GEM_TYPES[gem.type];
-                const rect = cellEl.getBoundingClientRect();
-                const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-                Particles.burst(cx, cy, gd?gd.color:'#fff');
-                // Flash effect on cell
-                cellEl.style.animation = 'cell-flash 0.3s ease';
-                // Extra sparkles for rare/epic/legendary gems
-                if (gd && (gd.rarity === 'rare' || gd.rarity === 'epic' || gd.rarity === 'legendary')) {
-                    Particles.sparkle(cx, cy);
-                }
-            }
+            if (cellEl) cellEl.style.animation = 'cell-flash 0.15s ease';
         }
 
         // Create special gem
@@ -800,6 +787,19 @@ class Game {
         }
 
         this.render();
+        // Single particle burst for the whole match (1 reflow instead of N)
+        if (match.cells.length > 0) {
+            const boardEl = document.getElementById('game-board');
+            if (boardEl) {
+                const r = boardEl.getBoundingClientRect();
+                const mid = match.cells[Math.floor(match.cells.length/2)];
+                const cellPx = this._cellPx || 42, gap = 2;
+                const cx = r.left + mid.x * (cellPx+gap) + cellPx/2;
+                const cy = r.top + mid.y * (cellPx+gap) + cellPx/2;
+                const gd = GEM_TYPES[match.cells[0].gem.type];
+                Particles.burst(cx, cy, gd?gd.color:'#fff', Math.min(count+2, 8));
+            }
+        }
         Storage.addMatch();
         Achievements.check('match');
     }
@@ -1020,17 +1020,7 @@ class Game {
         if (dropped) {
             this.render();
             Audio.play('cascade');
-            // Apply falling animation to gems that moved
-            const boardEl = document.getElementById('game-board');
-            if (boardEl) {
-                boardEl.querySelectorAll('.gem').forEach(gem => {
-                    if (!gem.classList.contains('matching')) {
-                        gem.classList.add('falling');
-                        setTimeout(() => gem.classList.remove('falling'), 300);
-                    }
-                });
-            }
-            await Utils.wait(250);
+            await Utils.wait(120); // fast drop — gravity feels quick
         }
     }
 
@@ -1045,12 +1035,7 @@ class Game {
                 }
         if (filled) {
             this.render();
-            // Exaggerated bounce animation for new gems
-            document.querySelectorAll('.gem').forEach(gem => {
-                gem.classList.add('new');
-                setTimeout(() => gem.classList.remove('new'), 400);
-            });
-            await Utils.wait(350);
+            await Utils.wait(100); // minimal wait — keep cascade snappy
         }
     }
 

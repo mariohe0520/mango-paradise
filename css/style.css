@@ -899,15 +899,15 @@ h1, h2, h3 {
 }
 
 .gem.matching {
-    animation: gem-match 0.4s ease forwards;
+    animation: gem-match 0.18s ease forwards;
 }
 
 .gem.falling {
-    animation: gem-fall 0.3s ease;
+    animation: gem-fall 0.12s ease;
 }
 
 .gem.new {
-    animation: gem-spawn 0.3s ease;
+    animation: gem-spawn 0.15s ease;
 }
 
 .gem.special {
