@@ -940,6 +940,7 @@ class Game {
         this.skillCharge = 0;
         this.isProcessing = true;
 
+        try {
         const spirit = Estate.getCurrentSpirit();
         Audio.play('special');
 
@@ -1047,11 +1048,14 @@ class Game {
         await this.dropGems();
         await this.fillGems();
         await this.processMatches();
-
-        this.isProcessing = false;
-        this.updateSkillBarUI();
-        this.updateUI();
-        this.checkGameOver();
+        } catch (e) {
+            console.error('[activateSkill] error:', e);
+        } finally {
+            this.isProcessing = false;
+            this.updateSkillBarUI();
+            this.updateUI();
+            this.checkGameOver();
+        }
     }
 
     // ==========================================
@@ -1345,7 +1349,12 @@ class Game {
         Collection.checkUnlock('level_complete', {level: this.level.id});
         Audio.play('victory');
         UI.showVictory(stars, this.score, this.maxCombo, goldReward);
+        // Epic multi-wave confetti celebration
         Particles.confetti();
+        this.screenShake(3, 200);
+        Utils.vibrate([30, 20, 50, 20, 80, 30, 100]);
+        setTimeout(() => Particles.confetti(), 400);
+        if (stars >= 3) setTimeout(() => Particles.confetti(), 800);
     }
 
     defeat() {
@@ -1406,15 +1415,17 @@ class Game {
     async useHammer(x, y) {
         const gem = this.board[y][x]; if (!gem) return;
         this.isProcessing = true;
-        if (gem.special !== this.SPECIAL_TYPES.NONE) await this.activateSpecial(x, y, gem.special);
-        this.board[y][x] = null;
-        if (this.cellStates[y][x]) { this.cellStates[y][x].frozen = false; this.cellStates[y][x].locked = 0; }
-        this.updateObjective(gem.type);
-        const c = this.getCell(x,y);
-        if(c) Particles.explosion(c.getBoundingClientRect().left+c.offsetWidth/2, c.getBoundingClientRect().top+c.offsetHeight/2, '#f97316');
-        this.render(); await Utils.wait(200);
-        await this.dropGems(); await this.fillGems(); await this.processMatches();
-        this.isProcessing = false; this.updateUI(); this.checkGameOver();
+        try {
+            if (gem.special !== this.SPECIAL_TYPES.NONE) await this.activateSpecial(x, y, gem.special);
+            this.board[y][x] = null;
+            if (this.cellStates[y][x]) { this.cellStates[y][x].frozen = false; this.cellStates[y][x].locked = 0; }
+            this.updateObjective(gem.type);
+            const c = this.getCell(x,y);
+            if(c) Particles.explosion(c.getBoundingClientRect().left+c.offsetWidth/2, c.getBoundingClientRect().top+c.offsetHeight/2, '#f97316');
+            this.render(); await Utils.wait(200);
+            await this.dropGems(); await this.fillGems(); await this.processMatches();
+        } catch(e) { console.error('[useHammer]', e); }
+        finally { this.isProcessing = false; this.updateUI(); this.checkGameOver(); }
     }
 
     async useShuffle() {
