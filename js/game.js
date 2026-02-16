@@ -986,13 +986,33 @@ class Game {
         UI.showToast('⚠️ Boss 反击！', 'error');
         await Utils.wait(300);
 
-        // Apply attacks (no getBoundingClientRect — use cell directly)
+        // Apply attacks — support all 5 types
+        const attackMsgs = [];
         for (const atk of attacks) {
-            if (atk.type === 'ice' && this.cellStates[atk.y] && this.cellStates[atk.y][atk.x]) {
-                this.cellStates[atk.y][atk.x].frozen = true;
-            } else if (atk.type === 'lock' && this.cellStates[atk.y] && this.cellStates[atk.y][atk.x]) {
-                this.cellStates[atk.y][atk.x].locked = 2;
+            switch (atk.type) {
+                case 'ice':
+                    if (this.cellStates[atk.y]?.[atk.x]) this.cellStates[atk.y][atk.x].frozen = true;
+                    break;
+                case 'lock':
+                    if (this.cellStates[atk.y]?.[atk.x]) this.cellStates[atk.y][atk.x].locked = 2;
+                    break;
+                case 'shuffle':
+                    if (!attackMsgs.includes('shuffle')) attackMsgs.push('shuffle');
+                    break;
+                case 'transform':
+                    if (!attackMsgs.includes('transform')) attackMsgs.push('transform');
+                    break;
+                case 'steal':
+                    if (!attackMsgs.includes('steal')) attackMsgs.push('steal');
+                    break;
             }
+        }
+        // Show attack-specific messages
+        if (attackMsgs.includes('shuffle')) UI.showToast('🌀 棋盘被打乱了！', 'error');
+        if (attackMsgs.includes('transform')) UI.showToast('🎭 宝石被变色了！', 'error');
+        if (attackMsgs.includes('steal')) {
+            const stolen = attacks.find(a => a.type === 'steal');
+            UI.showToast(`⏳ 被偷走${stolen?.value || 1}步！`, 'error');
         }
 
         this.render();
