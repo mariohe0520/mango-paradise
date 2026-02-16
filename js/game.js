@@ -235,34 +235,35 @@ class Game {
             const boardEl = document.getElementById('game-board');
             if (!boardEl) { console.error('[Game.render] #game-board not found'); return; }
 
-            // ── Cell size: compute from VIEWPORT, never from CSS custom properties ──
-            // CSS vars like "10vw" break parseFloat (returns 10 instead of NaN).
-            // So we bypass CSS entirely and calculate from available screen space.
+            // ── Cell size: TARGET 90% screen width, constrain by height ──
             const gap = 2; // matches --board-gap
 
-            // Measure actual chrome height dynamically (header, objectives, powerups, skill-bar, etc.)
+            // Width-first: board should fill 95% of screen width (maximize touch area)
+            const targetBoardW = Math.floor(window.innerWidth * 0.95);
+            const cellFromW = Math.floor((targetBoardW - (this.width - 1) * gap) / this.width);
+
+            // Height constraint: measure actual non-board elements
             const gameScreen = document.getElementById('game-screen');
             const container = document.querySelector('.game-board-container');
-            let vChrome = 276; // fallback
-            let hPad = 56;     // fallback
+            let cellFromH = 999; // default: no height constraint
             if (gameScreen && container) {
-                // Measure all siblings of board container
-                const siblings = Array.from(gameScreen.children).filter(el => el !== container && el.offsetHeight > 0);
-                const siblingsH = siblings.reduce((sum, el) => sum + el.offsetHeight, 0);
-                const screenPadY = parseFloat(getComputedStyle(gameScreen).paddingTop) + parseFloat(getComputedStyle(gameScreen).paddingBottom);
-                const containerPadY = parseFloat(getComputedStyle(container).paddingTop) + parseFloat(getComputedStyle(container).paddingBottom);
-                // Frame border/padding
-                const frame = container.querySelector('.board-frame');
-                const framePad = frame ? (frame.offsetWidth - frame.clientWidth) + parseFloat(getComputedStyle(frame).paddingLeft)*2 : 16;
-                vChrome = siblingsH + screenPadY + containerPadY + framePad + 16; // 16px safety margin
-                const screenPadX = parseFloat(getComputedStyle(gameScreen).paddingLeft) + parseFloat(getComputedStyle(gameScreen).paddingRight);
-                const containerPadX = parseFloat(getComputedStyle(container).paddingLeft) + parseFloat(getComputedStyle(container).paddingRight);
-                hPad = screenPadX + containerPadX + framePad;
+                // Sum heights of all visible siblings (header, objectives, powerups, skill-bar, etc.)
+                let chromeH = 0;
+                for (const el of gameScreen.children) {
+                    if (el === container || el.style.display === 'none' || !el.offsetHeight) continue;
+                    // Skip overlays/popups that float above
+                    const pos = getComputedStyle(el).position;
+                    if (pos === 'absolute' || pos === 'fixed') continue;
+                    chromeH += el.offsetHeight;
+                }
+                // Add screen padding + frame padding + small safety margin
+                chromeH += 24; // screen padding + frame + safety
+                const availH = window.innerHeight - chromeH - (this.height - 1) * gap;
+                cellFromH = Math.floor(availH / this.height);
             }
-            const availW = window.innerWidth - hPad - (this.width - 1) * gap;
-            const availH = window.innerHeight - vChrome - (this.height - 1) * gap;
-            let cellPx = Math.min(Math.floor(availW / this.width), Math.floor(availH / this.height));
-            cellPx = Math.max(28, Math.min(65, cellPx)); // clamp: 28–65px
+
+            let cellPx = Math.min(cellFromW, cellFromH);
+            cellPx = Math.max(32, cellPx); // minimum 32px (no upper clamp — let it breathe)
 
             // Push back to CSS so font-size: calc(var(--cell-size) * 0.65) works
             document.documentElement.style.setProperty('--cell-size', cellPx + 'px');
