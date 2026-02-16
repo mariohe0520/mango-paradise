@@ -275,9 +275,29 @@ const Boss = {
             }
         }
 
-        // Boss taunt (10% chance or rage mode)
-        if ((Math.random() < 0.1 || this._rageMode) && this.currentBoss.taunt) {
-            UI.showToast(`${this.currentBoss.emoji} "${this.currentBoss.taunt}"`, 'error');
+        // 🎭 Dynamic Boss dialogue — reacts to battle state
+        const curPhase = this.getCurrentPhase();
+        if (Math.random() < 0.25 || this._rageMode) {
+            const hpPct = this.bossHP / this.bossMaxHP;
+            const emoji = curPhase?.emoji || '👹';
+            let line = curPhase?.taunt || '';
+            // Boss gets SCARED when low HP
+            if (hpPct < 0.15 && !this._saidFear) {
+                this._saidFear = true;
+                const fearLines = ['不...不可能！', '你...你到底是什么怪物？', '等等...我们可以谈谈！', '这不应该发生的...'];
+                line = fearLines[Math.floor(Math.random() * fearLines.length)];
+            }
+            // Boss MOCKS you when you're low on moves
+            else if (game.movesLeft <= 5 && !game.level?.timed) {
+                const mockLines = ['就剩这几步了？哈哈哈！', '时间不多了，小虫子！', '放弃吧，你赢不了的。'];
+                line = mockLines[Math.floor(Math.random() * mockLines.length)];
+            }
+            // Boss reacts to big combos
+            else if (game.combo >= 5) {
+                const shockLines = ['什...什么？！', '这个连击...！', '可恶！'];
+                line = shockLines[Math.floor(Math.random() * shockLines.length)];
+            }
+            if (line) UI.showToast(`${emoji} "${line}"`, 'error');
         }
 
         return attacks;
@@ -302,10 +322,52 @@ const Boss = {
         if (icon) icon.textContent = phase?.emoji || this.currentBoss.phases?.[0]?.emoji || '👹';
     },
 
+    // 🏆 Boss Loot — unique rewards per boss
+    LOOT: {
+        10: { gold: 500,  gems: 5,  title: '森林守护者', lore: '树精长老倒下了，他的根须化为一颗翠绿的芒果种子...' },
+        20: { gold: 800,  gems: 8,  title: '荒野征服者', lore: '蝎王的毒刺碎裂，沙漠中涌出清澈的泉水...' },
+        30: { gold: 1200, gems: 12, title: '屠龙勇士',   lore: '暴风巨龙化为万千光点，暴风城上空重现蓝天。' },
+        40: { gold: 1800, gems: 15, title: '暗影克星',   lore: '暗影消散，诅咒之地的花朵时隔百年再次绽放。' },
+        50: { gold: 2500, gems: 20, title: '灭火者',     lore: '熔火之王的火焰熄灭了。但他最后说了一句："这只是序幕。"' },
+        60: { gold: 3000, gems: 25, title: '巫妖王终结者', lore: '霜之哀伤坠地碎裂。诺森德的冰雪开始融化。但王座上刻着一行字："总要有人...坐在这里。"' },
+        70: { gold: 3500, gems: 28, title: '虚空行者',   lore: '虚空裂缝闭合了。但你的影子里，似乎多了什么东西...' },
+        80: { gold: 4000, gems: 30, title: '梦境觉醒者', lore: '翡翠巨龙安详地闭上眼。"谢谢你...让我从噩梦中醒来。"' },
+        90: { gold: 4500, gems: 35, title: '时间掌控者', lore: '时光之龙消逝前说："过去的已经过去，但你改变了未来。"' },
+        100: { gold: 10000, gems: 100, title: '泰坦征服者', lore: '萨格拉斯倒下的那一刻，整个世界都安静了。\n\n然后你听到远方传来鼓声。\n\n部落的鼓声。\n\n"洛克塔尔·奥加尔！"\n\n你回头，所有的精灵、所有的盟友，都在你身后。\n\n冒险结束了吗？不，这才刚刚开始。' }
+    },
+
+    getLoot(levelId) {
+        const loot = this.LOOT[levelId];
+        if (!loot) return null;
+        // Check if already claimed
+        const claimed = Storage.data?.bossLoot || {};
+        if (claimed[levelId]) return { ...loot, alreadyClaimed: true };
+        return loot;
+    },
+
+    claimLoot(levelId) {
+        const loot = this.LOOT[levelId];
+        if (!loot) return;
+        if (!Storage.data.bossLoot) Storage.data.bossLoot = {};
+        if (Storage.data.bossLoot[levelId]) return;
+        Storage.data.bossLoot[levelId] = true;
+        Storage.addGold(loot.gold);
+        Storage.addGems(loot.gems);
+        if (loot.title) {
+            if (!Storage.data.titles) Storage.data.titles = [];
+            if (!Storage.data.titles.includes(loot.title)) Storage.data.titles.push(loot.title);
+        }
+        Storage.save();
+    },
+
     reset() {
         this.currentBoss = null;
         this.bossHP = 0;
         this.bossMaxHP = 0;
         this.movesSinceAttack = 0;
+        this.currentPhase = 0;
+        this.phaseAnnounced = {};
+        this._rageMode = false;
+        this._saidFear = false;
     }
 };

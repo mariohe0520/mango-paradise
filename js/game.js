@@ -1447,6 +1447,26 @@ class Game {
 
         // 🔊 Vibration escalation
         if (this.combo >= 2) Utils.vibrate(20 + this.combo * 15);
+
+        // 🧚 Spirit personality — spirits cheer you on
+        if (this.combo >= 4 && Math.random() < 0.4) {
+            const spirit = Estate.getCurrentSpirit();
+            const cheers = {
+                mango_fairy: ['芒果万岁～！🥭', '好棒好棒！继续！', '嘿嘿，看我的！'],
+                bee_spirit: ['嗡嗡！漂亮！🐝', '蜂群为你欢呼！', '甜蜜的连击！'],
+                rainbow_spirit: ['七彩光芒！🌈', '太美了这个连击！', '彩虹之力！'],
+                dragon_spirit: ['燃烧吧！🔥', '龙息都被你震到了！', '勇士！继续！'],
+                phoenix_spirit: ['涅槃之力与你同在！', '凤凰为你展翅！', '灰烬中重生！'],
+                frost_spirit: ['冰霜认可你的力量。❄️', '绝对零度...的帅。', '冷静且致命。'],
+                time_spirit: ['时间都为你停下了！⏳', '这一刻值得永恒！', '过去未来都是你的。'],
+                chaos_spirit: ['哈哈哈混沌万岁！🌀', '秩序是弱者的借口！', '让一切都乱起来吧！']
+            };
+            const lines = cheers[spirit?.id] || cheers.mango_fairy;
+            if (lines) {
+                const line = lines[Math.floor(Math.random() * lines.length)];
+                UI.showToast(`${spirit?.emoji || '🧚'} ${line}`, 'success');
+            }
+        }
     }
 
     // Vine spreading: frozen cells spread to 1 random neighbor (levels 61+)
@@ -1601,7 +1621,22 @@ class Game {
         if (stars === 3) Achievements.check('perfect');
         Collection.checkUnlock('level_complete', {level: this.level.id});
         Audio.play('victory');
-        UI.showVictory(stars, this.score, this.maxCombo, goldReward);
+
+        // 🏆 Boss loot — unique rewards + lore
+        if (this.isBossLevel) {
+            const loot = Boss.getLoot(this.level.id);
+            if (loot && !loot.alreadyClaimed) {
+                Boss.claimLoot(this.level.id);
+                // Show loot screen before normal victory
+                UI.showBossLoot(loot, this.level.id, () => {
+                    UI.showVictory(stars, this.score, this.maxCombo, goldReward + loot.gold);
+                });
+            } else {
+                UI.showVictory(stars, this.score, this.maxCombo, goldReward);
+            }
+        } else {
+            UI.showVictory(stars, this.score, this.maxCombo, goldReward);
+        }
         // Epic multi-wave confetti celebration
         Particles.confetti();
         this.screenShake(3, 200);

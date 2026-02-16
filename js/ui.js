@@ -1028,6 +1028,55 @@ const UI = {
     },
 
     // 开始关卡（带故事对话支持）
+    // 🧚 Spirit picker for boss levels — strategy choice
+    showSpiritPicker(levelId, callback) {
+        const boss = Boss.BOSSES[levelId];
+        if (!boss) { callback(); return; }
+        const spirits = Object.values(Estate.SPIRITS).filter(s => Estate.isSpiritUnlocked(s.id));
+        if (spirits.length <= 1) { callback(); return; }
+
+        const currentSpirit = Estate.getCurrentSpirit();
+        const weaknessSpirit = boss.weakness ? Estate.SPIRITS[boss.weakness] : null;
+
+        let html = `<div style="text-align:center;padding:12px;">
+            <div style="font-size:2rem;">${boss.phases?.[0]?.emoji || '👹'}</div>
+            <div style="font-weight:900;font-size:1.1rem;margin:4px 0;">${boss.name}</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px;">${boss.desc}</div>
+            ${weaknessSpirit ? `<div style="font-size:0.75rem;color:#ef4444;margin-bottom:8px;">💡 弱点: ${weaknessSpirit.emoji} ${weaknessSpirit.name} (伤害x2)</div>` : ''}
+            <div style="font-weight:700;margin:8px 0;">选择出战精灵：</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">`;
+
+        spirits.forEach(s => {
+            const isWeak = boss.weakness === s.id;
+            const isActive = currentSpirit.id === s.id;
+            html += `<button class="spirit-pick-btn" data-spirit="${s.id}" style="
+                padding:8px 10px;border-radius:10px;border:2px solid ${isWeak ? '#ef4444' : isActive ? 'var(--wow-gold)' : '#555'};
+                background:${isActive ? 'rgba(255,215,0,0.15)' : 'rgba(30,30,30,0.8)'};
+                cursor:pointer;min-width:60px;text-align:center;
+                ${isWeak ? 'box-shadow:0 0 8px rgba(239,68,68,0.4);' : ''}">
+                <div style="font-size:1.3rem;">${s.emoji}</div>
+                <div style="font-size:0.7rem;color:var(--text-primary);">${s.name}</div>
+                ${isWeak ? '<div style="font-size:0.6rem;color:#ef4444;">克制!</div>' : ''}
+                ${isActive ? '<div style="font-size:0.6rem;color:var(--wow-gold);">当前</div>' : ''}
+            </button>`;
+        });
+        html += `</div></div>`;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'spirit-picker-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:900;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML = `<div style="background:var(--bg-secondary);border-radius:16px;max-width:340px;width:90%;border:1px solid var(--border-color);">${html}</div>`;
+        document.body.appendChild(overlay);
+
+        overlay.querySelectorAll('.spirit-pick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                Estate.selectSpirit(btn.dataset.spirit);
+                overlay.remove();
+                callback();
+            });
+        });
+    },
+
     startLevel(levelId) {
         try {
             const level = getLevel(levelId);
@@ -1041,29 +1090,32 @@ const UI = {
             const spiritIcon = document.getElementById('skill-spirit-icon');
             if (spiritIcon) spiritIcon.textContent = Estate.getCurrentSpirit().emoji;
 
-            // Show story if available
-            const story = StoryData.getLevel(levelId);
-            if (story) {
-                const introTexts = [];
-                if (story.pre) introTexts.push(story.pre);
-                if (story.bossIntro) introTexts.push(...story.bossIntro);
-
-                if (introTexts.length > 0) {
-                    // Show story character — bigger for boss
-                    const charEl = document.getElementById('story-character');
-                    if (charEl) {
-                        charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.emoji || '🥭') : '🥭';
-                        charEl.classList.toggle('boss-intro', !!story.bossIntro);
+            // Boss level? Show spirit picker FIRST, then story, then game
+            const isBoss = Boss.isBossLevel(levelId);
+            const launchAfterPick = () => {
+                const story = StoryData.getLevel(levelId);
+                if (story) {
+                    const introTexts = [];
+                    if (story.pre) introTexts.push(story.pre);
+                    if (story.bossIntro) introTexts.push(...story.bossIntro);
+                    if (introTexts.length > 0) {
+                        const charEl = document.getElementById('story-character');
+                        if (charEl) {
+                            charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.phases?.[0]?.emoji || '🥭') : '🥭';
+                            charEl.classList.toggle('boss-intro', !!story.bossIntro);
+                        }
+                        this.showStoryDialog(introTexts, () => this.doStartLevel(levelId));
+                        return;
                     }
-
-                    this.showStoryDialog(introTexts, () => {
-                        this.doStartLevel(levelId);
-                    });
-                    return;
                 }
-            }
+                this.doStartLevel(levelId);
+            };
 
-            this.doStartLevel(levelId);
+            if (isBoss) {
+                this.showSpiritPicker(levelId, launchAfterPick);
+            } else {
+                launchAfterPick();
+            }
         } catch (e) {
             console.error('[UI.startLevel] error:', e);
             // Fallback: try direct init
@@ -1136,6 +1188,41 @@ const UI = {
     },
 
     // 胜利界面（带故事对话支持）
+    // 🏆 Boss loot cinematic
+    showBossLoot(loot, levelId, callback) {
+        const boss = Boss.BOSSES[levelId];
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:950;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s;';
+        overlay.innerHTML = `<div style="text-align:center;max-width:340px;padding:20px;">
+            <div style="font-size:2.5rem;margin-bottom:8px;">🏆</div>
+            <div style="font-weight:900;font-size:1.3rem;color:var(--wow-gold);margin-bottom:4px;">${boss?.name || 'Boss'} 已被击败！</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;white-space:pre-line;" id="boss-lore-text"></div>
+            <div style="display:flex;gap:12px;justify-content:center;margin:12px 0;">
+                <div style="text-align:center;"><div style="font-size:1.5rem;">💰</div><div style="color:var(--wow-gold);font-weight:700;">${Utils.formatNumber(loot.gold)}</div></div>
+                <div style="text-align:center;"><div style="font-size:1.5rem;">💎</div><div style="color:#a855f7;font-weight:700;">${loot.gems}</div></div>
+            </div>
+            ${loot.title ? `<div style="margin:8px 0;padding:6px 12px;background:rgba(255,215,0,0.15);border:1px solid var(--wow-gold);border-radius:8px;display:inline-block;"><span style="color:var(--wow-gold);font-weight:700;">🎖️ 称号: ${loot.title}</span></div>` : ''}
+            <br><button id="boss-loot-continue" style="margin-top:16px;padding:10px 32px;background:var(--wow-gold);color:#000;border:none;border-radius:10px;font-weight:900;font-size:1rem;cursor:pointer;">继续</button>
+        </div>`;
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+
+        // Typewriter lore text
+        const loreEl = document.getElementById('boss-lore-text');
+        if (loreEl && loot.lore) {
+            let i = 0;
+            const typeInterval = setInterval(() => {
+                if (i < loot.lore.length) { loreEl.textContent += loot.lore[i]; i++; }
+                else clearInterval(typeInterval);
+            }, 30);
+        }
+
+        document.getElementById('boss-loot-continue').addEventListener('click', () => {
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.remove(); if (callback) callback(); }, 400);
+        });
+    },
+
     showVictory(stars, score, maxCombo, goldReward) {
         try {
             document.getElementById('victory-score').textContent = Utils.formatNumber(score);
