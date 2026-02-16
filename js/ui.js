@@ -178,6 +178,23 @@ const UI = {
             game.restart();
         });
 
+        // Continue with +5 moves (spend gems)
+        document.getElementById('btn-continue-moves')?.addEventListener('click', () => {
+            const cost = 50;
+            if (Storage.getGems() < cost) {
+                this.showToast('💎不够啦！通关和成就可以获得💎', 'error');
+                return;
+            }
+            Audio.play('powerup');
+            Storage.spendGems(cost);
+            this.hideModal('defeat-screen');
+            game.isGameOver = false;
+            game.movesLeft += 5;
+            game.updateUI();
+            this.showToast('💎 +5步！继续加油！', 'success');
+            Utils.vibrate([30, 20, 60]);
+        });
+
         // 签到
         document.getElementById('close-daily')?.addEventListener('click', () => {
             Audio.play('click');

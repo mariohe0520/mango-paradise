@@ -2446,3 +2446,15 @@ input[type="range"]::-webkit-slider-thumb {
     margin: 0.25rem 0;
     font-weight: 600;
 }
+
+.modal-btn.gold {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    font-weight: 700;
+    border: 2px solid #fbbf24;
+    text-shadow: none;
+}
+.modal-btn.gold:active {
+    transform: scale(0.95);
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
