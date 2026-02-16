@@ -243,6 +243,8 @@ h1, h2, h3 {
     padding-top: env(safe-area-inset-top, 1rem);
     padding-bottom: env(safe-area-inset-bottom, 1rem);
     z-index: 2;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .menu-header {
@@ -367,6 +369,8 @@ h1, h2, h3 {
     margin: 0 auto;
     padding: 0 1rem;
     justify-content: center;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .menu-btn {
@@ -1054,12 +1058,15 @@ h1, h2, h3 {
     background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
     border: var(--border-primary);
     border-radius: var(--radius-xl);
-    padding: 2rem;
+    padding: 1.5rem;
     max-width: 400px;
-    width: 100%;
+    width: calc(100% - 1.5rem);
     text-align: center;
     animation: modal-pop 0.4s ease;
     position: relative;
+    overflow-y: auto;
+    max-height: 90vh;
+    max-height: 90dvh;
 }
 
 .modal-close {
@@ -1224,7 +1231,9 @@ h1, h2, h3 {
    Daily Check-in
    ========================================== */
 .checkin-content {
-    max-width: 360px;
+    max-width: 100%;
+    width: 100%;
+    overflow-x: visible;
 }
 
 .checkin-streak {
@@ -1773,17 +1782,19 @@ input[type="range"]::-webkit-slider-thumb {
 
 .tutorial-dialog {
     position: absolute;
-    bottom: 100px;
+    bottom: max(env(safe-area-inset-bottom, 10px), 10px);
     left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
     border: var(--border-gold);
     border-radius: var(--radius-xl);
-    padding: 1.5rem;
+    padding: 1.25rem;
     max-width: 350px;
     width: 90%;
     text-align: center;
     animation: tutorial-bounce 0.5s ease;
+    max-height: 40vh;
+    overflow-y: auto;
 }
 
 .tutorial-character {

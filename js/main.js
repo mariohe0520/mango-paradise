@@ -234,13 +234,14 @@ document.addEventListener('gesturestart', (e) => {
     e.preventDefault();
 });
 
-// 防止橡皮筋效果
+// 防止橡皮筋效果 — 只在游戏棋盘区域阻止默认滚动
+// 其他所有页面（菜单、庄园、图鉴、设置等）保留原生滚动
 document.body.addEventListener('touchmove', (e) => {
-    if (e.target.closest('.levels-grid, .achievements-list, .collection-grid, .settings-content, .leaderboard-list')) {
-        // 允许滚动
-    } else {
+    // Only block scroll inside the game board (swipe = game action, not scroll)
+    if (e.target.closest('#game-board, .game-board, .game-board-container')) {
         e.preventDefault();
     }
+    // Everything else: allow native scroll
 }, { passive: false });
 
 // PWA 支持 - Service Worker 注册
