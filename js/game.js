@@ -286,33 +286,24 @@ class Game {
             // ── Cell size: TARGET 90% screen width, constrain by height ──
             const gap = 2; // matches --board-gap
 
-            // Width-first: board should fill 95% of screen width (maximize touch area)
-            const targetBoardW = Math.floor(window.innerWidth * 0.97);
+            // Width: fill 98% of screen width
+            const targetBoardW = Math.floor(window.innerWidth * 0.98);
             const cellFromW = Math.floor((targetBoardW - (this.width - 1) * gap) / this.width);
 
-            // Height constraint: measure actual non-board elements
-            const gameScreen = document.getElementById('game-screen');
+            // Height: use the ACTUAL rendered height of board-container (flex:1 gives us remaining space)
             const container = document.querySelector('.game-board-container');
-            let cellFromH = 999;
-            if (gameScreen && container) {
-                // Measure ALL non-board chrome: sum offsetHeight of siblings
-                let chromeH = 0;
-                const children = gameScreen.children;
-                for (let i = 0; i < children.length; i++) {
-                    const el = children[i];
-                    if (el === container) continue;
-                    if (!el.offsetParent && el.style.display !== 'flex') continue; // hidden
-                    const h = el.offsetHeight;
-                    if (h > 0 && h < 200) chromeH += h; // sanity: skip huge hidden stuff
+            let cellFromH = cellFromW; // default: square cells, width-first
+            if (container) {
+                // container.clientHeight = actual available height after flex layout
+                const containerH = container.clientHeight;
+                if (containerH > 100) { // sanity check
+                    // Leave 8px for frame padding
+                    cellFromH = Math.floor((containerH - 8 - (this.height - 1) * gap) / this.height);
                 }
-                // Also account for safe-area and browser chrome
-                const safeTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sat') || '0') || 0;
-                const availH = window.innerHeight - chromeH - safeTop - 4;
-                cellFromH = Math.floor((availH - (this.height - 1) * gap) / this.height);
             }
 
             let cellPx = Math.min(cellFromW, cellFromH);
-            cellPx = Math.max(32, cellPx); // minimum 32px (no upper clamp — let it breathe)
+            cellPx = Math.max(36, cellPx); // minimum 36px for touch targets
 
             // Push back to CSS so font-size: calc(var(--cell-size) * 0.65) works
             document.documentElement.style.setProperty('--cell-size', cellPx + 'px');
