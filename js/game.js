@@ -89,10 +89,15 @@ class Game {
             }
         }
 
-        // Apply Estate Buffs
-        this.scoreMultiplier = Estate.getScoreMultiplier();
-        if (Estate.hasBuff('extra_moves')) {
-            this.movesLeft += 2;
+        // Apply Estate Buffs (defensive: never let Estate/Boss errors block board creation)
+        try {
+            this.scoreMultiplier = Estate.getScoreMultiplier();
+            if (Estate.hasBuff('extra_moves')) {
+                this.movesLeft += 2;
+            }
+        } catch (e) {
+            console.warn('[Game.init] Estate buff error (fallback to defaults):', e);
+            this.scoreMultiplier = 1.0;
         }
 
         // Skill bar
@@ -100,9 +105,14 @@ class Game {
         this.skillMax = 100;
 
         // Boss
-        this.isBossLevel = Boss.isBossLevel(levelId);
-        if (this.isBossLevel) {
-            Boss.init(levelId);
+        try {
+            this.isBossLevel = Boss.isBossLevel(levelId);
+            if (this.isBossLevel) {
+                Boss.init(levelId);
+            }
+        } catch (e) {
+            console.warn('[Game.init] Boss init error (fallback to non-boss):', e);
+            this.isBossLevel = false;
         }
 
         // Init objectives
@@ -115,12 +125,16 @@ class Game {
         this.ensureNoInitialMatches();
 
         // Place start bomb if buff active
-        if (Estate.hasBuff('start_bomb')) {
-            const rx = Utils.randomInt(0, this.width - 1);
-            const ry = Utils.randomInt(0, this.height - 1);
-            if (this.board[ry][rx]) {
-                this.board[ry][rx].special = this.SPECIAL_TYPES.BOMB;
+        try {
+            if (Estate.hasBuff('start_bomb')) {
+                const rx = Utils.randomInt(0, this.width - 1);
+                const ry = Utils.randomInt(0, this.height - 1);
+                if (this.board[ry][rx]) {
+                    this.board[ry][rx].special = this.SPECIAL_TYPES.BOMB;
+                }
             }
+        } catch (e) {
+            console.warn('[Game.init] start_bomb buff error:', e);
         }
 
         // Timed level

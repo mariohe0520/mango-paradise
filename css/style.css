@@ -57,9 +57,10 @@
     --border-primary: 2px solid rgba(139, 92, 246, 0.3);
     --border-gold: 2px solid var(--wow-gold);
     
-    /* 尺寸 — fallback for browsers without min() */
-    --cell-size: 11vw;
-    --cell-size: min(11vw, 55px);
+    /* 尺寸 — triple fallback for maximum compatibility */
+    --cell-size: 42px;           /* 1) absolute fallback */
+    --cell-size: 11vw;           /* 2) viewport fallback */
+    --cell-size: min(11vw, 55px);/* 3) modern browsers */
     --board-gap: 2px;
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -690,8 +691,7 @@ h1, h2, h3 {
 #game-screen {
     background: var(--board-bg);
     padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
+    /* display and flex-direction are handled by .screen / .screen.active */
 }
 
 .game-header {
