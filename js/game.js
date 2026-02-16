@@ -257,13 +257,19 @@ class Game {
             const container = document.querySelector('.game-board-container');
             let cellFromH = 999;
             if (gameScreen && container) {
-                // Measure chrome height directly (no getComputedStyle, fast)
+                // Measure ALL non-board chrome: sum offsetHeight of siblings
                 let chromeH = 0;
-                for (const el of gameScreen.children) {
-                    if (el === container || el.style.display === 'none' || !el.offsetHeight) continue;
-                    chromeH += el.offsetHeight;
+                const children = gameScreen.children;
+                for (let i = 0; i < children.length; i++) {
+                    const el = children[i];
+                    if (el === container) continue;
+                    if (!el.offsetParent && el.style.display !== 'flex') continue; // hidden
+                    const h = el.offsetHeight;
+                    if (h > 0 && h < 200) chromeH += h; // sanity: skip huge hidden stuff
                 }
-                const availH = window.innerHeight - chromeH - 4; // minimal 4px safety
+                // Also account for safe-area and browser chrome
+                const safeTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sat') || '0') || 0;
+                const availH = window.innerHeight - chromeH - safeTop - 4;
                 cellFromH = Math.floor((availH - (this.height - 1) * gap) / this.height);
             }
 
@@ -468,35 +474,39 @@ class Game {
         this.isProcessing = true;
         this.resetHintTimer();
 
-        await this.animateSwap(x1, y1, x2, y2);
-        this.swap(x1, y1, x2, y2);
-
-        const matches = this.findMatches();
-        if (matches.length > 0 || this.hasSpecialSwap(x1, y1, x2, y2)) {
-            if (!this.level.timed) this.movesLeft--;
-            Audio.play('swap'); Utils.vibrate(30);
-
-            if (this.hasSpecialSwap(x1, y1, x2, y2)) await this.processSpecialSwap(x1, y1, x2, y2);
-            await this.processMatches();
-
-            // Boss counterattack after player move
-            if (this.isBossLevel && Boss.currentBoss && Boss.bossHP > 0) {
-                const attacks = Boss.counterattack(this);
-                if (attacks.length > 0) await this.showBossAttack(attacks);
-            }
-        } else {
-            Audio.play('invalid'); Utils.vibrate([50,50,50]);
-            const c1 = this.getCell(x1,y1), c2 = this.getCell(x2,y2);
-            if(c1) c1.classList.add('invalid'); if(c2) c2.classList.add('invalid');
-            await Utils.wait(200);
-            if(c1) c1.classList.remove('invalid'); if(c2) c2.classList.remove('invalid');
+        try {
             await this.animateSwap(x1, y1, x2, y2);
             this.swap(x1, y1, x2, y2);
-        }
 
-        this.updateUI();
-        this.isProcessing = false;
-        this.checkGameOver();
+            const matches = this.findMatches();
+            if (matches.length > 0 || this.hasSpecialSwap(x1, y1, x2, y2)) {
+                if (!this.level.timed) this.movesLeft--;
+                Audio.play('swap'); Utils.vibrate(30);
+
+                if (this.hasSpecialSwap(x1, y1, x2, y2)) await this.processSpecialSwap(x1, y1, x2, y2);
+                await this.processMatches();
+
+                if (this.isBossLevel && Boss.currentBoss && Boss.bossHP > 0) {
+                    const attacks = Boss.counterattack(this);
+                    if (attacks.length > 0) await this.showBossAttack(attacks);
+                }
+            } else {
+                Audio.play('invalid'); Utils.vibrate([50,50,50]);
+                const c1 = this.getCell(x1,y1), c2 = this.getCell(x2,y2);
+                if(c1) c1.classList.add('invalid'); if(c2) c2.classList.add('invalid');
+                await Utils.wait(200);
+                if(c1) c1.classList.remove('invalid'); if(c2) c2.classList.remove('invalid');
+                await this.animateSwap(x1, y1, x2, y2);
+                this.swap(x1, y1, x2, y2);
+            }
+        } catch (e) {
+            console.error('[trySwap] error:', e);
+        } finally {
+            // ALWAYS unlock — never leave isProcessing stuck
+            this.isProcessing = false;
+            this.updateUI();
+            this.checkGameOver();
+        }
     }
 
     swap(x1, y1, x2, y2) {

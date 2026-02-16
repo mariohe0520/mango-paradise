@@ -134,6 +134,45 @@ class ParticleSystem {
         setTimeout(() => el.remove(), 600);
     }
 
+    // Combo text
+    comboText(x, y, text, color = '#ffd700') {
+        this.floatingText(x, y, text, color);
+    }
+
+    // Line vertical
+    lineVertical(x, startY, endY, color = '#3b82f6') {
+        if (!this.enabled || !this.container) return;
+        const el = document.createElement('div');
+        el.style.cssText = `position:absolute;left:${x - 2}px;top:${startY}px;width:4px;height:${endY - startY}px;background:${color};pointer-events:none;opacity:1;transition:opacity 0.3s ease;`;
+        this.container.appendChild(el);
+        setTimeout(() => { el.style.opacity = '0'; }, 50);
+        setTimeout(() => el.remove(), 400);
+    }
+
+    // Confetti
+    confetti() {
+        if (!this.enabled || !this.container) return;
+        const colors = ['#ef4444', '#f97316', '#fbbf24', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'];
+        for (let i = 0; i < 20; i++) {
+            const el = document.createElement('div');
+            const c = colors[i % colors.length];
+            const x = Math.random() * window.innerWidth;
+            const size = 4 + Math.random() * 6;
+            el.style.cssText = `position:absolute;left:${x}px;top:-10px;width:${size}px;height:${size * 1.5}px;background:${c};pointer-events:none;opacity:1;border-radius:1px;transition:all ${1 + Math.random()}s ease-out;`;
+            this.container.appendChild(el);
+            requestAnimationFrame(() => {
+                el.style.transform = `translateY(${window.innerHeight + 50}px) rotate(${Math.random()*720}deg)`;
+                el.style.opacity = '0';
+            });
+            setTimeout(() => el.remove(), 2500);
+        }
+    }
+
+    // Coins
+    coins(x, y) {
+        this.burst(x, y, ['#fbbf24', '#ffd700', '#f59e0b'], 5);
+    }
+
     // Backward compat stubs
     startLoop() {}
     stopLoop() {}
