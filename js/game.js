@@ -136,7 +136,7 @@ class Game {
         this.updateUI();
         this.startHintTimer();
 
-        Utils.log.info(`Game initialized: Level ${levelId}${this.isBossLevel ? ' (BOSS)' : ''}${this.level.timed ? ' (TIMED)' : ''}`);
+        try { Utils.log.info(`Game initialized: Level ${levelId}${this.isBossLevel ? ' (BOSS)' : ''}${this.level.timed ? ' (TIMED)' : ''}`); } catch(e) { console.log('Game init: Level', levelId); }
         return this;
     }
 
@@ -207,41 +207,50 @@ class Game {
     // ==========================================
 
     render() {
-        const boardEl = document.getElementById('game-board');
-        if (!boardEl) return;
-        boardEl.style.gridTemplateColumns = `repeat(${this.width}, var(--cell-size))`;
-        boardEl.innerHTML = '';
+        try {
+            const boardEl = document.getElementById('game-board');
+            if (!boardEl) { console.error('[Game.render] #game-board not found'); return; }
+            boardEl.style.gridTemplateColumns = `repeat(${this.width}, var(--cell-size))`;
+            boardEl.innerHTML = '';
 
-        for (let y = 0; y < this.height; y++) {
-            for (let x = 0; x < this.width; x++) {
-                const gem = this.board[y][x];
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.x = x;
-                cell.dataset.y = y;
+            for (let y = 0; y < this.height; y++) {
+                for (let x = 0; x < this.width; x++) {
+                    const gem = this.board[y][x];
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
 
-                // Cell states
-                const cs = this.cellStates[y] && this.cellStates[y][x];
-                if (cs) {
-                    if (cs.frozen) cell.classList.add('frozen');
-                    if (cs.locked > 0) {
-                        cell.classList.add('locked-cell');
-                        cell.dataset.lockLevel = cs.locked;
+                    // Cell states
+                    const cs = this.cellStates[y] && this.cellStates[y][x];
+                    if (cs) {
+                        if (cs.frozen) cell.classList.add('frozen');
+                        if (cs.locked > 0) {
+                            cell.classList.add('locked-cell');
+                            cell.dataset.lockLevel = cs.locked;
+                        }
                     }
+
+                    if (gem) {
+                        const gemEl = this.createGemElement(gem);
+                        cell.appendChild(gemEl);
+                    }
+
+                    cell.addEventListener('click', () => this.onCellClick(x, y));
+                    cell.addEventListener('touchstart', (e) => this.onTouchStart(e, x, y), { passive: false });
+                    cell.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
+                    cell.addEventListener('touchend', (e) => this.onTouchEnd(e, x, y), { passive: false });
+
+                    boardEl.appendChild(cell);
                 }
-
-                if (gem) {
-                    const gemEl = this.createGemElement(gem);
-                    cell.appendChild(gemEl);
-                }
-
-                cell.addEventListener('click', () => this.onCellClick(x, y));
-                cell.addEventListener('touchstart', (e) => this.onTouchStart(e, x, y), { passive: false });
-                cell.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
-                cell.addEventListener('touchend', (e) => this.onTouchEnd(e, x, y), { passive: false });
-
-                boardEl.appendChild(cell);
             }
+
+            // Verify render succeeded
+            if (boardEl.children.length !== this.width * this.height) {
+                console.warn('[Game.render] cell count mismatch:', boardEl.children.length, 'expected', this.width * this.height);
+            }
+        } catch (e) {
+            console.error('[Game.render] error:', e);
         }
     }
 

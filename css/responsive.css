@@ -722,20 +722,6 @@
    Container Queries (Modern Browsers)
    ========================================== */
 
-@supports (container-type: inline-size) {
-    .game-board-container {
-        container-type: inline-size;
-    }
-    
-    @container (max-width: 300px) {
-        :root {
-            --cell-size: 35px;
-        }
-    }
-    
-    @container (min-width: 500px) {
-        :root {
-            --cell-size: 60px;
-        }
-    }
-}
+/* NOTE: Container queries targeting :root are invalid (root is outside the
+   container).  The cell-size is now handled via media queries + the
+   min() fallback in :root, which is reliable across all browsers. */

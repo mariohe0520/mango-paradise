@@ -441,28 +441,7 @@ const UI = {
         }
     },
 
-    // 开始关卡
-    startLevel(levelId) {
-        const level = getLevel(levelId);
-        
-        // 更新游戏界面信息
-        const chapter = getChapter(level.chapter);
-        document.getElementById('game-chapter')?.textContent && 
-            (document.getElementById('game-chapter').textContent = chapter.name);
-        document.getElementById('game-level')?.textContent && 
-            (document.getElementById('game-level').textContent = levelId);
-
-        // 切换到游戏界面
-        this.showScreen('game-screen');
-        
-        // 初始化游戏
-        game.init(levelId);
-        
-        // 首次游戏显示教程
-        if (!Storage.getTutorial().completed && levelId === 1) {
-            Tutorial.start();
-        }
-    },
+    // startLevel: see story-aware version below
 
     // 暂停菜单
     showPauseMenu() {
@@ -479,34 +458,7 @@ const UI = {
         game.resume();
     },
 
-    // 胜利界面
-    showVictory(stars, score, maxCombo, goldReward) {
-        // 更新显示
-        document.getElementById('victory-score').textContent = Utils.formatNumber(score);
-        document.getElementById('victory-combo').textContent = `x${maxCombo}`;
-        document.getElementById('victory-gold').textContent = Utils.formatNumber(goldReward);
-
-        // 星星动画
-        const starsEl = document.getElementById('victory-stars');
-        if (starsEl) {
-            starsEl.querySelectorAll('.star').forEach((star, i) => {
-                star.classList.remove('earned');
-                if (i < stars) {
-                    setTimeout(() => {
-                        star.classList.add('earned');
-                        Audio.play('star');
-                    }, 300 + i * 400);
-                }
-            });
-        }
-
-        this.showModal('victory-screen');
-
-        // 显示解锁的成就
-        setTimeout(() => {
-            this.showPendingAchievements();
-        }, 2000);
-    },
+    // showVictory: see story-aware version below
 
     // 失败界面
     showDefeat(score, progressPercent) {
@@ -884,24 +836,35 @@ const UI = {
     storyCallback: null,
 
     async showStoryDialog(texts, callback) {
-        if (!texts || texts.length === 0) { if (callback) callback(); return; }
-        this.storyQueue = Array.isArray(texts) ? [...texts] : [texts];
-        this.storyCallback = callback;
-        this.showNextStoryLine();
-        this.showModal('story-dialog');
+        try {
+            if (!texts || texts.length === 0) { if (callback) callback(); return; }
+            this.storyQueue = Array.isArray(texts) ? [...texts] : [texts];
+            this.storyCallback = callback;
+            this.showNextStoryLine();
+            this.showModal('story-dialog');
+        } catch (e) {
+            console.error('[UI.showStoryDialog] error:', e);
+            if (callback) callback();
+        }
     },
 
     showNextStoryLine() {
-        if (this.storyQueue.length === 0) {
+        try {
+            if (this.storyQueue.length === 0) {
+                this.hideModal('story-dialog');
+                if (this.storyCallback) { this.storyCallback(); this.storyCallback = null; }
+                return;
+            }
+            const line = this.storyQueue.shift();
+            const textEl = document.getElementById('story-text');
+            if (textEl) textEl.textContent = line;
+            const btnEl = document.getElementById('story-continue-btn');
+            if (btnEl) btnEl.textContent = this.storyQueue.length === 0 ? '开始战斗！ ⚔️' : '继续 ▶';
+        } catch (e) {
+            console.error('[UI.showNextStoryLine] error:', e);
             this.hideModal('story-dialog');
             if (this.storyCallback) { this.storyCallback(); this.storyCallback = null; }
-            return;
         }
-        const line = this.storyQueue.shift();
-        const textEl = document.getElementById('story-text');
-        if (textEl) textEl.textContent = line;
-        const btnEl = document.getElementById('story-continue-btn');
-        if (btnEl) btnEl.textContent = this.storyQueue.length === 0 ? '开始战斗！ ⚔️' : '继续 ▶';
     },
 
     advanceStoryDialog() {
@@ -909,85 +872,118 @@ const UI = {
         this.showNextStoryLine();
     },
 
-    // Modified startLevel to show story
+    // 开始关卡（带故事对话支持）
     startLevel(levelId) {
-        const level = getLevel(levelId);
-        const chapter = getChapter(level.chapter);
-        const chapterNameEl = document.getElementById('game-chapter');
-        const levelNumEl = document.getElementById('game-level');
-        if (chapterNameEl) chapterNameEl.textContent = chapter.name;
-        if (levelNumEl) levelNumEl.textContent = levelId;
+        try {
+            const level = getLevel(levelId);
+            const chapter = getChapter(level.chapter);
+            const chapterNameEl = document.getElementById('game-chapter');
+            const levelNumEl = document.getElementById('game-level');
+            if (chapterNameEl) chapterNameEl.textContent = chapter.name;
+            if (levelNumEl) levelNumEl.textContent = levelId;
 
-        // Update spirit icon in skill bar
-        const spiritIcon = document.getElementById('skill-spirit-icon');
-        if (spiritIcon) spiritIcon.textContent = Estate.getCurrentSpirit().emoji;
+            // Update spirit icon in skill bar
+            const spiritIcon = document.getElementById('skill-spirit-icon');
+            if (spiritIcon) spiritIcon.textContent = Estate.getCurrentSpirit().emoji;
 
-        // Show story if available
-        const story = StoryData.getLevel(levelId);
-        if (story) {
-            const introTexts = [];
-            if (story.pre) introTexts.push(story.pre);
-            if (story.bossIntro) introTexts.push(...story.bossIntro);
+            // Show story if available
+            const story = StoryData.getLevel(levelId);
+            if (story) {
+                const introTexts = [];
+                if (story.pre) introTexts.push(story.pre);
+                if (story.bossIntro) introTexts.push(...story.bossIntro);
 
-            if (introTexts.length > 0) {
-                // Show story character based on boss or not
-                const charEl = document.getElementById('story-character');
-                if (charEl) charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.emoji || '🥭') : '🥭';
+                if (introTexts.length > 0) {
+                    // Show story character based on boss or not
+                    const charEl = document.getElementById('story-character');
+                    if (charEl) charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.emoji || '🥭') : '🥭';
 
-                this.showStoryDialog(introTexts, () => {
-                    this.doStartLevel(levelId);
-                });
-                return;
+                    this.showStoryDialog(introTexts, () => {
+                        this.doStartLevel(levelId);
+                    });
+                    return;
+                }
             }
-        }
 
-        this.doStartLevel(levelId);
+            this.doStartLevel(levelId);
+        } catch (e) {
+            console.error('[UI.startLevel] error:', e);
+            // Fallback: try direct init
+            this.doStartLevel(levelId);
+        }
     },
 
     doStartLevel(levelId) {
-        this.showScreen('game-screen');
-        game.init(levelId);
+        try {
+            this.showScreen('game-screen');
+            game.init(levelId);
 
-        // Show boss bar if boss level
-        const bossBar = document.getElementById('boss-bar');
-        if (bossBar) bossBar.style.display = Boss.isBossLevel(levelId) ? 'block' : 'none';
+            // Show boss bar if boss level
+            const bossBar = document.getElementById('boss-bar');
+            if (bossBar) bossBar.style.display = Boss.isBossLevel(levelId) ? 'block' : 'none';
 
-        if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
+            if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
+
+            // 🛡️ Board render fallback: verify board actually rendered
+            requestAnimationFrame(() => {
+                try {
+                    const boardEl = document.getElementById('game-board');
+                    if (boardEl && boardEl.children.length === 0) {
+                        console.warn('[doStartLevel] Board empty after init, forcing re-render');
+                        game.render();
+                    }
+                    // Double-check: expected cell count = width * height
+                    if (boardEl && boardEl.children.length < game.width * game.height) {
+                        console.warn('[doStartLevel] Board incomplete (' + boardEl.children.length + ' cells, expected ' + (game.width * game.height) + '), forcing re-render');
+                        game.render();
+                    }
+                } catch (renderErr) {
+                    console.error('[doStartLevel] render fallback error:', renderErr);
+                }
+            });
+        } catch (e) {
+            console.error('[UI.doStartLevel] error:', e);
+        }
     },
 
-    // Override showVictory to show post-story
+    // 胜利界面（带故事对话支持）
     showVictory(stars, score, maxCombo, goldReward) {
-        document.getElementById('victory-score').textContent = Utils.formatNumber(score);
-        document.getElementById('victory-combo').textContent = `x${maxCombo}`;
-        document.getElementById('victory-gold').textContent = Utils.formatNumber(goldReward);
+        try {
+            document.getElementById('victory-score').textContent = Utils.formatNumber(score);
+            document.getElementById('victory-combo').textContent = `x${maxCombo}`;
+            document.getElementById('victory-gold').textContent = Utils.formatNumber(goldReward);
 
-        const starsEl = document.getElementById('victory-stars');
-        if (starsEl) {
-            starsEl.querySelectorAll('.star').forEach((star, i) => {
-                star.classList.remove('earned');
-                if (i < stars) setTimeout(() => { star.classList.add('earned'); Audio.play('star'); }, 300 + i * 400);
-            });
-        }
-
-        // Show post-level story
-        const story = StoryData.getLevel(game.level.id);
-        if (story) {
-            const outroTexts = [];
-            if (story.bossOutro) outroTexts.push(...story.bossOutro);
-            else if (story.post) outroTexts.push(story.post);
-
-            if (outroTexts.length > 0) {
-                const charEl = document.getElementById('story-character');
-                if (charEl) charEl.textContent = '🥭';
-                this.showStoryDialog(outroTexts, () => {
-                    this.showModal('victory-screen');
-                    setTimeout(() => this.showPendingAchievements(), 2000);
+            const starsEl = document.getElementById('victory-stars');
+            if (starsEl) {
+                starsEl.querySelectorAll('.star').forEach((star, i) => {
+                    star.classList.remove('earned');
+                    if (i < stars) setTimeout(() => { star.classList.add('earned'); Audio.play('star'); }, 300 + i * 400);
                 });
-                return;
             }
-        }
 
-        this.showModal('victory-screen');
-        setTimeout(() => this.showPendingAchievements(), 2000);
+            // Show post-level story
+            const story = StoryData.getLevel(game.level.id);
+            if (story) {
+                const outroTexts = [];
+                if (story.bossOutro) outroTexts.push(...story.bossOutro);
+                else if (story.post) outroTexts.push(story.post);
+
+                if (outroTexts.length > 0) {
+                    const charEl = document.getElementById('story-character');
+                    if (charEl) charEl.textContent = '🥭';
+                    this.showStoryDialog(outroTexts, () => {
+                        this.showModal('victory-screen');
+                        setTimeout(() => this.showPendingAchievements(), 2000);
+                    });
+                    return;
+                }
+            }
+
+            this.showModal('victory-screen');
+            setTimeout(() => this.showPendingAchievements(), 2000);
+        } catch (e) {
+            console.error('[UI.showVictory] error:', e);
+            this.showModal('victory-screen');
+        }
     }
 };

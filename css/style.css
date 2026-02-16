@@ -57,7 +57,8 @@
     --border-primary: 2px solid rgba(139, 92, 246, 0.3);
     --border-gold: 2px solid var(--wow-gold);
     
-    /* 尺寸 */
+    /* 尺寸 — fallback for browsers without min() */
+    --cell-size: 11vw;
     --cell-size: min(11vw, 55px);
     --board-gap: 2px;
     --radius-sm: 8px;
@@ -802,6 +803,8 @@ h1, h2, h3 {
     justify-content: center;
     padding: 0.5rem;
     min-height: 0;
+    overflow: visible;
+    touch-action: none;
 }
 
 .board-frame {
@@ -814,6 +817,7 @@ h1, h2, h3 {
         var(--shadow-lg),
         inset 0 0 30px rgba(139, 92, 246, 0.2),
         0 0 60px rgba(139, 92, 246, 0.15);
+    overflow: visible; /* never clip the board */
 }
 
 .board-corner {
@@ -835,6 +839,12 @@ h1, h2, h3 {
     background: rgba(0, 0, 0, 0.3);
     border-radius: var(--radius-md);
     padding: 4px;
+    /* Explicit sizing so the board never collapses to 0 */
+    min-width: calc(var(--cell-size) * 8 + var(--board-gap) * 7 + 8px);
+    min-height: calc(var(--cell-size) * 8 + var(--board-gap) * 7 + 8px);
+    width: max-content;
+    touch-action: none; /* prevent scroll/zoom while playing */
+    -webkit-touch-callout: none;
 }
 
 .cell {
