@@ -5,13 +5,13 @@
 
 // 宝石类型定义
 const GEM_TYPES = {
-    murloc:  { id:'murloc',  emoji:'🐟', name:'鱼人',     color:'#22c55e', rarity:'common' },
-    orc:     { id:'orc',     emoji:'👹', name:'兽人',     color:'#22c55e', rarity:'common' },
-    elf:     { id:'elf',     emoji:'🧝', name:'精灵',     color:'#8b5cf6', rarity:'common' },
-    mage:    { id:'mage',    emoji:'🧙', name:'法师',     color:'#3b82f6', rarity:'common' },
-    knight:  { id:'knight',  emoji:'⚔️', name:'骑士',     color:'#ef4444', rarity:'common' },
-    dwarf:   { id:'dwarf',   emoji:'🪓', name:'矮人',     color:'#f97316', rarity:'common' },
-    undead:  { id:'undead',  emoji:'💀', name:'亡灵',     color:'#6b7280', rarity:'common' },
+    murloc:  { id:'murloc',  emoji:'🐸', name:'鱼人',     color:'#22c55e', rarity:'common' },
+    orc:     { id:'orc',     emoji:'👹', name:'兽人',     color:'#dc2626', rarity:'common' },
+    elf:     { id:'elf',     emoji:'🧝‍♀️', name:'精灵',  color:'#a855f7', rarity:'common' },
+    mage:    { id:'mage',    emoji:'🧙‍♂️', name:'法师',  color:'#3b82f6', rarity:'common' },
+    knight:  { id:'knight',  emoji:'🛡️', name:'骑士',     color:'#ef4444', rarity:'common' },
+    dwarf:   { id:'dwarf',   emoji:'⛏️', name:'矮人',     color:'#f97316', rarity:'common' },
+    undead:  { id:'undead',  emoji:'☠️', name:'亡灵',     color:'#6b7280', rarity:'common' },
     mango:   { id:'mango',   emoji:'🥭', name:'芒果',     color:'#fbbf24', rarity:'rare' },
     dragon:  { id:'dragon',  emoji:'🐉', name:'巨龙',     color:'#dc2626', rarity:'epic' },
     phoenix: { id:'phoenix', emoji:'🔥', name:'凤凰',     color:'#f97316', rarity:'legendary' }

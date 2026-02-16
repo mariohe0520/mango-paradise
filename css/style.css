@@ -2370,3 +2370,36 @@ input[type="range"]::-webkit-slider-thumb {
     border-color: rgba(239,68,68,0.5);
     box-shadow: var(--shadow-lg), 0 0 30px rgba(239,68,68,0.15);
 }
+
+/* ==========================================
+   Chapter Themes — Warcraft-inspired
+   ========================================== */
+#game-screen[data-theme="forest"] { background: linear-gradient(180deg, #0a1f0a 0%, #1a2f1a 50%, #0d1a0d 100%); }
+#game-screen[data-theme="forest"] .board-frame { border-color: rgba(34,197,94,0.4); box-shadow: var(--shadow-lg), 0 0 30px rgba(34,197,94,0.1); }
+
+#game-screen[data-theme="desert"] { background: linear-gradient(180deg, #2a1f0a 0%, #3a2a10 50%, #1a1008 100%); }
+#game-screen[data-theme="desert"] .board-frame { border-color: rgba(234,179,8,0.4); box-shadow: var(--shadow-lg), 0 0 30px rgba(234,179,8,0.1); }
+
+#game-screen[data-theme="castle"] { background: linear-gradient(180deg, #0a1530 0%, #152040 50%, #0a1020 100%); }
+#game-screen[data-theme="castle"] .board-frame { border-color: rgba(59,130,246,0.4); box-shadow: var(--shadow-lg), 0 0 30px rgba(59,130,246,0.1); }
+
+#game-screen[data-theme="dark"] { background: linear-gradient(180deg, #15051a 0%, #200a28 50%, #0d0510 100%); }
+#game-screen[data-theme="dark"] .board-frame { border-color: rgba(168,85,247,0.5); box-shadow: var(--shadow-lg), 0 0 30px rgba(168,85,247,0.15); }
+
+#game-screen[data-theme="fire"] { background: linear-gradient(180deg, #1a0800 0%, #2a1005 50%, #150600 100%); }
+#game-screen[data-theme="fire"] .board-frame { border-color: rgba(239,68,68,0.5); box-shadow: var(--shadow-lg), 0 0 30px rgba(239,68,68,0.15); }
+
+#game-screen[data-theme="ice"] { background: linear-gradient(180deg, #051520 0%, #0a2035 50%, #030d15 100%); }
+#game-screen[data-theme="ice"] .board-frame { border-color: rgba(56,189,248,0.4); box-shadow: var(--shadow-lg), 0 0 30px rgba(56,189,248,0.1); }
+
+#game-screen[data-theme="dream"] { background: linear-gradient(180deg, #0a150a 0%, #102510 50%, #081008 100%); }
+#game-screen[data-theme="dream"] .board-frame { border-color: rgba(74,222,128,0.4); box-shadow: var(--shadow-lg), 0 0 30px rgba(74,222,128,0.1); }
+
+#game-screen[data-theme="void"] { background: linear-gradient(180deg, #0d0520 0%, #150830 50%, #080315 100%); }
+#game-screen[data-theme="void"] .board-frame { border-color: rgba(192,132,252,0.5); box-shadow: var(--shadow-lg), 0 0 30px rgba(192,132,252,0.15); }
+
+#game-screen[data-theme="time"] { background: linear-gradient(180deg, #1a1500 0%, #2a2208 50%, #100d00 100%); }
+#game-screen[data-theme="time"] .board-frame { border-color: rgba(251,191,36,0.4); box-shadow: var(--shadow-lg), 0 0 30px rgba(251,191,36,0.1); }
+
+#game-screen[data-theme="final"] { background: linear-gradient(180deg, #1a0000 0%, #300505 30%, #1a0000 70%, #0d0000 100%); }
+#game-screen[data-theme="final"] .board-frame { border-color: rgba(239,68,68,0.6); box-shadow: var(--shadow-lg), 0 0 40px rgba(239,68,68,0.2), inset 0 0 20px rgba(239,68,68,0.05); }

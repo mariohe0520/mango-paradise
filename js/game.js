@@ -343,6 +343,10 @@ class Game {
         gemEl.dataset.id = gem.id;
         const gemData = GEM_TYPES[gem.type];
         gemEl.textContent = gemData ? gemData.emoji : '❓';
+        // Colored orb background based on gem type
+        if (gemData && gemData.color) {
+            gemEl.style.background = `radial-gradient(circle at 35% 35%, ${gemData.color}40, ${gemData.color}15 70%, transparent)`;
+        }
         if (gem.special !== this.SPECIAL_TYPES.NONE) {
             gemEl.classList.add('special', gem.special);
         }

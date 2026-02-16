@@ -923,7 +923,13 @@ const UI = {
             const bossBar = document.getElementById('boss-bar');
             if (bossBar) bossBar.style.display = isBoss ? 'block' : 'none';
             const gameScreen = document.getElementById('game-screen');
-            if (gameScreen) gameScreen.classList.toggle('boss-active', isBoss);
+            if (gameScreen) {
+                gameScreen.classList.toggle('boss-active', isBoss);
+                // Apply chapter theme
+                const level = getLevel(levelId);
+                const chapter = getChapter(level.chapter);
+                gameScreen.dataset.theme = chapter.background || 'forest';
+            }
 
             if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
 
