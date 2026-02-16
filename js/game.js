@@ -239,11 +239,27 @@ class Game {
             // CSS vars like "10vw" break parseFloat (returns 10 instead of NaN).
             // So we bypass CSS entirely and calculate from available screen space.
             const gap = 2; // matches --board-gap
-            // Horizontal: screen 0.5rem*2 + container 0.5rem*2 + frame 8px*2+border 2px*2 + board 4px*2 = ~56px
-            const hPad = 56;
+
+            // Measure actual chrome height dynamically (header, objectives, powerups, skill-bar, etc.)
+            const gameScreen = document.getElementById('game-screen');
+            const container = document.querySelector('.game-board-container');
+            let vChrome = 276; // fallback
+            let hPad = 56;     // fallback
+            if (gameScreen && container) {
+                // Measure all siblings of board container
+                const siblings = Array.from(gameScreen.children).filter(el => el !== container && el.offsetHeight > 0);
+                const siblingsH = siblings.reduce((sum, el) => sum + el.offsetHeight, 0);
+                const screenPadY = parseFloat(getComputedStyle(gameScreen).paddingTop) + parseFloat(getComputedStyle(gameScreen).paddingBottom);
+                const containerPadY = parseFloat(getComputedStyle(container).paddingTop) + parseFloat(getComputedStyle(container).paddingBottom);
+                // Frame border/padding
+                const frame = container.querySelector('.board-frame');
+                const framePad = frame ? (frame.offsetWidth - frame.clientWidth) + parseFloat(getComputedStyle(frame).paddingLeft)*2 : 16;
+                vChrome = siblingsH + screenPadY + containerPadY + framePad + 16; // 16px safety margin
+                const screenPadX = parseFloat(getComputedStyle(gameScreen).paddingLeft) + parseFloat(getComputedStyle(gameScreen).paddingRight);
+                const containerPadX = parseFloat(getComputedStyle(container).paddingLeft) + parseFloat(getComputedStyle(container).paddingRight);
+                hPad = screenPadX + containerPadX + framePad;
+            }
             const availW = window.innerWidth - hPad - (this.width - 1) * gap;
-            // Vertical: header ~50px + score-bar ~36px + objectives ~40px + powerups ~70px + progress ~40px + paddings ~40px = ~276px
-            const vChrome = 276;
             const availH = window.innerHeight - vChrome - (this.height - 1) * gap;
             let cellPx = Math.min(Math.floor(availW / this.width), Math.floor(availH / this.height));
             cellPx = Math.max(28, Math.min(65, cellPx)); // clamp: 28–65px
@@ -386,8 +402,10 @@ class Game {
                 this.deselectCell(); return;
             }
             if (this.isAdjacent(sx, sy, x, y)) {
-                // Check both cells not frozen
-                if (this.cellStates[y][x].frozen || this.cellStates[sy][sx].frozen) {
+                // Check both cells not frozen (with safe access)
+                const csTarget = this.cellStates[y] && this.cellStates[y][x];
+                const csSource = this.cellStates[sy] && this.cellStates[sy][sx];
+                if ((csTarget && csTarget.frozen) || (csSource && csSource.frozen)) {
                     Audio.play('invalid'); this.deselectCell(); return;
                 }
                 this.trySwap(sx, sy, x, y);
