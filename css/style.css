@@ -1876,7 +1876,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .toast.show {
-    bottom: 100px;
+    bottom: calc(env(safe-area-inset-bottom, 10px) + 80px);
 }
 
 .toast.success {

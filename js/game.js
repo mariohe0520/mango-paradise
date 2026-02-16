@@ -974,7 +974,12 @@ class Game {
         return null;
     }
 
-    async shuffleBoard() {
+    async shuffleBoard(attempt = 0) {
+        if (attempt > 10) {
+            console.warn('[shuffleBoard] max attempts, regenerating fresh gems');
+            for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++) this.board[y][x] = this.createGem(x,y);
+            this.ensureNoInitialMatches(); this.render(); return;
+        }
         const gems = [];
         for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++) if (this.board[y][x]) gems.push(this.board[y][x]);
         const shuffled = Utils.shuffle(gems);
@@ -983,7 +988,7 @@ class Game {
             if (idx < shuffled.length) { this.board[y][x] = shuffled[idx]; this.board[y][x].x=x; this.board[y][x].y=y; idx++; }
         }
         this.ensureNoInitialMatches();
-        if (!this.hasValidMoves()) { await this.shuffleBoard(); return; }
+        if (!this.hasValidMoves()) { await this.shuffleBoard(attempt + 1); return; }
         this.render();
         UI.showToast('棋盘已重新洗牌！');
         Audio.play('shuffle');
