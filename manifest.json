@@ -1,0 +1,19 @@
+{
+  "name": "芒果庄园 - Mango Paradise",
+  "short_name": "芒果庄园",
+  "description": "消除冒险·精灵大招·Boss战·庄园养成",
+  "start_url": "/mango-paradise/",
+  "scope": "/mango-paradise/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a2e",
+  "theme_color": "#fbbf24",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🥭</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["games", "puzzle"]
+}

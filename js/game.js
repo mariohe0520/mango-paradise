@@ -102,8 +102,9 @@ class Game {
             // Buff notifications — show what buffs are active this level
             const buffMessages = [];
             if (Estate.hasBuff('extra_moves')) {
-                this.movesLeft += 2;
-                buffMessages.push('🌙 月光树: +2步');
+                const extraMoves = Estate.getExtraMoves() || 2;
+                this.movesLeft += extraMoves;
+                buffMessages.push(`🌙 月光树: +${extraMoves}步`);
             }
             if (this.scoreMultiplier > 1) buffMessages.push(`✨ 幸福度: 分数x${this.scoreMultiplier}`);
             if (Estate.hasBuff('rainbow_4')) buffMessages.push('🌈 彩虹树: 4消出彩虹');
@@ -172,13 +173,21 @@ class Game {
             console.warn('[Game.init] blockers error:', e);
         }
 
-        // Place start bomb if buff active
+        // Place start bombs if buff active (scales with tree level)
         try {
             if (Estate.hasBuff('start_bomb')) {
-                const rx = Utils.randomInt(0, this.width - 1);
-                const ry = Utils.randomInt(0, this.height - 1);
-                if (this.board[ry][rx]) {
-                    this.board[ry][rx].special = this.SPECIAL_TYPES.BOMB;
+                const bombCount = Estate.getStartBombs() || 1;
+                for (let b = 0; b < bombCount; b++) {
+                    let attempts = 0;
+                    while (attempts < 20) {
+                        const rx = Utils.randomInt(0, this.width - 1);
+                        const ry = Utils.randomInt(0, this.height - 1);
+                        if (this.board[ry][rx] && this.board[ry][rx].special === this.SPECIAL_TYPES.NONE) {
+                            this.board[ry][rx].special = this.SPECIAL_TYPES.BOMB;
+                            break;
+                        }
+                        attempts++;
+                    }
                 }
             }
         } catch (e) {
@@ -571,25 +580,90 @@ class Game {
 
     hasSpecialSwap(x1, y1, x2, y2) {
         const g1 = this.board[y1][x1], g2 = this.board[y2][x2];
-        return (g1 && g1.special === this.SPECIAL_TYPES.RAINBOW) || (g2 && g2.special === this.SPECIAL_TYPES.RAINBOW);
+        const s1 = g1 ? g1.special : 'none', s2 = g2 ? g2.special : 'none';
+        return s1 !== 'none' || s2 !== 'none';
     }
 
     async processSpecialSwap(x1, y1, x2, y2) {
         const g1 = this.board[y1][x1], g2 = this.board[y2][x2];
-        let rainbow = null, target = null, rPos = null;
-        if (g1 && g1.special === this.SPECIAL_TYPES.RAINBOW) { rainbow = g1; target = g2; rPos = {x:x1,y:y1}; }
-        else if (g2 && g2.special === this.SPECIAL_TYPES.RAINBOW) { rainbow = g2; target = g1; rPos = {x:x2,y:y2}; }
-        if (!rainbow || !target) return;
-        if (target.special === this.SPECIAL_TYPES.RAINBOW) {
-            Audio.play('special'); await this.clearAllGems();
-            Collection.checkUnlock('special_combo', {type:'double_rainbow'}); return;
+        if (!g1 || !g2) return;
+        const s1 = g1.special || 'none', s2 = g2.special || 'none';
+        // If neither is special, skip
+        if (s1 === 'none' && s2 === 'none') return;
+        // Only one is special? Normal match handles it via activateSpecial
+        if (s1 === 'none' || s2 === 'none') return;
+
+        // ── BOTH are special: COMBO EFFECTS (CC's core addiction) ──
+        const ST = this.SPECIAL_TYPES;
+        const isLine = s => s === ST.HORIZONTAL || s === ST.VERTICAL;
+        const cx = Math.floor((x1+x2)/2), cy = Math.floor((y1+y2)/2);
+        Audio.play('match5');
+        this.screenShake(10, 400);
+        Utils.vibrate([50, 30, 80, 30, 100]);
+
+        // 🌈+🌈 = clear entire board
+        if (s1 === ST.RAINBOW && s2 === ST.RAINBOW) {
+            Particles.explosion(window.innerWidth/2, window.innerHeight/2, '#ffd700');
+            await this.clearAllGems();
+            this.addScore(5000);
         }
-        Audio.play('special');
-        const cell = this.getCell(rPos.x, rPos.y);
-        if (cell) Particles.rainbow(cell.getBoundingClientRect().left + cell.offsetWidth/2, cell.getBoundingClientRect().top + cell.offsetHeight/2);
-        await this.clearGemType(target.type);
-        this.board[rPos.y][rPos.x] = null; this.updateCell(rPos.x, rPos.y);
-        this.addScore(this.SCORES.SPECIAL_COMBO);
+        // 🌈+any special = all gems of that type become that special, then detonate
+        else if (s1 === ST.RAINBOW || s2 === ST.RAINBOW) {
+            const other = s1 === ST.RAINBOW ? g2 : g1;
+            const otherSpecial = s1 === ST.RAINBOW ? s2 : s1;
+            Audio.play('special');
+            // Turn all gems of target type into specials then detonate
+            const targetType = other.type;
+            for (let y = 0; y < this.height; y++)
+                for (let x = 0; x < this.width; x++)
+                    if (this.board[y][x] && this.board[y][x].type === targetType)
+                        this.board[y][x].special = otherSpecial;
+            this.render(); await Utils.wait(300);
+            // Detonate all
+            for (let y = 0; y < this.height; y++)
+                for (let x = 0; x < this.width; x++)
+                    if (this.board[y][x] && this.board[y][x].special === otherSpecial)
+                        await this.activateSpecial(x, y, otherSpecial);
+            this.addScore(3000);
+        }
+        // 💣+💣 = 5x5 mega explosion
+        else if (s1 === ST.BOMB && s2 === ST.BOMB) {
+            Particles.explosion(window.innerWidth/2, window.innerHeight/2, '#ef4444');
+            for (let dy=-2; dy<=2; dy++) for (let dx=-2; dx<=2; dx++) {
+                const nx=cx+dx, ny=cy+dy;
+                if (this.isValidCell(nx,ny) && this.board[ny][nx]) {
+                    this.updateObjective(this.board[ny][nx].type); this.board[ny][nx]=null; this.addScore(50);
+                    if (this.cellStates[ny]?.[nx]) { this.cellStates[ny][nx].frozen=false; this.cellStates[ny][nx].locked=0; }
+                }
+            }
+            this.addScore(2000);
+        }
+        // Line+Line = cross (full row + full column)
+        else if (isLine(s1) && isLine(s2)) {
+            for (let i = 0; i < this.width; i++)
+                if (this.board[cy][i]) { this.updateObjective(this.board[cy][i].type); this.board[cy][i]=null; this.addScore(50); }
+            for (let i = 0; i < this.height; i++)
+                if (this.board[i][cx]) { this.updateObjective(this.board[i][cx].type); this.board[i][cx]=null; this.addScore(50); }
+            this.addScore(1500);
+        }
+        // 💣+Line = clear 3 rows or 3 columns
+        else if ((s1 === ST.BOMB && isLine(s2)) || (s2 === ST.BOMB && isLine(s1))) {
+            const lineType = isLine(s1) ? s1 : s2;
+            if (lineType === ST.HORIZONTAL) {
+                for (let row = Math.max(0,cy-1); row <= Math.min(this.height-1,cy+1); row++)
+                    for (let i = 0; i < this.width; i++)
+                        if (this.board[row][i]) { this.updateObjective(this.board[row][i].type); this.board[row][i]=null; this.addScore(50); }
+            } else {
+                for (let col = Math.max(0,cx-1); col <= Math.min(this.width-1,cx+1); col++)
+                    for (let i = 0; i < this.height; i++)
+                        if (this.board[i][col]) { this.updateObjective(this.board[i][col].type); this.board[i][col]=null; this.addScore(50); }
+            }
+            this.addScore(2000);
+        }
+
+        // Clear the two swapped gems
+        this.board[y1][x1] = null; this.board[y2][x2] = null;
+        this.render(); await Utils.wait(300);
         Collection.checkUnlock('special_combo');
     }
 
@@ -767,7 +841,10 @@ class Game {
         this.addScore(score);
 
         // Charge skill bar — with visual feedback
-        const chargeAmount = count >= 5 ? 25 : count >= 4 ? 15 : 8;
+        let chargeAmount = count >= 5 ? 25 : count >= 4 ? 15 : 8;
+        // Skill boost from Ancient Tree
+        const skillBoost = Estate.getSkillBoostPercent();
+        if (skillBoost > 0) chargeAmount = Math.ceil(chargeAmount * (1 + skillBoost / 100));
         const prevCharge = this.skillCharge;
         this.skillCharge = Math.min(this.skillMax, this.skillCharge + chargeAmount);
         this.updateSkillBarUI();

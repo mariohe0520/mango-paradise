@@ -4,6 +4,11 @@
    游戏初始化和启动
    ========================================== */
 
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
 // 加载提示
 const LOADING_TIPS = [
     '💡 提示：连接4个以上可以产生特殊宝石！',

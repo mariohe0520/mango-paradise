@@ -839,56 +839,73 @@ const UI = {
         const goldEl = document.getElementById('estate-gold');
         if (goldEl) goldEl.textContent = Utils.formatNumber(Storage.getGold());
 
-        // Happiness
+        // Happiness — scaled display
         const happiness = Estate.getHappiness();
         const hEl = document.getElementById('estate-happiness');
         if (hEl) hEl.textContent = happiness;
         const hFill = document.getElementById('happiness-fill');
-        if (hFill) hFill.style.width = `${Math.min(100, (happiness / 300) * 100)}%`;
+        if (hFill) hFill.style.width = `${Math.min(100, (happiness / 1000) * 100)}%`;
         const hHint = document.getElementById('happiness-hint');
-        if (hHint) hHint.textContent = happiness > 200
-            ? '✅ 幸福度已超过200！分数永久1.2倍！'
-            : `幸福度超过200后，消消乐分数永久1.2倍！(还差${200-happiness})`;
+        if (hHint) {
+            const mult = Estate.getScoreMultiplier();
+            if (happiness >= 1000) hHint.textContent = `🏆 幸福度MAX！分数永久${mult}倍！`;
+            else if (happiness >= 200) hHint.textContent = `✅ 分数${mult}倍！下一级: ${happiness >= 500 ? 1000 : 500}`;
+            else hHint.textContent = `幸福度200后分数加成！(还差${200-happiness})`;
+        }
 
-        // Trees
+        // Trees — with upgrade levels
         const treeGrid = document.getElementById('tree-grid');
         if (treeGrid) {
             treeGrid.innerHTML = Object.values(Estate.TREES).map(tree => {
-                const planted = Estate.isTreePlanted(tree.id);
-                return `<div class="tree-card ${planted ? 'planted' : ''}" data-tree="${tree.id}">
+                const level = Estate.getTreeLevel(tree.id);
+                const maxLevel = tree.levels.length;
+                const upgradeCost = Estate.getTreeUpgradeCost(tree.id);
+                const isMaxed = level >= maxLevel;
+                const currentDesc = level > 0 ? tree.levels[Math.min(level-1, maxLevel-1)].desc : tree.description;
+                const nextDesc = !isMaxed && level > 0 ? tree.levels[level].desc : '';
+
+                return `<div class="tree-card ${level > 0 ? 'planted' : ''}" data-tree="${tree.id}">
                     <div class="tree-emoji">${tree.emoji}</div>
-                    <div class="tree-name">${tree.name}</div>
-                    <div class="tree-desc">${tree.description}</div>
-                    ${planted
-                        ? '<div class="tree-status">✅ 已种植</div>'
-                        : `<button class="tree-plant-btn" data-tree="${tree.id}">种植 💰${tree.cost}</button>`}
+                    <div class="tree-name">${tree.name} ${level > 0 ? `<small>Lv.${level}/${maxLevel}</small>` : ''}</div>
+                    <div class="tree-desc">${currentDesc}</div>
+                    ${nextDesc ? `<div class="tree-next" style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextDesc}</div>` : ''}
+                    ${isMaxed
+                        ? '<div class="tree-status">🌟 满级</div>'
+                        : `<button class="tree-plant-btn" data-tree="${tree.id}">${level === 0 ? '种植' : '升级'} 💰${Utils.formatNumber(upgradeCost)}</button>`}
                 </div>`;
             }).join('');
 
             treeGrid.querySelectorAll('.tree-plant-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const treeId = btn.dataset.tree;
-                    if (Estate.plantTree(treeId)) this.showEstate();
+                    if (Estate.plantTree(btn.dataset.tree)) this.showEstate();
                 });
             });
         }
 
-        // Spirits
+        // Spirits — with upgrade + more spirits
         const spiritGrid = document.getElementById('spirit-grid');
         if (spiritGrid) {
             const currentSpirit = Estate.getCurrentSpirit();
             spiritGrid.innerHTML = Object.values(Estate.SPIRITS).map(spirit => {
                 const unlocked = Estate.isSpiritUnlocked(spirit.id);
                 const active = currentSpirit.id === spirit.id;
+                const level = Estate.getSpiritLevel(spirit.id);
+                const maxLevel = spirit.skillLevels.length;
+                const isMaxed = level >= maxLevel;
+                const upgradeCost = Estate.getSpiritUpgradeCost(spirit.id);
+                const skillDesc = level > 0 ? spirit.skillLevels[Math.min(level-1, maxLevel-1)].desc : spirit.skillLevels[0].desc;
                 return `<div class="spirit-card ${active ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-spirit="${spirit.id}">
                     <div class="spirit-emoji">${spirit.emoji}</div>
-                    <div class="spirit-name">${spirit.name}</div>
-                    <div class="spirit-desc">${spirit.description}</div>
-                    <div class="spirit-skill">大招: ${spirit.skillName}</div>
-                    ${active ? '<div class="spirit-status">🌟 已派遣</div>'
-                        : unlocked ? `<button class="spirit-select-btn" data-spirit="${spirit.id}">派遣</button>`
-                        : `<button class="spirit-unlock-btn" data-spirit="${spirit.id}">解锁 💰${spirit.unlockCost}</button>`}
+                    <div class="spirit-name">${spirit.name} ${level > 0 ? `<small>Lv.${level}</small>` : ''}</div>
+                    <div class="spirit-desc">${spirit.skillName}: ${skillDesc}</div>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
+                    ${active ? '<span class="spirit-status">🌟 已派遣</span>' : ''}
+                    ${unlocked && !active ? `<button class="spirit-select-btn" data-spirit="${spirit.id}">派遣</button>` : ''}
+                    ${!unlocked ? `<button class="spirit-unlock-btn" data-spirit="${spirit.id}">解锁 💰${spirit.unlockCost}</button>` : ''}
+                    ${unlocked && !isMaxed ? `<button class="spirit-upgrade-btn" data-spirit="${spirit.id}">⬆️ 💰${Utils.formatNumber(upgradeCost)}</button>` : ''}
+                    ${isMaxed ? '<span style="color:var(--wow-gold);font-size:0.7rem;">MAX</span>' : ''}
+                    </div>
                 </div>`;
             }).join('');
 
@@ -896,6 +913,33 @@ const UI = {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (Estate.selectSpirit(btn.dataset.spirit)) this.showEstate();
+                });
+            });
+            spiritGrid.querySelectorAll('.spirit-upgrade-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (Estate.upgradeSpirit(btn.dataset.spirit)) this.showEstate();
+                });
+            });
+        }
+
+        // Decorations
+        const decoGrid = document.getElementById('deco-grid');
+        if (decoGrid) {
+            decoGrid.innerHTML = Object.values(Estate.DECORATIONS).map(deco => {
+                const owned = Estate.hasDecoration(deco.id);
+                return `<div class="tree-card ${owned ? 'planted' : ''}" style="min-width:80px;">
+                    <div class="tree-emoji">${deco.emoji}</div>
+                    <div class="tree-name" style="font-size:0.75rem;">${deco.name}</div>
+                    <div class="tree-desc" style="font-size:0.65rem;">幸福度+${deco.happiness}</div>
+                    ${owned ? '<div class="tree-status" style="font-size:0.65rem;">✅</div>'
+                        : `<button class="tree-plant-btn deco-buy-btn" data-deco="${deco.id}" style="font-size:0.7rem;">💰${deco.cost}</button>`}
+                </div>`;
+            }).join('');
+            decoGrid.querySelectorAll('.deco-buy-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (Estate.buyDecoration(btn.dataset.deco)) this.showEstate();
                 });
             });
         }
