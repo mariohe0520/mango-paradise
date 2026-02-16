@@ -2325,9 +2325,15 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .story-character {
-    font-size: 4rem;
+    font-size: 5rem;
     margin-bottom: 0.75rem;
     animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255,209,0,0.3));
+}
+.story-character.boss-intro {
+    font-size: 6rem;
+    filter: drop-shadow(0 0 30px rgba(239,68,68,0.5));
+    animation: float 2s ease-in-out infinite;
 }
 
 .story-text-container {

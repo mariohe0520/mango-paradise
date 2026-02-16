@@ -464,7 +464,16 @@ const UI = {
     showDefeat(score, progressPercent) {
         document.getElementById('defeat-score').textContent = Utils.formatNumber(score);
         document.getElementById('defeat-progress').textContent = `${progressPercent}%`;
-        
+
+        // Encouraging message based on how close they were
+        const msgEl = document.getElementById('defeat-message');
+        if (msgEl) {
+            if (progressPercent >= 90) msgEl.textContent = '就差一点点！再来一次绝对能过！💪';
+            else if (progressPercent >= 70) msgEl.textContent = '已经很接近了！试试不同的策略？';
+            else if (progressPercent >= 50) msgEl.textContent = '快到一半了，继续加油！';
+            else msgEl.textContent = '每次失败都是经验，再来！';
+        }
+
         this.showModal('defeat-screen');
     },
 
@@ -857,7 +866,22 @@ const UI = {
             }
             const line = this.storyQueue.shift();
             const textEl = document.getElementById('story-text');
-            if (textEl) textEl.textContent = line;
+            if (textEl) {
+                // Typewriter effect for dramatic lines (boss intros with「」)
+                if (line.includes('「') || line.includes('...')) {
+                    textEl.textContent = '';
+                    let i = 0;
+                    const type = () => {
+                        if (i < line.length) {
+                            textEl.textContent += line[i]; i++;
+                            setTimeout(type, line[i-1] === '.' || line[i-1] === '…' ? 120 : 40);
+                        }
+                    };
+                    type();
+                } else {
+                    textEl.textContent = line;
+                }
+            }
             const btnEl = document.getElementById('story-continue-btn');
             if (btnEl) btnEl.textContent = this.storyQueue.length === 0 ? '开始战斗！ ⚔️' : '继续 ▶';
         } catch (e) {
@@ -894,9 +918,12 @@ const UI = {
                 if (story.bossIntro) introTexts.push(...story.bossIntro);
 
                 if (introTexts.length > 0) {
-                    // Show story character based on boss or not
+                    // Show story character — bigger for boss
                     const charEl = document.getElementById('story-character');
-                    if (charEl) charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.emoji || '🥭') : '🥭';
+                    if (charEl) {
+                        charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.emoji || '🥭') : '🥭';
+                        charEl.classList.toggle('boss-intro', !!story.bossIntro);
+                    }
 
                     this.showStoryDialog(introTexts, () => {
                         this.doStartLevel(levelId);
