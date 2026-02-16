@@ -527,6 +527,8 @@ class Game {
                     const attacks = Boss.counterattack(this);
                     if (attacks.length > 0) await this.showBossAttack(attacks);
                 }
+                // Vine spreading mechanic (levels 61+): frozen cells spread
+                this.spreadVines();
             } else {
                 Audio.play('invalid'); Utils.vibrate([50,50,50]);
                 const c1 = this.getCell(x1,y1), c2 = this.getCell(x2,y2);
@@ -1230,6 +1232,33 @@ class Game {
 
         // 🔊 Vibration escalation
         if (this.combo >= 2) Utils.vibrate(20 + this.combo * 15);
+    }
+
+    // Vine spreading: frozen cells spread to 1 random neighbor (levels 61+)
+    spreadVines() {
+        const levelId = this.level.id || 0;
+        if (levelId < 61 && !this.level.procedural && !this.level.endless) return;
+        // Find all frozen cells
+        const frozenCells = [];
+        for (let y = 0; y < this.height; y++)
+            for (let x = 0; x < this.width; x++)
+                if (this.cellStates[y]?.[x]?.frozen) frozenCells.push({x, y});
+        if (frozenCells.length === 0 || frozenCells.length >= this.width * this.height * 0.4) return; // cap at 40%
+        // 30% chance per turn to spread one vine
+        if (Math.random() > 0.3) return;
+        // Pick random frozen cell, spread to random neighbor
+        const src = frozenCells[Math.floor(Math.random() * frozenCells.length)];
+        const dirs = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
+        const shuffled = dirs.sort(() => Math.random() - 0.5);
+        for (const {dx, dy} of shuffled) {
+            const nx = src.x + dx, ny = src.y + dy;
+            if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height
+                && this.cellStates[ny]?.[nx] && !this.cellStates[ny][nx].frozen) {
+                this.cellStates[ny][nx].frozen = true;
+                this.render();
+                return;
+            }
+        }
     }
 
     // Screen shake effect — lightweight CSS-only version

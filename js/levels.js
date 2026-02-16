@@ -196,9 +196,114 @@ L(100, { width:9, height:9, moves:55, gems:['knight','dwarf','undead','mango','d
 // ====================================
 // API Functions
 // ====================================
-function getLevel(id) { return LEVELS.find(l => l.id === id) || LEVELS[0]; }
+function getLevel(id) {
+    // Built-in levels (1-100)
+    const found = LEVELS.find(l => l.id === id);
+    if (found) return found;
+    // Procedural levels (101+) — infinite content!
+    if (id > 100) return generateProceduralLevel(id);
+    return LEVELS[0];
+}
+
+// Infinite procedural level generator — this is how we play for a year
+function generateProceduralLevel(id) {
+    // Seeded RNG for deterministic levels
+    let seed = id * 2654435761;
+    const rng = () => { seed = (seed * 16807 + 0) % 2147483647; return (seed - 1) / 2147483646; };
+
+    const tier = Math.floor((id - 101) / 10); // 0, 1, 2, 3...
+    const allGems = Object.keys(GEM_TYPES);
+    const commonGems = allGems.filter(g => GEM_TYPES[g].rarity === 'common');
+
+    // Gem count: 5-7, increases with tier
+    const numGems = Math.min(5 + Math.floor(tier / 3), commonGems.length);
+    const gems = [];
+    const pool = [...commonGems];
+    for (let i = 0; i < numGems; i++) {
+        const idx = Math.floor(rng() * pool.length);
+        gems.push(pool.splice(idx, 1)[0]);
+    }
+    // Rare gems appear more at higher tiers
+    if (rng() < 0.3 + tier * 0.02) gems.push('mango');
+    if (tier >= 3 && rng() < 0.2 + tier * 0.01) gems.push('dragon');
+    if (tier >= 6 && rng() < 0.15) gems.push('phoenix');
+
+    // Board size varies
+    const sizes = [[7,9],[8,10],[8,10],[9,11],[8,8],[9,9],[7,11]];
+    const [w, h] = sizes[Math.floor(rng() * sizes.length)];
+
+    // Moves: fewer at higher tiers
+    const baseMoves = Math.max(18, 35 - Math.floor(tier / 2));
+    const moves = baseMoves + Math.floor(rng() * 8);
+
+    // Timed: 15% chance, more at higher tiers
+    const isTimed = rng() < 0.15 + tier * 0.01;
+    const timeLimit = isTimed ? Math.max(40, 90 - tier * 2) + Math.floor(rng() * 20) : 0;
+
+    // Boss: every 10th procedural level
+    const isBoss = id % 10 === 0;
+
+    // Objectives (1-3 based on tier)
+    const objectives = [];
+    const numObj = Math.min(1 + Math.floor(tier / 4), 3);
+    for (let i = 0; i < numObj; i++) {
+        const roll = rng();
+        if (roll < 0.3) {
+            objectives.push({ type: 'score', target: 5000 + tier * 1000 + Math.floor(rng() * 3000), icon: '⭐' });
+        } else if (roll < 0.55) {
+            const gem = gems[Math.floor(rng() * gems.length)];
+            objectives.push({ type: 'clear', target: 15 + tier * 2 + Math.floor(rng() * 10), gem, icon: GEM_TYPES[gem]?.emoji || '❓' });
+        } else if (roll < 0.8) {
+            objectives.push({ type: 'special', target: 3 + Math.floor(tier/2) + Math.floor(rng() * 3), specialType: 'any', icon: '✨' });
+        } else {
+            objectives.push({ type: 'combo', target: 3 + Math.floor(tier/3) + Math.floor(rng() * 3), icon: '🔥' });
+        }
+    }
+
+    // Star thresholds scale with tier
+    const baseScore = 8000 + tier * 2000;
+    const stars = [baseScore, Math.floor(baseScore * 1.5), Math.floor(baseScore * 2.2)];
+
+    // Chapter assignment (cycle through chapters)
+    const chapter = (Math.floor((id - 101) / 10) % CHAPTERS.length) + 1;
+
+    return {
+        id,
+        procedural: true,
+        chapter,
+        width: w, height: h,
+        moves,
+        timed: isTimed, timeLimit,
+        gems,
+        objectives,
+        boss: isBoss,
+        stars,
+        special: {},
+        blockers: []
+    };
+}
 function getChapter(id) { return CHAPTERS.find(c => c.id === id) || CHAPTERS[0]; }
 function getChapterLevels(chId) { const ch = getChapter(chId); return LEVELS.filter(l => l.id >= ch.levels[0] && l.id <= ch.levels[1]); }
 function isChapterUnlocked(chId, maxLv) { return maxLv >= getChapter(chId).unlockLevel; }
-function getTotalLevels() { return LEVELS.length; }
+function getTotalLevels() {
+    // After beating all 100 levels, show procedural levels up to current progress
+    const maxUnlocked = typeof Storage !== 'undefined' && Storage.getMaxUnlockedLevel ? Storage.getMaxUnlockedLevel() : 100;
+    return Math.max(LEVELS.length, maxUnlocked);
+}
+
+// Get levels for a chapter, including procedural ones
+function getChapterLevelsExtended(chapterId) {
+    const builtIn = getChapterLevels(chapterId);
+    // For procedural levels 101+, assign to cycling chapters
+    const maxLevel = typeof Storage !== 'undefined' && Storage.getMaxUnlockedLevel ? Storage.getMaxUnlockedLevel() : 100;
+    if (maxLevel > 100) {
+        for (let id = 101; id <= maxLevel; id++) {
+            const pChapter = (Math.floor((id - 101) / 10) % CHAPTERS.length) + 1;
+            if (pChapter === chapterId) {
+                builtIn.push(generateProceduralLevel(id));
+            }
+        }
+    }
+    return builtIn;
+}
 function getTotalChapters() { return CHAPTERS.length; }

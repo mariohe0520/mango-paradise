@@ -220,3 +220,145 @@ const EndlessMode = {
         return parseInt(localStorage.getItem('mango_endless_wave') || '0');
     }
 };
+
+/* ==========================================
+   Weekly Challenge — 周赛系统
+   每周一个特殊挑战，全球排行（本地模拟）
+   CC没有的：Boss周赛 + 限定规则 + 排名奖励
+   ========================================== */
+const WeeklyChallenge = {
+    getWeekSeed() {
+        const d = new Date();
+        const jan1 = new Date(d.getFullYear(), 0, 1);
+        const weekNum = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+        return d.getFullYear() * 100 + weekNum;
+    },
+
+    generate() {
+        const seed = this.getWeekSeed();
+        const rng = DailyChallenge.seededRandom(seed);
+        const allGems = Object.keys(GEM_TYPES);
+        const commonGems = allGems.filter(g => GEM_TYPES[g].rarity === 'common');
+
+        // Weekly themes rotate
+        const themes = [
+            { name: '🔥 烈焰周赛', mod: 'timed', desc: '限时挑战！速度就是一切！' },
+            { name: '👹 Boss 挑战赛', mod: 'boss', desc: '击败超强Boss！' },
+            { name: '❄️ 冰封地狱', mod: 'frozen', desc: '全场冰冻，打破束缚！' },
+            { name: '🌈 彩虹大师', mod: 'special', desc: '创造尽可能多的特殊宝石！' },
+            { name: '🎯 精准打击', mod: 'limited', desc: '极少步数，每步都关键！' },
+            { name: '🏔️ 巨人棋盘', mod: 'big', desc: '超大棋盘，无处可逃！' },
+        ];
+        const theme = themes[seed % themes.length];
+
+        // Pick 6 gems
+        const gems = [];
+        const pool = [...commonGems];
+        for (let i = 0; i < Math.min(6, pool.length); i++) {
+            const idx = Math.floor(rng() * pool.length);
+            gems.push(pool.splice(idx, 1)[0]);
+        }
+        gems.push('mango'); // always include signature gem
+
+        const isTimed = theme.mod === 'timed';
+        const isBoss = theme.mod === 'boss';
+        const isBig = theme.mod === 'big';
+        const isLimited = theme.mod === 'limited';
+        const isFrozen = theme.mod === 'frozen';
+
+        const w = isBig ? 9 : 8;
+        const h = isBig ? 11 : 10;
+        const moves = isLimited ? 15 : (isTimed ? 999 : 30);
+        const timeLimit = isTimed ? 120 : 0;
+
+        // Objectives: always score + one themed objective
+        const objectives = [
+            { type: 'score', target: 10000, icon: '⭐' }
+        ];
+        if (theme.mod === 'special') {
+            objectives.push({ type: 'special', target: 10, specialType: 'any', icon: '✨' });
+        } else if (theme.mod === 'frozen') {
+            objectives.push({ type: 'clear', target: 40, gem: 'mango', icon: '🥭' });
+        } else {
+            const gem = gems[Math.floor(rng() * (gems.length - 1))]; // not mango
+            objectives.push({ type: 'clear', target: 25, gem, icon: GEM_TYPES[gem]?.emoji || '❓' });
+        }
+
+        return {
+            id: 9500,
+            weekly: true,
+            seed,
+            themeName: theme.name,
+            themeDesc: theme.desc,
+            width: w, height: h,
+            moves,
+            timed: isTimed, timeLimit,
+            gems,
+            objectives,
+            boss: isBoss,
+            stars: [10000, 18000, 30000],
+            special: {},
+            blockers: isFrozen ? ['frozen'] : []
+        };
+    },
+
+    getData() {
+        return JSON.parse(localStorage.getItem('mango_weekly') || '{}');
+    },
+
+    getBestScore() {
+        const data = this.getData();
+        return data.weekSeed === this.getWeekSeed() ? (data.bestScore || 0) : 0;
+    },
+
+    getAttempts() {
+        const data = this.getData();
+        return data.weekSeed === this.getWeekSeed() ? (data.attempts || 0) : 0;
+    },
+
+    recordAttempt(score, stars) {
+        const data = this.getData();
+        const seed = this.getWeekSeed();
+        if (data.weekSeed !== seed) {
+            // New week — reset
+            data.weekSeed = seed;
+            data.bestScore = 0;
+            data.attempts = 0;
+            data.bestStars = 0;
+        }
+        data.attempts++;
+        if (score > (data.bestScore || 0)) {
+            data.bestScore = score;
+            data.bestStars = stars;
+        }
+        localStorage.setItem('mango_weekly', JSON.stringify(data));
+    },
+
+    // Simulated leaderboard (seeded fake players for competition feel)
+    getLeaderboard() {
+        const seed = this.getWeekSeed();
+        const rng = DailyChallenge.seededRandom(seed * 31);
+        const names = ['小明', '芒果达人', '消消乐王', '无敌破坏王', '甜蜜冒险家',
+                       '宝石猎人', 'Boss终结者', '三星大师', '连击之王', '庄园领主',
+                       '阿花', '大黄', '小胖', '蜜蜂侠', '彩虹仙子'];
+        const board = [];
+        for (let i = 0; i < 10; i++) {
+            board.push({
+                rank: i + 1,
+                name: names[Math.floor(rng() * names.length)],
+                score: Math.floor(15000 + rng() * 25000 - i * 2000)
+            });
+        }
+        board.sort((a, b) => b.score - a.score);
+        board.forEach((e, i) => e.rank = i + 1);
+
+        // Insert player's best score
+        const myBest = this.getBestScore();
+        if (myBest > 0) {
+            board.push({ rank: 0, name: '🥭 你', score: myBest, isPlayer: true });
+            board.sort((a, b) => b.score - a.score);
+            board.forEach((e, i) => e.rank = i + 1);
+        }
+        return board.slice(0, 15);
+    }
+};

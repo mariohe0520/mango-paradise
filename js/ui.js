@@ -56,6 +56,11 @@ const UI = {
             Audio.play('click');
             this.showLeaderboard();
         });
+
+        document.getElementById('btn-weekly')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showWeeklyChallenge();
+        });
         
         document.getElementById('btn-estate')?.addEventListener('click', () => {
             Audio.play('click');
@@ -701,6 +706,53 @@ const UI = {
                 </div>
             `;
         }).join('');
+    },
+
+    // 周赛界面 — CC没有的独家玩法
+    showWeeklyChallenge() {
+        const challenge = WeeklyChallenge.generate();
+        const bestScore = WeeklyChallenge.getBestScore();
+        const attempts = WeeklyChallenge.getAttempts();
+        const leaderboard = WeeklyChallenge.getLeaderboard();
+
+        // Build leaderboard HTML
+        const lbHtml = leaderboard.map(e =>
+            `<div class="lb-row ${e.isPlayer ? 'lb-player' : ''}" style="display:flex;justify-content:space-between;padding:0.3rem 0.5rem;${e.isPlayer ? 'background:rgba(255,215,0,0.15);border-radius:6px;font-weight:700;' : ''}">
+                <span>${e.rank}. ${e.name}</span><span>${Utils.formatNumber(e.score)}</span>
+            </div>`
+        ).join('');
+
+        // Use a generic modal approach
+        const overlay = document.createElement('div');
+        overlay.className = 'modal active';
+        overlay.id = 'weekly-modal';
+        overlay.innerHTML = `
+            <div class="modal-content" style="max-height:80vh;overflow-y:auto;">
+                <h2>${challenge.themeName}</h2>
+                <p style="color:var(--text-secondary);margin-bottom:0.5rem;">${challenge.themeDesc}</p>
+                <div style="display:flex;gap:1rem;justify-content:center;margin:0.5rem 0;">
+                    <span>🎯 ${challenge.objectives.map(o => o.icon + o.target).join(' + ')}</span>
+                    <span>👣 ${challenge.moves}步</span>
+                    ${challenge.timed ? `<span>⏱️ ${challenge.timeLimit}s</span>` : ''}
+                </div>
+                <div style="text-align:center;margin:0.5rem 0;">
+                    <p>🏅 你的最高分: <strong>${bestScore > 0 ? Utils.formatNumber(bestScore) : '未挑战'}</strong></p>
+                    <p style="font-size:0.8rem;color:var(--text-secondary);">本周已挑战 ${attempts} 次（无限制）</p>
+                </div>
+                <h3 style="margin:0.5rem 0 0.3rem;">🏆 排行榜</h3>
+                <div style="font-size:0.85rem;">${lbHtml}</div>
+                <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                    <button class="modal-btn" onclick="document.getElementById('weekly-modal').remove()">返回</button>
+                    <button class="modal-btn primary" id="btn-weekly-start">⚔️ 开始挑战</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        document.getElementById('btn-weekly-start')?.addEventListener('click', () => {
+            overlay.remove();
+            this.startSpecialLevel(challenge);
+        });
     },
 
     // 设置界面
