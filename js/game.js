@@ -773,10 +773,16 @@ class Game {
         score += this.SCORES.COMBO_BONUS * (this.combo - 1);
         this.addScore(score);
 
-        // Charge skill bar
+        // Charge skill bar — with visual feedback
         const chargeAmount = count >= 5 ? 25 : count >= 4 ? 15 : 8;
+        const prevCharge = this.skillCharge;
         this.skillCharge = Math.min(this.skillMax, this.skillCharge + chargeAmount);
         this.updateSkillBarUI();
+        // Notify when skill becomes ready
+        if (prevCharge < this.skillMax && this.skillCharge >= this.skillMax) {
+            UI.showToast('⚡ 精灵大招已充满！点击释放！', 'success');
+            Utils.vibrate([30, 20, 50, 20, 80]);
+        }
 
         // Sound
         if (count >= 5) Audio.play('match5');
