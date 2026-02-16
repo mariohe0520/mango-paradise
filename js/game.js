@@ -61,8 +61,15 @@ class Game {
     // Initialization
     // ==========================================
 
-    init(levelId) {
-        this.level = getLevel(levelId);
+    // Init from a procedural level config (daily/endless)
+    initSpecial(config) {
+        this.level = config;
+        this.level.id = config.id || 9999;
+        this.init(config.id, config);
+    }
+
+    init(levelId, overrideLevel) {
+        this.level = overrideLevel || getLevel(levelId);
         this.width = this.level.width;
         this.height = this.level.height;
         this.gems = this.level.gems;
@@ -920,53 +927,67 @@ class Game {
 
         switch (spirit.id) {
             case 'mango_fairy':
-                // Place 3 random bombs with staggered visual
-                for (let i = 0; i < 3; i++) {
+                // 芒果轰炸：随机清除15个宝石 + 震屏（真正有冲击感）
+                const bombTargets = [];
+                for (let i = 0; i < 15; i++) {
                     let attempts = 0;
-                    while (attempts < 30) {
-                        const x = Utils.randomInt(0, this.width-1), y = Utils.randomInt(0, this.height-1);
-                        if (this.board[y][x] && this.board[y][x].special === this.SPECIAL_TYPES.NONE) {
-                            this.board[y][x].special = this.SPECIAL_TYPES.BOMB;
-                            this.render(); // show bomb appear
-                            const c = this.getCell(x,y);
-                            if (c) {
-                                const r = c.getBoundingClientRect();
-                                Particles.burst(r.left+r.width/2, r.top+r.height/2, ['#ef4444','#ff6b35','#ffd700'], 12);
-                                Particles.sparkle(r.left+r.width/2, r.top+r.height/2);
-                            }
-                            Audio.play('powerup');
-                            await Utils.wait(200); // stagger for drama
+                    while (attempts < 50) {
+                        const bx = Utils.randomInt(0, this.width-1), by = Utils.randomInt(0, this.height-1);
+                        if (this.board[by][bx] && !bombTargets.some(t => t.x===bx && t.y===by)) {
+                            bombTargets.push({x:bx, y:by});
                             break;
                         }
                         attempts++;
                     }
                 }
+                // Stagger explosions for drama
+                for (let i = 0; i < bombTargets.length; i++) {
+                    const {x, y} = bombTargets[i];
+                    if (!this.board[y][x]) continue;
+                    this.addScore(50);
+                    this.updateObjective(this.board[y][x].type);
+                    this.board[y][x] = null;
+                    const c = this.getCell(x, y);
+                    if (c) c.style.animation = 'cell-flash 0.15s ease';
+                    if (i % 3 === 0) {
+                        Audio.play('match3');
+                        this.screenShake(4, 150);
+                    }
+                    await Utils.wait(40); // rapid-fire explosions
+                }
+                // Big final shake
+                this.screenShake(8, 300);
+                Audio.play('match5');
+                // Single big burst at center
+                const boardEl2 = document.getElementById('game-board');
+                if (boardEl2) {
+                    const r = boardEl2.getBoundingClientRect();
+                    Particles.explosion(r.left+r.width/2, r.top+r.height/2, '#ffd700');
+                }
                 break;
             case 'bee_spirit': {
-                // Clear a random row — with sweep animation
+                // 蜜蜂横扫：清一行 + 一列（十字交叉，超爽）
                 const row = Utils.randomInt(0, this.height-1);
-                // Visual: flash each cell in sequence (sweep effect)
+                const col = Utils.randomInt(0, this.width-1);
+                // Sweep row
                 for (let x = 0; x < this.width; x++) {
                     const c = this.getCell(x, row);
-                    if (c) {
-                        c.style.animation = 'cell-flash 0.2s ease';
-                        const r = c.getBoundingClientRect();
-                        Particles.burst(r.left+r.width/2, r.top+r.height/2, '#eab308', 4);
-                    }
-                    if (this.board[row][x]) {
-                        this.addScore(50);
-                        this.updateObjective(this.board[row][x].type);
-                        this.board[row][x] = null;
-                    }
+                    if (c) c.style.animation = 'cell-flash 0.15s ease';
+                    if (this.board[row][x]) { this.addScore(50); this.updateObjective(this.board[row][x].type); this.board[row][x] = null; }
                     if (this.cellStates[row][x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
-                    await Utils.wait(40); // stagger sweep left-to-right
                 }
-                this.screenShake(6, 200);
-                const boardEl = document.getElementById('game-board');
-                if (boardEl) {
-                    const r = boardEl.getBoundingClientRect();
-                    Particles.lineHorizontal(r.top + (row+0.5)*(r.height/this.height), r.left, r.right, '#eab308');
+                Audio.play('match4');
+                this.screenShake(4, 150);
+                await Utils.wait(100);
+                // Sweep column
+                for (let y = 0; y < this.height; y++) {
+                    const c = this.getCell(col, y);
+                    if (c) c.style.animation = 'cell-flash 0.15s ease';
+                    if (this.board[y][col]) { this.addScore(50); this.updateObjective(this.board[y][col].type); this.board[y][col] = null; }
+                    if (this.cellStates[y][col]) { this.cellStates[y][col].frozen = false; this.cellStates[y][col].locked = 0; }
                 }
+                Audio.play('match5');
+                this.screenShake(8, 300);
             }
                 break;
             case 'rainbow_spirit':
@@ -1184,7 +1205,19 @@ class Game {
 
     updateUI() {
         const movesEl = document.getElementById('moves-left');
-        if (movesEl) movesEl.textContent = this.movesLeft;
+        if (movesEl) {
+            movesEl.textContent = this.movesLeft;
+            // Last moves tension: pulse when ≤3 moves
+            if (this.movesLeft <= 3 && this.movesLeft > 0 && !this.level.timed) {
+                movesEl.style.color = '#ef4444';
+                movesEl.style.fontWeight = '900';
+                movesEl.style.fontSize = '1.3em';
+            } else {
+                movesEl.style.color = '';
+                movesEl.style.fontWeight = '';
+                movesEl.style.fontSize = '';
+            }
+        }
 
         const scoreEl = document.getElementById('current-score');
         if (scoreEl) scoreEl.textContent = Utils.formatNumber(this.score);

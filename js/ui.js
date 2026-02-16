@@ -956,6 +956,26 @@ const UI = {
         }
     },
 
+    // Start a special/procedural level (daily challenge, endless mode)
+    startSpecialLevel(levelConfig) {
+        try {
+            // Inject the level config into the levels system temporarily
+            window._specialLevel = levelConfig;
+            this.showScreen('game-screen');
+            game.initSpecial(levelConfig);
+            const gameScreen = document.getElementById('game-screen');
+            if (gameScreen) {
+                gameScreen.classList.toggle('boss-active', !!levelConfig.boss);
+                gameScreen.dataset.theme = levelConfig.boss ? 'fire' : 'forest';
+            }
+            const bossBar = document.getElementById('boss-bar');
+            if (bossBar) bossBar.style.display = levelConfig.boss ? 'block' : 'none';
+        } catch (e) {
+            console.error('[startSpecialLevel] error:', e);
+            this.showToast('加载失败，请重试', 'error');
+        }
+    },
+
     doStartLevel(levelId) {
         try {
             this.showScreen('game-screen');
