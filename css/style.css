@@ -802,6 +802,12 @@ h1, h2, h3 {
     color: var(--wow-gold);
 }
 
+.objective-hint {
+    font-size: 0.55rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
 .game-board-container {
     flex: 1;
     display: flex;

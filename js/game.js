@@ -118,6 +118,9 @@ class Game {
             this.scoreMultiplier = 1.0;
         }
 
+        // Show how-to guide if level has special gem objectives
+        this.showSpecialGuide();
+
         // Skill bar
         this.skillCharge = 0;
         this.skillMax = 100;
@@ -1323,17 +1326,24 @@ class Game {
 
     async fillGems() {
         let filled = false;
+        let emptyCount = 0;
         for (let x = 0; x < this.width; x++)
             for (let y = 0; y < this.height; y++)
                 if (!this.board[y][x]) {
                     this.board[y][x] = this.createGem(x, y);
                     this.cellStates[y][x] = { frozen: false, locked: 0 };
                     filled = true;
+                    emptyCount++;
                 }
         if (filled) {
             this.render();
-            await Utils.wait(60);
+            await Utils.wait(emptyCount > 20 ? 120 : 60);
         }
+        // Safety: if board STILL has nulls after fill, force another pass
+        for (let y = 0; y < this.height; y++)
+            for (let x = 0; x < this.width; x++)
+                if (!this.board[y][x]) this.board[y][x] = this.createGem(x, y);
+        if (emptyCount > 20) this.render(); // Re-render after mass refill
     }
 
     // ==========================================
@@ -1560,7 +1570,16 @@ class Game {
                 if (obj.gem && typeof GEM_TYPES !== 'undefined' && GEM_TYPES[obj.gem]) {
                     icon = GEM_TYPES[obj.gem].emoji;
                 }
-                return `<div class="objective ${done?'completed':''}"><span class="objective-icon">${icon}</span><span class="objective-count"><span class="current">${Utils.formatNumber(Math.min(cur,tar))}</span>/${Utils.formatNumber(tar)}</span></div>`;
+                // Add tooltip for special objectives
+                let hint = '';
+                if (obj.type === 'special') {
+                    if (obj.specialType === 'line') hint = '连4';
+                    else if (obj.specialType === 'bomb') hint = '连T/L';
+                    else if (obj.specialType === 'rainbow') hint = '连5';
+                    else hint = '特殊';
+                } else if (obj.type === 'combo') hint = '连击';
+                const hintHtml = hint ? `<span class="objective-hint">${hint}</span>` : '';
+                return `<div class="objective ${done?'completed':''}"><span class="objective-icon">${icon}</span>${hintHtml}<span class="objective-count"><span class="current">${Utils.formatNumber(Math.min(cur,tar))}</span>/${Utils.formatNumber(tar)}</span></div>`;
             }).join('');
         }
 
@@ -1579,6 +1598,37 @@ class Game {
 
         // Buff indicators
         this.updateBuffIndicators();
+    }
+
+    showSpecialGuide() {
+        const specials = this.objectives?.filter(o => o.type === 'special') || [];
+        if (specials.length === 0) return;
+        const guides = {
+            line: { icon: '⚡', how: '连续消除4个', desc: '一排4个同色 → 线宝石' },
+            bomb: { icon: '💣', how: 'T形或L形排列', desc: 'T/L形排列 → 炸弹' },
+            rainbow: { icon: '🌈', how: '连续消除5个', desc: '一排5个同色 → 彩虹' },
+            any: { icon: '✨', how: '连4/连5/T/L形', desc: '制造任意特殊宝石' }
+        };
+        const tips = specials.map(s => {
+            const g = guides[s.specialType] || guides.any;
+            return `<div style="font-size:1rem;margin:6px 0;">${g.icon} ${g.how} → 做${s.target}个</div>`;
+        });
+        const descs = [...new Set(specials.map(s => (guides[s.specialType]||guides.any).desc))];
+        const guide = document.createElement('div');
+        guide.id = 'special-guide';
+        guide.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;';
+        guide.innerHTML = `<div style="background:#1e1b4b;border:2px solid #fbbf24;border-radius:16px;padding:20px;max-width:300px;text-align:center;">
+            <div style="font-size:1.2rem;font-weight:900;color:#fbbf24;margin-bottom:10px;">🎯 本关目标</div>
+            ${tips.join('')}
+            <div style="margin-top:12px;padding:10px;background:rgba(139,92,246,0.2);border-radius:10px;">
+                <div style="font-size:0.75rem;color:#a5b4fc;margin-bottom:4px;">💡 怎么做？</div>
+                ${descs.map(d => `<div style="font-size:0.85rem;color:#e0e7ff;">${d}</div>`).join('')}
+            </div>
+            <div style="margin-top:14px;font-size:0.75rem;color:#94a3b8;">👆 点任意位置开始游戏</div>
+        </div>`;
+        guide.addEventListener('click', () => guide.remove());
+        setTimeout(() => { if (guide.parentNode) guide.remove(); }, 6000);
+        document.body.appendChild(guide);
     }
 
     updateBuffIndicators() {

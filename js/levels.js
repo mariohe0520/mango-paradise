@@ -76,7 +76,7 @@ const LEVELS = [
 L(1,  { moves:20, gems:['murloc','orc','elf','mage'], objectives:[{type:'score',target:500,icon:'⭐'}], stars:[500,1000,1500], tutorial:'basic' }),
 L(2,  { moves:22, gems:['murloc','orc','elf','mage'], objectives:[{type:'clear',target:20,gem:'murloc',icon:'🐟'}], stars:[600,1200,1800], tutorial:'collect' }),
 L(3,  { moves:25, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'clear',target:15,gem:'orc',icon:'👹'},{type:'clear',target:15,gem:'elf',icon:'🧝♀️'}], stars:[800,1500,2200] }),
-L(4,  { moves:25, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'special',target:2,specialType:'line',icon:'➡️'}], stars:[1000,1800,2500], tutorial:'special' }),
+L(4,  { moves:25, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'special',target:2,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[1000,1800,2500], tutorial:'special' }),
 L(5,  { moves:28, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'score',target:2000,icon:'⭐'}], stars:[2000,3500,5000] }),
 L(6,  { moves:25, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'score',target:1500,icon:'⭐'},{type:'combo',target:3,icon:'🔥'}], stars:[1500,2500,4000] }),
 L(7,  { moves:30, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'clear',target:30,gem:'mage',icon:'🧙♂️'}], stars:[1800,3000,4500] }),
@@ -86,7 +86,7 @@ L(10, { moves:35, gems:['murloc','orc','elf','mage','knight'], boss:true, object
 
 // =========== Ch2: 西部荒野 (11-20) ===========
 L(11, { moves:28, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'clear',target:15,gem:'dwarf',icon:'🪓'}], stars:[2000,3500,5000] }),
-L(12, { moves:30, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:3000,icon:'⭐'},{type:'special',target:3,specialType:'line',icon:'➡️'}], stars:[3000,5000,7500] }),
+L(12, { moves:30, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:3000,icon:'⭐'},{type:'special',target:3,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[3000,5000,7500] }),
 L(13, { moves:25, gems:['orc','elf','mage','knight','dwarf'], objectives:[{type:'clear',target:25,gem:'orc',icon:'👹'},{type:'clear',target:25,gem:'mage',icon:'🧙♂️'}], stars:[3500,5500,8000] }),
 L(14, { moves:30, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'combo',target:6,icon:'🔥'}], stars:[4000,6000,9000] }),
 L(15, { width:7, height:9, moves:32, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:4500,icon:'⭐'}], stars:[4500,7000,10000] }),
@@ -105,7 +105,7 @@ L(25, { moves:30, gems:['orc','elf','mage','knight','dwarf','undead'], objective
 L(26, { width:7, height:7, moves:25, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:6,specialType:'any',icon:'✨'}], stars:[6000,9500,13500] }),
 L(27, { moves:32, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'score',target:8000,icon:'⭐'},{type:'combo',target:6,icon:'🔥'}], stars:[8000,12000,16000] }),
 L(28, { moves:30, gems:['elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:50,gem:'knight',icon:'⚔️'}], stars:[7500,11500,15500] }),
-L(29, { moves:28, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:4,specialType:'line',icon:'➡️'},{type:'special',target:2,specialType:'bomb',icon:'💣'}], stars:[7000,11000,15000] }),
+L(29, { moves:28, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:4,specialType:'line',icon:'⚡',label:'连4消生成'},{type:'special',target:2,specialType:'bomb',icon:'💣'}], stars:[7000,11000,15000] }),
 L(30, { moves:38, gems:['orc','elf','mage','knight','dwarf','undead'], boss:true, objectives:[{type:'score',target:10000,icon:'⭐'}], stars:[10000,15000,20000] }),
 
 // =========== Ch4: 诅咒之地 (31-40) ===========
@@ -129,7 +129,7 @@ L(45, { moves:35, gems:['mage','knight','dwarf','undead','mango','dragon'], time
 L(46, { width:8, height:9, moves:35, gems:['knight','dwarf','undead','mango','dragon'], objectives:[{type:'clear',target:50,gem:'undead',icon:'💀'},{type:'clear',target:30,gem:'dragon',icon:'🐉'}], stars:[15000,22000,30000] }),
 L(47, { moves:32, gems:['mage','knight','dwarf','undead','mango','dragon'], objectives:[{type:'special',target:4,specialType:'rainbow',icon:'🌈'},{type:'combo',target:10,icon:'🔥'}], stars:[14500,21500,29000] }),
 L(48, { moves:35, gems:['mage','knight','dwarf','undead','mango','dragon'], objectives:[{type:'score',target:18000,icon:'⭐'},{type:'clear',target:40,gem:'mango',icon:'🥭'}], stars:[18000,27000,36000] }),
-L(49, { moves:38, gems:['knight','dwarf','undead','mango','dragon'], objectives:[{type:'clear',target:60,gem:'knight',icon:'⚔️'},{type:'special',target:6,specialType:'line',icon:'➡️'}], stars:[17000,25000,34000] }),
+L(49, { moves:38, gems:['knight','dwarf','undead','mango','dragon'], objectives:[{type:'clear',target:60,gem:'knight',icon:'⚔️'},{type:'special',target:6,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[17000,25000,34000] }),
 L(50, { moves:45, gems:['mage','knight','dwarf','undead','mango','dragon'], boss:true, objectives:[{type:'score',target:22000,icon:'⭐'}], stars:[25000,35000,50000] }),
 
 // =========== Ch6: 诺森德 (51-60) ===========
@@ -177,7 +177,7 @@ L(85, { moves:35, gems:['dwarf','mango','dragon','phoenix','elf'], objectives:[{
 L(86, { moves:38, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'clear',target:60,gem:'phoenix',icon:'🔥'},{type:'clear',target:60,gem:'mango',icon:'🥭'}], stars:[44000,62000,82000] }),
 L(87, { width:8, height:10, moves:42, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'score',target:48000,icon:'⭐'},{type:'special',target:6,specialType:'rainbow',icon:'🌈'}], stars:[48000,66000,88000] }),
 L(88, { moves:38, gems:['dwarf','mango','dragon','phoenix','elf'], timed:true, timeLimit:45, objectives:[{type:'score',target:42000,icon:'⭐'}], stars:[42000,60000,80000] }),
-L(89, { moves:42, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'combo',target:28,icon:'🔥'},{type:'special',target:10,specialType:'line',icon:'➡️'}], stars:[46000,64000,85000] }),
+L(89, { moves:42, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'combo',target:28,icon:'🔥'},{type:'special',target:10,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[46000,64000,85000] }),
 L(90, { width:9, height:9, moves:48, gems:['mage','dwarf','mango','dragon','phoenix','elf'], boss:true, objectives:[{type:'score',target:45000,icon:'⭐'}], stars:[50000,70000,95000] }),
 
 // =========== Ch10: 永恒之战 (91-100) ===========
