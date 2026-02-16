@@ -842,10 +842,17 @@ class Game {
 
         // Determine special gem - with rainbow_4 buff check
         if (count === 4) {
-            // Always create line gem (rainbow_4 buff disabled — was confusing players)
-            specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
-            specialPosition = match.cells[1];
-            Collection.checkUnlock('special_create', {specialType: match.direction === 'horizontal' ? 'vertical' : 'horizontal'});
+            if (match.direction === 'cross') {
+                // 4-cell cross (T/L shape) → BOMB (easier to make!)
+                specialType = this.SPECIAL_TYPES.BOMB;
+                specialPosition = match.cells[Math.floor(match.cells.length/2)];
+                Collection.checkUnlock('special_create', {specialType:'bomb'});
+            } else {
+                // 4 in a row → line gem
+                specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
+                specialPosition = match.cells[1];
+                Collection.checkUnlock('special_create', {specialType: match.direction === 'horizontal' ? 'vertical' : 'horizontal'});
+            }
         } else if (count >= 5) {
             if (match.direction === 'cross') {
                 specialType = this.SPECIAL_TYPES.BOMB;
@@ -1608,7 +1615,7 @@ class Game {
         if (specials.length === 0) return;
         const guides = {
             line: { icon: '⚡', how: '4个排一排', desc: '🟢🟢🟢🟢 → ⚡线宝石' },
-            bomb: { icon: '💣', how: '拐弯排5个', desc: '🟢🟢🟢<br>🟢<br>🟢<br>↑ 拐个弯就出💣' },
+            bomb: { icon: '💣', how: '拐个弯', desc: '🟢🟢🟢<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🟢<br>↑ 3个+拐1个就出💣' },
             rainbow: { icon: '🌈', how: '5个排一排', desc: '🟢🟢🟢🟢🟢 → 🌈彩虹' },
             any: { icon: '✨', how: '排4个或5个', desc: '4个一排=⚡ 5个一排=🌈 拐弯=💣' }
         };

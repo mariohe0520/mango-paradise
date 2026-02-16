@@ -81,31 +81,31 @@ L(5,  { moves:28, gems:['murloc','orc','elf','mage','knight'], objectives:[{type
 L(6,  { moves:25, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'score',target:1500,icon:'⭐'},{type:'combo',target:2,icon:'🔥'}], stars:[1500,2500,4000] }),
 L(7,  { moves:30, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'clear',target:30,gem:'mage',icon:'🧙♂️'}], stars:[1800,3000,4500] }),
 L(8,  { moves:28, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'clear',target:20,gem:'knight',icon:'⚔️'},{type:'clear',target:20,gem:'murloc',icon:'🐟'}], stars:[2000,3500,5000] }),
-L(9,  { moves:30, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'special',target:4,specialType:'any',icon:'✨'}], stars:[2500,4000,6000] }),
+L(9,  { moves:30, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'special',target:2,specialType:'any',icon:'✨'}], stars:[2500,4000,6000] }),
 L(10, { moves:35, gems:['murloc','orc','elf','mage','knight'], boss:true, objectives:[{type:'score',target:5000,icon:'⭐'}], stars:[5000,8000,12000] }),
 
 // =========== Ch2: 西部荒野 (11-20) ===========
 L(11, { moves:28, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'clear',target:15,gem:'dwarf',icon:'🪓'}], stars:[2000,3500,5000] }),
-L(12, { moves:30, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:3000,icon:'⭐'},{type:'special',target:3,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[3000,5000,7500] }),
+L(12, { moves:30, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:3000,icon:'⭐'},{type:'special',target:2,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[3000,5000,7500] }),
 L(13, { moves:25, gems:['orc','elf','mage','knight','dwarf'], objectives:[{type:'clear',target:25,gem:'orc',icon:'👹'},{type:'clear',target:25,gem:'mage',icon:'🧙♂️'}], stars:[3500,5500,8000] }),
 L(14, { moves:30, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'combo',target:4,icon:'🔥'}], stars:[4000,6000,9000] }),
 L(15, { width:7, height:9, moves:32, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:4500,icon:'⭐'}], stars:[4500,7000,10000] }),
-L(16, { moves:28, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'special',target:2,specialType:'bomb',icon:'💣'}], stars:[3500,5500,8000] }),
+L(16, { moves:35, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'special',target:1,specialType:'bomb',icon:'💣'}], stars:[3500,5500,8000] }),
 L(17, { moves:30, gems:['orc','elf','mage','knight','dwarf'], timed:true, timeLimit:90, objectives:[{type:'score',target:4000,icon:'⭐'}], stars:[4000,6500,9500] }),
 L(18, { moves:32, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'score',target:5000,icon:'⭐'},{type:'clear',target:20,gem:'dwarf',icon:'🪓'}], stars:[5000,8000,11000] }),
-L(19, { moves:28, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'special',target:5,specialType:'any',icon:'✨'},{type:'combo',target:4,icon:'🔥'}], stars:[4500,7500,10500] }),
+L(19, { moves:32, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'special',target:3,specialType:'any',icon:'✨'},{type:'combo',target:3,icon:'🔥'}], stars:[4500,7500,10500] }),
 L(20, { moves:35, gems:['murloc','orc','elf','mage','knight','dwarf'], boss:true, objectives:[{type:'score',target:7000,icon:'⭐'}], stars:[7000,11000,15000] }),
 
 // =========== Ch3: 暴风城 (21-30) ===========
 L(21, { moves:30, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:20,gem:'undead',icon:'💀'}], stars:[5000,8000,12000] }),
 L(22, { width:9, height:7, moves:28, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'score',target:6000,icon:'⭐'}], stars:[6000,9500,13000] }),
-L(23, { moves:30, gems:['elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:40,gem:'elf',icon:'🧝♀️'},{type:'special',target:3,specialType:'bomb',icon:'💣'}], stars:[6500,10000,14000] }),
+L(23, { moves:35, gems:['elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:30,gem:'elf',icon:'🧝♀️'},{type:'special',target:1,specialType:'bomb',icon:'💣'}], stars:[6500,10000,14000] }),
 L(24, { moves:32, gems:['orc','elf','mage','knight','dwarf','undead'], timed:true, timeLimit:80, objectives:[{type:'score',target:6000,icon:'⭐'}], stars:[5500,9000,13000] }),
 L(25, { moves:30, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:25,gem:'mage',icon:'🧙♂️'},{type:'clear',target:25,gem:'undead',icon:'💀'},{type:'score',target:5000,icon:'⭐'}], stars:[7000,11000,15000] }),
-L(26, { width:7, height:7, moves:25, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:6,specialType:'any',icon:'✨'}], stars:[6000,9500,13500] }),
+L(26, { width:7, height:7, moves:30, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:3,specialType:'any',icon:'✨'}], stars:[6000,9500,13500] }),
 L(27, { moves:32, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'score',target:8000,icon:'⭐'},{type:'combo',target:6,icon:'🔥'}], stars:[8000,12000,16000] }),
 L(28, { moves:30, gems:['elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:50,gem:'knight',icon:'⚔️'}], stars:[7500,11500,15500] }),
-L(29, { moves:28, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:4,specialType:'line',icon:'⚡',label:'连4消生成'},{type:'special',target:2,specialType:'bomb',icon:'💣'}], stars:[7000,11000,15000] }),
+L(29, { moves:35, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:2,specialType:'line',icon:'⚡',label:'连4消生成'},{type:'special',target:1,specialType:'bomb',icon:'💣'}], stars:[7000,11000,15000] }),
 L(30, { moves:38, gems:['orc','elf','mage','knight','dwarf','undead'], boss:true, objectives:[{type:'score',target:10000,icon:'⭐'}], stars:[10000,15000,20000] }),
 
 // =========== Ch4: 诅咒之地 (31-40) ===========
