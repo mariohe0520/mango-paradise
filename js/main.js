@@ -164,8 +164,7 @@ class App {
     setupAudioInit() {
         const initAudio = async () => {
             await Audio.init();
-            // 可选：播放背景音乐
-            // Audio.startBGM();
+            Audio.startBGM();
             
             // 移除监听器
             document.removeEventListener('click', initAudio);

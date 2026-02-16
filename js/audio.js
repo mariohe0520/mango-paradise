@@ -691,6 +691,63 @@ class AudioSystem {
         }
     }
 
+    // Boss BGM — darker, tense minor key
+    startBossBGM() {
+        this.stopBGM();
+        if (!this.musicEnabled || !this.initialized) return;
+        try {
+            const ctx = this.context;
+            // D minor arpeggio — tense, urgent
+            const melody = [
+                [294, 0.3, 0.05], // D4
+                [349, 0.3, 0.05], // F4
+                [440, 0.3, 0.05], // A4
+                [349, 0.2, 0.05], // F4
+                [330, 0.3, 0.05], // E4
+                [294, 0.3, 0.05], // D4
+                [262, 0.3, 0.1],  // C4
+                [294, 0.5, 0.2],  // D4
+                [349, 0.3, 0.05], // F4
+                [392, 0.3, 0.05], // G4
+                [440, 0.4, 0.1],  // A4
+                [392, 0.2, 0.05], // G4
+                [349, 0.3, 0.05], // F4
+                [330, 0.5, 0.2],  // E4
+                [294, 0.6, 0.3],  // D4
+            ];
+            const bass = [[147, 1.2], [131, 1.2], [147, 1.2], [110, 1.2]]; // D2, C2, D2, A1
+
+            const loopLen = melody.reduce((s, n) => s + n[1] + n[2], 0);
+            const playLoop = () => {
+                if (!this.musicEnabled) return;
+                let t = ctx.currentTime + 0.1;
+                for (const [freq, dur, rest] of melody) {
+                    const osc = ctx.createOscillator(); const env = ctx.createGain();
+                    osc.type = 'sawtooth'; osc.frequency.value = freq;
+                    env.gain.setValueAtTime(0, t);
+                    env.gain.linearRampToValueAtTime(0.08, t + 0.03);
+                    env.gain.linearRampToValueAtTime(0.04, t + dur);
+                    osc.connect(env); env.connect(this.bgmGain);
+                    osc.start(t); osc.stop(t + dur + 0.01);
+                    t += dur + rest;
+                }
+                let bt = ctx.currentTime + 0.1;
+                for (const [freq, dur] of bass) {
+                    const osc = ctx.createOscillator(); const env = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.value = freq;
+                    env.gain.setValueAtTime(0.08, bt);
+                    env.gain.linearRampToValueAtTime(0.03, bt + dur);
+                    osc.connect(env); env.connect(this.bgmGain);
+                    osc.start(bt); osc.stop(bt + dur + 0.01);
+                    bt += dur;
+                }
+                this._bgmTimer = setTimeout(playLoop, loopLen * 1000);
+            };
+            this.bgmNode = true;
+            playLoop();
+        } catch (e) {}
+    }
+
     // 停止背景音乐
     stopBGM() {
         if (this._bgmTimer) { clearTimeout(this._bgmTimer); this._bgmTimer = null; }

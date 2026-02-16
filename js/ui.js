@@ -985,6 +985,8 @@ const UI = {
             const isBoss = Boss.isBossLevel(levelId);
             const bossBar = document.getElementById('boss-bar');
             if (bossBar) bossBar.style.display = isBoss ? 'block' : 'none';
+            // Switch BGM for boss levels
+            if (isBoss) Audio.startBossBGM(); else Audio.startBGM();
             const gameScreen = document.getElementById('game-screen');
             if (gameScreen) {
                 gameScreen.classList.toggle('boss-active', isBoss);
