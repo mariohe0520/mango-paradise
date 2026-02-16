@@ -257,19 +257,14 @@ class Game {
             const container = document.querySelector('.game-board-container');
             let cellFromH = 999;
             if (gameScreen && container) {
-                // Use cached chrome height if available (expensive to recalculate)
-                if (!this._cachedChromeH || this._lastScreenH !== window.innerHeight) {
-                    let chromeH = 0;
-                    for (const el of gameScreen.children) {
-                        if (el === container || el.style.display === 'none' || !el.offsetHeight) continue;
-                        if (el.style.position === 'absolute' || el.style.position === 'fixed') continue;
-                        chromeH += el.offsetHeight;
-                    }
-                    this._cachedChromeH = chromeH + 8;
-                    this._lastScreenH = window.innerHeight;
+                // Measure chrome height directly (no getComputedStyle, fast)
+                let chromeH = 0;
+                for (const el of gameScreen.children) {
+                    if (el === container || el.style.display === 'none' || !el.offsetHeight) continue;
+                    chromeH += el.offsetHeight;
                 }
-                const availH = window.innerHeight - this._cachedChromeH - (this.height - 1) * gap;
-                cellFromH = Math.floor(availH / this.height);
+                const availH = window.innerHeight - chromeH - 4; // minimal 4px safety
+                cellFromH = Math.floor((availH - (this.height - 1) * gap) / this.height);
             }
 
             let cellPx = Math.min(cellFromW, cellFromH);
@@ -307,37 +302,30 @@ class Game {
                 this._lastCellPx = cellPx;
             }
 
-            // ── Fast update: only swap gem content + cell states (no DOM rebuild) ──
+            // ── Ultra-fast update: skip unchanged cells entirely ──
+            const children = boardEl.children;
             for (let y = 0; y < this.height; y++) {
                 for (let x = 0; x < this.width; x++) {
                     const idx = y * this.width + x;
-                    const cell = boardEl.children[idx];
+                    const cell = children[idx];
                     if (!cell) continue;
                     const gem = this.board[y][x];
+                    const gemId = gem ? gem.id : '';
 
-                    // Update cell states
-                    cell.classList.remove('frozen', 'locked-cell');
-                    cell.style.animation = '';
-                    delete cell.dataset.lockLevel;
-                    const cst = this.cellStates[y] && this.cellStates[y][x];
-                    if (cst) {
-                        if (cst.frozen) cell.classList.add('frozen');
-                        if (cst.locked > 0) { cell.classList.add('locked-cell'); cell.dataset.lockLevel = cst.locked; }
-                    }
+                    // Skip entirely if gem hasn't changed
+                    if (cell._lastGemId === gemId && !cell._dirty) continue;
+                    cell._lastGemId = gemId;
+                    cell._dirty = false;
 
-                    // Update gem content — only if changed
-                    const existingGem = cell.querySelector('.gem');
-                    const existingId = existingGem ? existingGem.dataset.id : null;
+                    // Update gem content
+                    const existingGem = cell.firstChild;
                     if (gem) {
-                        if (existingId !== gem.id) {
-                            cell.innerHTML = '';
+                        if (!existingGem || existingGem.dataset.id !== gem.id) {
+                            cell.textContent = '';
                             cell.appendChild(this.createGemElement(gem));
-                        } else if (existingGem) {
-                            // Same gem, just update special class if needed
-                            existingGem.className = 'gem' + (gem.special !== this.SPECIAL_TYPES.NONE ? ' special ' + gem.special : '');
                         }
                     } else if (existingGem) {
-                        cell.innerHTML = '';
+                        cell.textContent = '';
                     }
                 }
             }
@@ -348,15 +336,11 @@ class Game {
 
     createGemElement(gem) {
         const gemEl = document.createElement('div');
-        gemEl.className = 'gem';
+        gemEl.className = `gem gem-${gem.type}`;
         gemEl.dataset.type = gem.type;
         gemEl.dataset.id = gem.id;
         const gemData = GEM_TYPES[gem.type];
         gemEl.textContent = gemData ? gemData.emoji : '❓';
-        // Colored orb background based on gem type
-        if (gemData && gemData.color) {
-            gemEl.style.background = `radial-gradient(circle at 35% 35%, ${gemData.color}40, ${gemData.color}15 70%, transparent)`;
-        }
         if (gem.special !== this.SPECIAL_TYPES.NONE) {
             gemEl.classList.add('special', gem.special);
         }
@@ -379,8 +363,14 @@ class Game {
         if (gem) cell.appendChild(this.createGemElement(gem));
     }
 
-    getCell(x, y) { return document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`); }
-    getGemElement(x, y) { const c = this.getCell(x, y); return c ? c.querySelector('.gem') : null; }
+    getCell(x, y) {
+        // Direct index lookup — O(1) instead of querySelector O(n)
+        const boardEl = document.getElementById('game-board');
+        if (!boardEl) return null;
+        const idx = y * this.width + x;
+        return boardEl.children[idx] || null;
+    }
+    getGemElement(x, y) { const c = this.getCell(x, y); return c ? c.firstChild : null; }
 
     // ==========================================
     // Input Handling
@@ -673,7 +663,7 @@ class Game {
                     if (gemEl) gemEl.classList.add('matching');
                 }
             }
-            await Utils.wait(180); // quick pop animation — fast!
+            await Utils.wait(120);
 
             for (const match of matches) await this.processMatch(match);
             Achievements.check('combo', this.combo);
@@ -1020,7 +1010,7 @@ class Game {
         if (dropped) {
             this.render();
             Audio.play('cascade');
-            await Utils.wait(120); // fast drop — gravity feels quick
+            await Utils.wait(80);
         }
     }
 
@@ -1035,7 +1025,7 @@ class Game {
                 }
         if (filled) {
             this.render();
-            await Utils.wait(100); // minimal wait — keep cascade snappy
+            await Utils.wait(60);
         }
     }
 

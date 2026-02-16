@@ -2415,3 +2415,15 @@ input[type="range"]::-webkit-slider-thumb {
 
 #game-screen[data-theme="final"] { background: linear-gradient(180deg, #1a0000 0%, #300505 30%, #1a0000 70%, #0d0000 100%); }
 #game-screen[data-theme="final"] .board-frame { border-color: rgba(239,68,68,0.6); box-shadow: var(--shadow-lg), 0 0 40px rgba(239,68,68,0.2), inset 0 0 20px rgba(239,68,68,0.05); }
+
+/* Gem type colors via CSS classes (no inline styles = faster rendering) */
+.gem-murloc { background: radial-gradient(circle at 35% 35%, #22c55e40, transparent 70%); }
+.gem-orc { background: radial-gradient(circle at 35% 35%, #dc262640, transparent 70%); }
+.gem-elf { background: radial-gradient(circle at 35% 35%, #a855f740, transparent 70%); }
+.gem-mage { background: radial-gradient(circle at 35% 35%, #3b82f640, transparent 70%); }
+.gem-knight { background: radial-gradient(circle at 35% 35%, #ef444440, transparent 70%); }
+.gem-dwarf { background: radial-gradient(circle at 35% 35%, #f9731640, transparent 70%); }
+.gem-undead { background: radial-gradient(circle at 35% 35%, #6b728040, transparent 70%); }
+.gem-mango { background: radial-gradient(circle at 35% 35%, #fbbf2440, transparent 70%); }
+.gem-dragon { background: radial-gradient(circle at 35% 35%, #dc262640, transparent 70%); }
+.gem-phoenix { background: radial-gradient(circle at 35% 35%, #f9731640, transparent 70%); }

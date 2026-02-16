@@ -36,6 +36,22 @@ const UI = {
             this.showDailyCheckin();
         });
         
+        document.getElementById('btn-daily-challenge')?.addEventListener('click', () => {
+            Audio.play('click');
+            if (DailyChallenge.hasPlayedToday()) {
+                this.showToast('今天已挑战过了，明天再来！', 'info');
+                return;
+            }
+            const level = DailyChallenge.generate();
+            this.startSpecialLevel(level);
+        });
+
+        document.getElementById('btn-endless')?.addEventListener('click', () => {
+            Audio.play('click');
+            const level = EndlessMode.start();
+            this.startSpecialLevel(level);
+        });
+
         document.getElementById('btn-leaderboard')?.addEventListener('click', () => {
             Audio.play('click');
             this.showLeaderboard();
