@@ -141,6 +141,37 @@ class Game {
         this.createBoard();
         this.ensureNoInitialMatches();
 
+        // Apply blockers (frozen/locked cells) based on level config
+        try {
+            const levelId = this.level.id || 0;
+            // Auto-generate blockers for later levels (adds challenge variety)
+            if (levelId >= 31 && levelId <= 100) {
+                const difficulty = Math.floor((levelId - 31) / 10); // 0-6
+                // Frozen cells: 2-6 based on difficulty
+                const frozenCount = Math.min(2 + difficulty, 6);
+                for (let i = 0; i < frozenCount; i++) {
+                    const fx = Utils.randomInt(0, this.width-1);
+                    const fy = Utils.randomInt(0, this.height-1);
+                    if (this.cellStates[fy] && this.cellStates[fy][fx]) {
+                        this.cellStates[fy][fx].frozen = true;
+                    }
+                }
+                // Locked cells (level 51+): 1-4
+                if (levelId >= 51) {
+                    const lockedCount = Math.min(1 + Math.floor(difficulty / 2), 4);
+                    for (let i = 0; i < lockedCount; i++) {
+                        const lx = Utils.randomInt(0, this.width-1);
+                        const ly = Utils.randomInt(0, this.height-1);
+                        if (this.cellStates[ly] && this.cellStates[ly][lx] && !this.cellStates[ly][lx].frozen) {
+                            this.cellStates[ly][lx].locked = levelId >= 71 ? 2 : 1;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('[Game.init] blockers error:', e);
+        }
+
         // Place start bomb if buff active
         try {
             if (Estate.hasBuff('start_bomb')) {
@@ -339,6 +370,14 @@ class Game {
                         }
                     } else if (existingGem) {
                         cell.textContent = '';
+                    }
+
+                    // Update cell states (frozen/locked)
+                    const cs = this.cellStates[y] && this.cellStates[y][x];
+                    if (cs) {
+                        cell.classList.toggle('frozen', !!cs.frozen);
+                        cell.classList.toggle('locked-cell', cs.locked > 0);
+                        if (cs.locked > 0) cell.dataset.lockLevel = cs.locked;
                     }
                 }
             }
