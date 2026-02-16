@@ -694,21 +694,20 @@ h1, h2, h3 {
    ========================================== */
 #game-screen {
     background: var(--board-bg);
-    padding: 0.25rem;
-    /* display and flex-direction are handled by .screen / .screen.active */
+    padding: 0;
 }
 
 .game-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.25rem 0.5rem;
-    padding-top: calc(env(safe-area-inset-top, 0.25rem));
+    padding: 0.125rem 0.5rem;
+    padding-top: env(safe-area-inset-top, 2px);
 }
 
 .btn-pause {
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
     background: var(--bg-card);
     border: var(--border-primary);
     border-radius: var(--radius-md);
@@ -766,9 +765,10 @@ h1, h2, h3 {
 .game-objectives {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.125rem 0.5rem;
+    gap: 0.25rem;
+    padding: 0 0.5rem;
     flex-wrap: wrap;
+    font-size: 0.85rem;
 }
 
 .objective {
@@ -805,7 +805,7 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.125rem;
+    padding: 0;
     min-height: 0;
     overflow: visible;
     touch-action: none;
@@ -813,7 +813,7 @@ h1, h2, h3 {
 
 .board-frame {
     position: relative;
-    padding: 4px;
+    padding: 2px;
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(45, 27, 78, 0.8));
     border-radius: var(--radius-lg);
     border: 2px solid rgba(139, 92, 246, 0.4);
@@ -954,8 +954,8 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.125rem 0.25rem;
+    gap: 0.25rem;
+    padding: 0 0.25rem;
 }
 .game-powerups {
     display: flex;
@@ -1959,8 +1959,8 @@ input[type="range"]::-webkit-slider-thumb {
    Boss HP Bar
    ========================================== */
 .boss-bar {
-    margin: 0 1rem;
-    padding: 0.5rem 0.75rem;
+    margin: 0 0.5rem;
+    padding: 0.125rem 0.5rem;
     background: linear-gradient(135deg, rgba(220,38,38,0.15), rgba(220,38,38,0.05));
     border: 1px solid rgba(239,68,68,0.4);
     border-radius: var(--radius-md);

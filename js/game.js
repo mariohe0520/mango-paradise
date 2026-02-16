@@ -249,7 +249,7 @@ class Game {
             const gap = 2; // matches --board-gap
 
             // Width-first: board should fill 95% of screen width (maximize touch area)
-            const targetBoardW = Math.floor(window.innerWidth * 0.95);
+            const targetBoardW = Math.floor(window.innerWidth * 0.97);
             const cellFromW = Math.floor((targetBoardW - (this.width - 1) * gap) / this.width);
 
             // Height constraint: measure actual non-board elements
@@ -265,7 +265,7 @@ class Game {
                         if (el.style.position === 'absolute' || el.style.position === 'fixed') continue;
                         chromeH += el.offsetHeight;
                     }
-                    this._cachedChromeH = chromeH + 24;
+                    this._cachedChromeH = chromeH + 8;
                     this._lastScreenH = window.innerHeight;
                 }
                 const availH = window.innerHeight - this._cachedChromeH - (this.height - 1) * gap;
