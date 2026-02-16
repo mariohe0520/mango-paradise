@@ -181,14 +181,18 @@ const Estate = {
 
     // ── Decorations: collectible cosmetic items ──
     DECORATIONS: {
+        horde_banner: { id: 'horde_banner', name: '部落战旗', emoji: '🚩', cost: 100, happiness: 15 },
         lantern: { id: 'lantern', name: '庄园灯笼', emoji: '🏮', cost: 200, happiness: 20 },
-        fountain: { id: 'fountain', name: '许愿喷泉', emoji: '⛲', cost: 500, happiness: 40 },
-        statue: { id: 'statue', name: '芒果雕像', emoji: '🗿', cost: 800, happiness: 60 },
         garden: { id: 'garden', name: '花园', emoji: '🌺', cost: 300, happiness: 25 },
+        totem: { id: 'totem', name: '萨满图腾', emoji: '⚡', cost: 400, happiness: 30 },
+        fountain: { id: 'fountain', name: '许愿喷泉', emoji: '⛲', cost: 500, happiness: 40 },
         bridge: { id: 'bridge', name: '小桥', emoji: '🌉', cost: 600, happiness: 45 },
-        windmill: { id: 'windmill', name: '风车', emoji: '🎡', cost: 1000, happiness: 70 },
-        castle: { id: 'castle', name: '芒果城堡', emoji: '🏰', cost: 5000, happiness: 200 },
+        statue: { id: 'statue', name: '萨尔雕像', emoji: '🗿', cost: 800, happiness: 60 },
+        windmill: { id: 'windmill', name: '部落风车', emoji: '🎡', cost: 1000, happiness: 70 },
+        wolf_den: { id: 'wolf_den', name: '狼骑兵营', emoji: '🐺', cost: 1500, happiness: 85 },
+        war_drum: { id: 'war_drum', name: '战鼓', emoji: '🥁', cost: 2000, happiness: 100 },
         dragon_nest: { id: 'dragon_nest', name: '龙巢', emoji: '🐲', cost: 3000, happiness: 120 },
+        org_gate: { id: 'org_gate', name: '奥格瑞玛之门', emoji: '🏰', cost: 5000, happiness: 200 },
     },
 
     // ── Core Methods ──
