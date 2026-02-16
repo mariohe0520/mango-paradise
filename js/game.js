@@ -683,6 +683,10 @@ class Game {
         // Clear the two swapped gems
         this.board[y1][x1] = null; this.board[y2][x2] = null;
         this.render(); await Utils.wait(300);
+        // CRITICAL: refill board after special swap clears cells
+        await this.dropGems();
+        await this.fillGems();
+        this.render();
         Collection.checkUnlock('special_combo');
     }
 
@@ -838,19 +842,10 @@ class Game {
 
         // Determine special gem - with rainbow_4 buff check
         if (count === 4) {
-            if (Estate.hasBuff('rainbow_4')) {
-                // 4-match creates rainbow instead of line gem! (彩虹树 Buff)
-                specialType = this.SPECIAL_TYPES.RAINBOW;
-                specialPosition = match.cells[2];
-                Collection.checkUnlock('special_create', {specialType:'rainbow'});
-                // Visual: rainbow flash to celebrate buff activation
-                const c = this.getCell(match.cells[2].x, match.cells[2].y);
-                if (c) { const r = c.getBoundingClientRect(); Particles.rainbow(r.left+r.width/2, r.top+r.height/2); }
-            } else {
-                specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
-                specialPosition = match.cells[1];
-                Collection.checkUnlock('special_create', {specialType: match.direction === 'horizontal' ? 'vertical' : 'horizontal'});
-            }
+            // Always create line gem (rainbow_4 buff disabled — was confusing players)
+            specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
+            specialPosition = match.cells[1];
+            Collection.checkUnlock('special_create', {specialType: match.direction === 'horizontal' ? 'vertical' : 'horizontal'});
         } else if (count >= 5) {
             if (match.direction === 'cross') {
                 specialType = this.SPECIAL_TYPES.BOMB;
