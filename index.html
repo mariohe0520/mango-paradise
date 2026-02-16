@@ -197,29 +197,30 @@
             </div>
         </div>
 
-        <div class="game-powerups">
-            <button class="powerup-btn" id="powerup-hammer" data-powerup="hammer">
-                <span class="powerup-icon">🔨</span>
-                <span class="powerup-count" id="hammer-count">3</span>
-            </button>
-            <button class="powerup-btn" id="powerup-shuffle" data-powerup="shuffle">
-                <span class="powerup-icon">🔀</span>
-                <span class="powerup-count" id="shuffle-count">3</span>
-            </button>
-            <button class="powerup-btn" id="powerup-hint" data-powerup="hint">
-                <span class="powerup-icon">💡</span>
-                <span class="powerup-count" id="hint-count">5</span>
-            </button>
-        </div>
-
-        <!-- Skill Bar (Awakening System) -->
-        <div class="skill-bar-container" id="skill-bar-container">
-            <div class="skill-bar-track">
-                <div class="skill-bar-fill" id="skill-bar-fill"></div>
+        <!-- Combined powerups + skill bar (single row) -->
+        <div class="game-bottom-bar">
+            <div class="game-powerups">
+                <button class="powerup-btn" id="powerup-hammer" data-powerup="hammer">
+                    <span class="powerup-icon">🔨</span>
+                    <span class="powerup-count" id="hammer-count">3</span>
+                </button>
+                <button class="powerup-btn" id="powerup-shuffle" data-powerup="shuffle">
+                    <span class="powerup-icon">🔀</span>
+                    <span class="powerup-count" id="shuffle-count">3</span>
+                </button>
+                <button class="powerup-btn" id="powerup-hint" data-powerup="hint">
+                    <span class="powerup-icon">💡</span>
+                    <span class="powerup-count" id="hint-count">5</span>
+                </button>
             </div>
-            <button class="skill-activate-btn" id="skill-activate-btn" disabled>
-                <span class="skill-spirit-icon" id="skill-spirit-icon">🧚</span>
-            </button>
+            <div class="skill-bar-compact" id="skill-bar-container">
+                <div class="skill-bar-track">
+                    <div class="skill-bar-fill" id="skill-bar-fill"></div>
+                </div>
+                <button class="skill-activate-btn" id="skill-activate-btn" disabled>
+                    <span class="skill-spirit-icon" id="skill-spirit-icon">🧚</span>
+                </button>
+            </div>
         </div>
 
         <div class="combo-display" id="combo-display" style="display:none">
