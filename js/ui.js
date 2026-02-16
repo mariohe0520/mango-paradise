@@ -62,6 +62,32 @@ const UI = {
             this.showWeeklyChallenge();
         });
         
+        // Boss Revenge button — show/hide based on availability
+        const revengeBtn = document.getElementById('btn-revenge');
+        if (revengeBtn) {
+            const revenge = typeof BossRevenge !== 'undefined' ? BossRevenge.getRevengeBoss() : null;
+            if (revenge) {
+                revengeBtn.style.display = '';
+                revengeBtn.querySelector('.btn-subtitle').textContent = `${revenge.name} 等你再战！`;
+                revengeBtn.addEventListener('click', () => {
+                    Audio.play('click');
+                    const level = BossRevenge.generateRevengeLevel(revenge);
+                    // Init revenge boss in Boss system
+                    Boss.currentBoss = { ...revenge, levelId: level.id };
+                    Boss.bossHP = revenge.hp;
+                    Boss.bossMaxHP = revenge.hp;
+                    Boss.movesSinceAttack = 0;
+                    Boss.currentPhase = 0;
+                    Boss.phaseAnnounced = { 0: true };
+                    Boss._rageMode = false;
+                    Boss._saidFear = false;
+                    this.showSpiritPicker(revenge.bossLvl, () => {
+                        this.doStartLevel(level.id, level);
+                    });
+                });
+            }
+        }
+
         document.getElementById('btn-estate')?.addEventListener('click', () => {
             Audio.play('click');
             this.showEstate();

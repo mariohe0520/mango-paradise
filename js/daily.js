@@ -362,3 +362,96 @@ const WeeklyChallenge = {
         return board.slice(0, 15);
     }
 };
+
+// ══════════════════════════════════════
+// 👹 Boss Revenge — beaten bosses return stronger
+// ══════════════════════════════════════
+const BossRevenge = {
+    // Check if a revenge boss is available today
+    getRevengeBoss() {
+        const seed = DailyChallenge.getSeed();
+        const rng = DailyChallenge.seededRandom(seed * 7);
+
+        // Which bosses has player beaten?
+        const beatenBosses = [];
+        for (const lvl of [10,20,30,40,50,60,70,80,90,100]) {
+            if (Storage.data?.bossLoot?.[lvl]) beatenBosses.push(lvl);
+        }
+        if (beatenBosses.length === 0) return null;
+
+        // 60% chance of revenge boss each day
+        if (rng() > 0.6) return null;
+
+        // Pick a random beaten boss
+        const bossLvl = beatenBosses[Math.floor(rng() * beatenBosses.length)];
+        const baseBoss = Boss.BOSSES[bossLvl];
+        if (!baseBoss) return null;
+
+        // Revenge count increases each time they appear
+        const revengeCount = this.getRevengeCount(bossLvl);
+
+        // Scale up: +30% HP per revenge, +1 attack type, faster interval
+        const hpMultiplier = 1.3 + revengeCount * 0.3;
+        const allAttacks = ['ice','lock','shuffle','transform','steal'];
+
+        // Add new attacks from pool
+        const phases = baseBoss.phases.map(p => {
+            const newAtks = [...p.attacks];
+            for (let i = 0; i < revengeCount && newAtks.length < allAttacks.length; i++) {
+                const unused = allAttacks.filter(a => !newAtks.includes(a));
+                if (unused.length > 0) newAtks.push(unused[Math.floor(rng() * unused.length)]);
+            }
+            return { ...p, attacks: newAtks, interval: Math.max(1, p.interval - Math.floor(revengeCount / 2)) };
+        });
+
+        return {
+            bossLvl,
+            name: `${baseBoss.name}·复仇`,
+            hp: Math.floor(baseBoss.hp * hpMultiplier),
+            phases,
+            weakness: baseBoss.weakness,
+            desc: `${baseBoss.name}带着怒火回来了！(复仇第${revengeCount + 1}次)`,
+            revengeCount,
+            // Revenge loot: scaled rewards
+            loot: {
+                gold: Math.floor((Boss.LOOT[bossLvl]?.gold || 500) * (1 + revengeCount * 0.5)),
+                gems: Math.floor((Boss.LOOT[bossLvl]?.gems || 5) * (1 + revengeCount * 0.3)),
+                title: revengeCount >= 3 ? `${baseBoss.name}克星` : null
+            }
+        };
+    },
+
+    getRevengeCount(bossLvl) {
+        return Storage.data?.bossRevenge?.[bossLvl] || 0;
+    },
+
+    recordRevenge(bossLvl) {
+        if (!Storage.data.bossRevenge) Storage.data.bossRevenge = {};
+        Storage.data.bossRevenge[bossLvl] = (Storage.data.bossRevenge[bossLvl] || 0) + 1;
+        Storage.save();
+    },
+
+    // Generate revenge boss as a playable level
+    generateRevengeLevel(revengeBoss) {
+        const allGems = Object.keys(GEM_TYPES);
+        const gems = allGems.filter(g => GEM_TYPES[g].rarity === 'common').slice(0, 6);
+        gems.push('mango');
+        if (revengeBoss.revengeCount >= 2) gems.push('dragon');
+
+        return {
+            id: 9000 + revengeBoss.bossLvl,
+            revenge: true,
+            revengeBoss,
+            chapter: 10,
+            width: 8, height: 10,
+            moves: Math.max(25, 40 - revengeBoss.revengeCount * 2),
+            timed: false, timeLimit: 0,
+            gems,
+            objectives: [{ type: 'score', target: 10000 + revengeBoss.revengeCount * 5000, icon: '⭐' }],
+            boss: true,
+            stars: [10000, 20000, 35000],
+            special: {},
+            blockers: []
+        };
+    }
+};
