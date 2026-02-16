@@ -431,7 +431,13 @@ class Game {
     touchStartX = 0; touchStartY = 0; touchStartCell = null;
 
     onTouchStart(e, x, y) {
+        // Emergency unlock: if stuck for >10s, force reset
+        if (this.isProcessing && this._lastProcessingStart && Date.now() - this._lastProcessingStart > 10000) {
+            console.warn('[onTouchStart] Emergency unlock: isProcessing stuck >10s');
+            this.isProcessing = false;
+        }
         if (this.isProcessing || this.isPaused || this.isGameOver) return;
+        this._lastProcessingStart = Date.now();
         const touch = e.touches[0];
         this.touchStartX = touch.clientX; this.touchStartY = touch.clientY;
         this.touchStartCell = { x, y };
@@ -519,6 +525,16 @@ class Game {
         this.deselectCell();
         this.isProcessing = true;
         this.resetHintTimer();
+        // Safety valve: auto-unlock after 8s (never leave game stuck)
+        clearTimeout(this._processingTimeout);
+        this._processingTimeout = setTimeout(() => {
+            if (this.isProcessing) {
+                console.warn('[trySwap] Safety valve: forced isProcessing=false');
+                this.isProcessing = false;
+                this.render();
+                this.updateUI();
+            }
+        }, 8000);
 
         try {
             await this.animateSwap(x1, y1, x2, y2);

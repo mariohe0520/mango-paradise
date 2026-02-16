@@ -1100,6 +1100,7 @@ h1, h2, h3 {
     z-index: 500;
     padding: 1rem;
     animation: fade-in 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .modal.active {

@@ -184,9 +184,12 @@ const UI = {
             game.activateSkill();
         });
 
-        // Story dialog
+        // Story dialog — button + tap anywhere to advance
         document.getElementById('story-continue-btn')?.addEventListener('click', () => {
             this.advanceStoryDialog();
+        });
+        document.getElementById('story-dialog')?.addEventListener('click', (e) => {
+            if (e.target.id === 'story-dialog') this.advanceStoryDialog();
         });
 
         // 胜利界面
