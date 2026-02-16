@@ -387,5 +387,84 @@ const Estate = {
 
     getHappiness() {
         return Storage.getEstate().happiness || 0;
+    },
+
+    // ══════════════════════════════════════
+    // 🧚 Spirit Affinity System — use them, they grow
+    // ══════════════════════════════════════
+
+    // Affinity thresholds and passive bonuses
+    AFFINITY_LEVELS: [
+        { exp: 0,   name: '初识',   bonus: null },
+        { exp: 50,  name: '友好',   bonus: '充能速度+10%' },
+        { exp: 150, name: '信赖',   bonus: '技能伤害+20%' },
+        { exp: 350, name: '挚友',   bonus: '专属被动效果' },
+        { exp: 700, name: '灵魂契约', bonus: '全属性+30%+专属特效' }
+    ],
+
+    // Passive bonuses per spirit at affinity level 3+ (挚友)
+    AFFINITY_PASSIVES: {
+        mango_fairy:    '每次消除芒果宝石额外+50分',
+        bee_spirit:     '每回合有10%概率自动消除1个',
+        rainbow_spirit: '彩虹宝石出现概率+15%',
+        dragon_spirit:  '对Boss额外伤害+25%',
+        phoenix_spirit: '每关额外1次复活机会',
+        frost_spirit:   '冰冻格子自动减少1层',
+        time_spirit:    '每5回合自动+1步',
+        chaos_spirit:   '每次消除10%概率触发随机技能'
+    },
+
+    getSpiritAffinity(spiritId) {
+        const estate = Storage.getEstate();
+        return estate.spiritAffinity?.[spiritId] || 0;
+    },
+
+    getSpiritAffinityLevel(spiritId) {
+        const exp = this.getSpiritAffinity(spiritId);
+        let level = 0;
+        for (let i = this.AFFINITY_LEVELS.length - 1; i >= 0; i--) {
+            if (exp >= this.AFFINITY_LEVELS[i].exp) { level = i; break; }
+        }
+        return level;
+    },
+
+    addSpiritAffinity(spiritId, amount) {
+        const estate = Storage.getEstate();
+        if (!estate.spiritAffinity) estate.spiritAffinity = {};
+        const before = this.getSpiritAffinityLevel(spiritId);
+        estate.spiritAffinity[spiritId] = (estate.spiritAffinity[spiritId] || 0) + amount;
+        Storage.saveEstate(estate);
+        const after = this.getSpiritAffinityLevel(spiritId);
+        if (after > before) {
+            const spirit = this.SPIRITS[spiritId];
+            const lvInfo = this.AFFINITY_LEVELS[after];
+            UI.showToast(`💕 ${spirit?.emoji || ''} 亲密度提升！→${lvInfo.name}\n${lvInfo.bonus}`, 'success');
+            Audio.play('levelUp');
+            // Unlock passive at level 3
+            if (after >= 3 && this.AFFINITY_PASSIVES[spiritId]) {
+                UI.showToast(`✨ 解锁被动: ${this.AFFINITY_PASSIVES[spiritId]}`, 'success');
+            }
+        }
+    },
+
+    // Get affinity-based charge speed bonus (%)
+    getAffinityChargeBonus(spiritId) {
+        const level = this.getSpiritAffinityLevel(spiritId);
+        if (level >= 4) return 30;
+        if (level >= 1) return level * 10;
+        return 0;
+    },
+
+    // Get affinity-based damage bonus (%)
+    getAffinityDamageBonus(spiritId) {
+        const level = this.getSpiritAffinityLevel(spiritId);
+        if (level >= 4) return 30;
+        if (level >= 2) return 20;
+        return 0;
+    },
+
+    // Check if passive is active
+    hasAffinityPassive(spiritId) {
+        return this.getSpiritAffinityLevel(spiritId) >= 3;
     }
 };

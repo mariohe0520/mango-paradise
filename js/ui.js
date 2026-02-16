@@ -1049,13 +1049,17 @@ const UI = {
         spirits.forEach(s => {
             const isWeak = boss.weakness === s.id;
             const isActive = currentSpirit.id === s.id;
+            const affLv = Estate.getSpiritAffinityLevel(s.id);
+            const affName = Estate.AFFINITY_LEVELS[affLv]?.name || '';
+            const hearts = '💕'.repeat(Math.min(affLv, 4)) || '🤍';
             html += `<button class="spirit-pick-btn" data-spirit="${s.id}" style="
                 padding:8px 10px;border-radius:10px;border:2px solid ${isWeak ? '#ef4444' : isActive ? 'var(--wow-gold)' : '#555'};
                 background:${isActive ? 'rgba(255,215,0,0.15)' : 'rgba(30,30,30,0.8)'};
-                cursor:pointer;min-width:60px;text-align:center;
+                cursor:pointer;min-width:70px;text-align:center;
                 ${isWeak ? 'box-shadow:0 0 8px rgba(239,68,68,0.4);' : ''}">
                 <div style="font-size:1.3rem;">${s.emoji}</div>
                 <div style="font-size:0.7rem;color:var(--text-primary);">${s.name}</div>
+                <div style="font-size:0.55rem;color:#f472b6;">${hearts} ${affName}</div>
                 ${isWeak ? '<div style="font-size:0.6rem;color:#ef4444;">克制!</div>' : ''}
                 ${isActive ? '<div style="font-size:0.6rem;color:var(--wow-gold);">当前</div>' : ''}
             </button>`;

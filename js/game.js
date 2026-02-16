@@ -1612,6 +1612,12 @@ class Game {
         Storage.addExp(this.score / 10);
         Storage.recordGame(true);
         Estate.addHappiness(10 + stars * 5);
+        // 💕 Spirit affinity: gain exp from battles
+        const activeSpirit = Estate.getCurrentSpirit();
+        if (activeSpirit) {
+            const affinityGain = 5 + stars * 3 + (this.isBossLevel ? 15 : 0);
+            Estate.addSpiritAffinity(activeSpirit.id, affinityGain);
+        }
         const gameTime = Math.floor((Date.now() - this.gameStartTime) / 1000);
         Storage.addPlayTime(gameTime);
         Achievements.check('win', this.level.id, { noPowerup: this.powerupsUsed===0, time: gameTime });
