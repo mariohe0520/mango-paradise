@@ -312,7 +312,7 @@ class Game {
             }
 
             let cellPx = Math.min(cellFromW, cellFromH);
-            cellPx = Math.max(36, cellPx); // minimum 36px for touch targets
+            cellPx = Math.max(38, cellPx); // minimum 38px for touch targets on mobile
 
             // Push back to CSS so font-size: calc(var(--cell-size) * 0.65) works
             document.documentElement.style.setProperty('--cell-size', cellPx + 'px');
@@ -1539,7 +1539,12 @@ class Game {
         if (objEl) {
             objEl.innerHTML = this.objectives.map((obj, i) => {
                 const cur = this.objectiveProgress[i], tar = obj.target, done = cur >= tar;
-                return `<div class="objective ${done?'completed':''}"><span class="objective-icon">${obj.icon}</span><span class="objective-count"><span class="current">${Utils.formatNumber(Math.min(cur,tar))}</span>/${Utils.formatNumber(tar)}</span></div>`;
+                // 🔧 FIX: Use actual gem emoji from GEM_TYPES, not hand-written icon
+                let icon = obj.icon;
+                if (obj.gem && typeof GEM_TYPES !== 'undefined' && GEM_TYPES[obj.gem]) {
+                    icon = GEM_TYPES[obj.gem].emoji;
+                }
+                return `<div class="objective ${done?'completed':''}"><span class="objective-icon">${icon}</span><span class="objective-count"><span class="current">${Utils.formatNumber(Math.min(cur,tar))}</span>/${Utils.formatNumber(tar)}</span></div>`;
             }).join('');
         }
 
