@@ -2427,3 +2427,11 @@ input[type="range"]::-webkit-slider-thumb {
 .gem-mango { background: radial-gradient(circle at 35% 35%, #fbbf2440, transparent 70%); }
 .gem-dragon { background: radial-gradient(circle at 35% 35%, #dc262640, transparent 70%); }
 .gem-phoenix { background: radial-gradient(circle at 35% 35%, #f9731640, transparent 70%); }
+
+.victory-next-star {
+    text-align: center;
+    color: var(--wow-gold);
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+    font-weight: 600;
+}

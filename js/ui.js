@@ -1025,6 +1025,23 @@ const UI = {
             document.getElementById('victory-combo').textContent = `x${maxCombo}`;
             document.getElementById('victory-gold').textContent = Utils.formatNumber(goldReward);
 
+            // "Almost next star" encouragement
+            const starThresholds = game.level.stars || [0,0,0];
+            let nextStarMsg = '';
+            if (stars < 3) {
+                const nextTarget = starThresholds[stars]; // threshold for next star
+                const diff = nextTarget - score;
+                if (diff > 0 && diff < nextTarget * 0.3) {
+                    nextStarMsg = `差 ${Utils.formatNumber(diff)} 分就 ${stars+1} 星了！再来一次？`;
+                } else if (stars < 2) {
+                    nextStarMsg = `下一颗星需要 ${Utils.formatNumber(nextTarget)} 分`;
+                }
+            } else {
+                nextStarMsg = '🏆 完美通关！';
+            }
+            const msgEl = document.getElementById('victory-next-star');
+            if (msgEl) msgEl.textContent = nextStarMsg;
+
             const starsEl = document.getElementById('victory-stars');
             if (starsEl) {
                 starsEl.querySelectorAll('.star').forEach((star, i) => {

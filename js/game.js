@@ -892,30 +892,33 @@ class Game {
     // ==========================================
 
     async showBossAttack(attacks) {
-        // Flash boss warning
         const bossUI = document.getElementById('boss-bar');
-        if (bossUI) { bossUI.classList.add('boss-attacking'); }
-        Audio.play('explosion');
-        UI.showToast('⚠️ Boss 反击！', 'error');
-        await Utils.wait(400);
+        if (bossUI) bossUI.classList.add('boss-attacking');
 
+        // Screen flash red
+        const flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;inset:0;background:rgba(239,68,68,0.3);z-index:800;pointer-events:none;transition:opacity 0.4s;';
+        document.body.appendChild(flash);
+        setTimeout(() => { flash.style.opacity = '0'; }, 100);
+        setTimeout(() => flash.remove(), 500);
+
+        Audio.play('explosion');
+        this.screenShake(6, 300);
+        UI.showToast('⚠️ Boss 反击！', 'error');
+        await Utils.wait(300);
+
+        // Apply attacks (no getBoundingClientRect — use cell directly)
         for (const atk of attacks) {
-            const cell = this.getCell(atk.x, atk.y);
-            if (cell) {
-                if (atk.type === 'ice') {
-                    Particles.burst(cell.getBoundingClientRect().left+cell.offsetWidth/2, cell.getBoundingClientRect().top+cell.offsetHeight/2, ['#88ddff','#aaeeff','#ffffff']);
-                    cell.classList.add('frozen');
-                } else if (atk.type === 'lock') {
-                    Particles.burst(cell.getBoundingClientRect().left+cell.offsetWidth/2, cell.getBoundingClientRect().top+cell.offsetHeight/2, ['#888','#aaa','#666']);
-                    cell.classList.add('locked-cell');
-                    cell.dataset.lockLevel = '2';
-                }
+            if (atk.type === 'ice' && this.cellStates[atk.y] && this.cellStates[atk.y][atk.x]) {
+                this.cellStates[atk.y][atk.x].frozen = true;
+            } else if (atk.type === 'lock' && this.cellStates[atk.y] && this.cellStates[atk.y][atk.x]) {
+                this.cellStates[atk.y][atk.x].locked = 2;
             }
         }
 
-        await Utils.wait(300);
-        if (bossUI) bossUI.classList.remove('boss-attacking');
         this.render();
+        await Utils.wait(200);
+        if (bossUI) bossUI.classList.remove('boss-attacking');
     }
 
     // ==========================================
