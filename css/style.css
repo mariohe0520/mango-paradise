@@ -701,8 +701,9 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.125rem 0.5rem;
+    padding: 0.1rem 0.5rem;
     padding-top: env(safe-area-inset-top, 2px);
+    flex-shrink: 0;
 }
 
 .btn-pause {
@@ -765,18 +766,19 @@ h1, h2, h3 {
 .game-objectives {
     display: flex;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.2rem;
     padding: 0 0.5rem;
     flex-wrap: wrap;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    flex-shrink: 0;
 }
 
 .objective {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
     background: var(--bg-card);
-    padding: 0.4rem 0.75rem;
+    padding: 0.25rem 0.5rem;
     border-radius: var(--radius-md);
     border: var(--border-primary);
     transition: all var(--transition-fast);
@@ -1919,21 +1921,24 @@ input[type="range"]::-webkit-slider-thumb {
    ========================================== */
 .toast {
     position: fixed;
-    bottom: -100px;
+    top: -100px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--bg-card);
     border: var(--border-primary);
     border-radius: var(--radius-lg);
-    padding: 1rem 2rem;
-    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    max-width: 90vw;
+    text-align: center;
     z-index: 1000;
-    transition: bottom 0.3s ease;
+    transition: top 0.3s ease;
     box-shadow: var(--shadow-lg);
+    pointer-events: none;
 }
 
 .toast.show {
-    bottom: calc(env(safe-area-inset-bottom, 10px) + 80px);
+    top: calc(env(safe-area-inset-top, 10px) + 60px);
 }
 
 .toast.success {
