@@ -733,7 +733,15 @@ class Game {
             const cellEl = this.getCell(x, y);
             if (cellEl) {
                 const gd = GEM_TYPES[gem.type];
-                Particles.burst(cellEl.getBoundingClientRect().left+cellEl.offsetWidth/2, cellEl.getBoundingClientRect().top+cellEl.offsetHeight/2, gd?gd.color:'#fff');
+                const rect = cellEl.getBoundingClientRect();
+                const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+                Particles.burst(cx, cy, gd?gd.color:'#fff');
+                // Flash effect on cell
+                cellEl.style.animation = 'cell-flash 0.3s ease';
+                // Extra sparkles for rare/epic/legendary gems
+                if (gd && (gd.rarity === 'rare' || gd.rarity === 'epic' || gd.rarity === 'legendary')) {
+                    Particles.sparkle(cx, cy);
+                }
             }
         }
 
@@ -1043,18 +1051,58 @@ class Game {
         const display = document.getElementById('combo-display');
         const count = document.getElementById('combo-count');
         if (display && count) {
-            count.textContent = `x${this.combo}`;
+            // Escalating combo text
+            const comboNames = ['', '', 'GOOD!', 'GREAT!', 'AMAZING!', 'INCREDIBLE!', 'LEGENDARY!', 'GODLIKE!'];
+            const comboName = comboNames[Math.min(this.combo, comboNames.length - 1)] || 'GODLIKE!';
+            count.textContent = `x${this.combo} ${comboName}`;
             display.style.display = 'block';
             display.style.animation = 'none';
             display.offsetHeight;
             display.style.animation = 'combo-pop 0.8s ease forwards';
-            setTimeout(() => { display.style.display = 'none'; }, 800);
+            // Color escalation
+            const colors = ['', '', '#22c55e', '#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#ff0000'];
+            display.style.color = colors[Math.min(this.combo, colors.length - 1)] || '#ff0000';
+            // Scale escalation
+            const scale = 1 + Math.min(this.combo * 0.15, 1.0);
+            display.style.setProperty('--combo-scale', scale);
+            setTimeout(() => { display.style.display = 'none'; }, 1000);
         }
+
+        // 🔥 Screen shake — intensity scales with combo
+        this.screenShake(Math.min(this.combo * 2, 12), 200 + this.combo * 50);
+
+        // 🎆 Particle burst at board center
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
             const r = boardEl.getBoundingClientRect();
             Particles.comboText(r.left+r.width/2, r.top+r.height/2, this.combo);
+            // Extra particles for high combos
+            if (this.combo >= 3) {
+                for (let i = 0; i < this.combo * 3; i++) {
+                    Particles.spark(r.left + Math.random()*r.width, r.top + Math.random()*r.height);
+                }
+            }
         }
+
+        // 🔊 Vibration escalation
+        if (this.combo >= 2) Utils.vibrate(20 + this.combo * 15);
+    }
+
+    // Screen shake effect
+    screenShake(intensity = 5, duration = 300) {
+        const el = document.getElementById('game-board');
+        if (!el) return;
+        const startTime = Date.now();
+        const shake = () => {
+            const elapsed = Date.now() - startTime;
+            if (elapsed >= duration) { el.style.transform = ''; return; }
+            const decay = 1 - elapsed / duration;
+            const x = (Math.random() - 0.5) * 2 * intensity * decay;
+            const y = (Math.random() - 0.5) * 2 * intensity * decay;
+            el.style.transform = `translate(${x}px, ${y}px)`;
+            requestAnimationFrame(shake);
+        };
+        requestAnimationFrame(shake);
     }
 
     // ==========================================

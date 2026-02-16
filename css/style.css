@@ -993,20 +993,24 @@ h1, h2, h3 {
 /* Combo Display */
 .combo-display {
     position: fixed;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
     pointer-events: none;
     z-index: 100;
-    animation: combo-pop 0.8s ease forwards;
+    animation: combo-pop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    font-weight: 900;
+    letter-spacing: 2px;
 }
 
 .combo-text {
     display: block;
     font-family: var(--font-display);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
 .combo-count {
@@ -1957,6 +1961,28 @@ input[type="range"]::-webkit-slider-thumb {
 
 .boss-icon.boss-hit {
     animation: shake 0.3s ease;
+}
+
+.boss-icon.boss-rage {
+    animation: boss-rage-pulse 0.5s ease infinite;
+    filter: drop-shadow(0 0 8px #ff3333);
+}
+
+.boss-bar.rage-active {
+    border-color: #ff3333 !important;
+    box-shadow: 0 0 15px rgba(255,51,51,0.4);
+}
+
+.boss-damage-popup {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    font-weight: 900;
+    font-family: var(--font-display);
+    text-shadow: 0 0 8px currentColor, 2px 2px 0 rgba(0,0,0,0.5);
+    pointer-events: none;
+    animation: damage-float 1.2s ease-out forwards;
+    z-index: 50;
 }
 
 .boss-name {

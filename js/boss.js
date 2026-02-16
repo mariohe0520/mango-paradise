@@ -40,9 +40,34 @@ const Boss = {
         if (!this.currentBoss) return 'none';
         this.bossHP = Math.max(0, this.bossHP - dmg);
         this.updateUI();
+
         // Shake boss on hit
         const bossIcon = document.getElementById('boss-icon');
         if (bossIcon) { bossIcon.classList.remove('boss-hit'); void bossIcon.offsetWidth; bossIcon.classList.add('boss-hit'); }
+
+        // 🔥 Floating damage number
+        const bar = document.getElementById('boss-bar');
+        if (bar && dmg > 0) {
+            const popup = document.createElement('div');
+            popup.className = 'boss-damage-popup';
+            popup.textContent = `-${Utils.formatNumber(Math.round(dmg))}`;
+            // Bigger text for bigger damage
+            const scale = Math.min(1 + dmg / 5000, 2.5);
+            popup.style.fontSize = `${scale}rem`;
+            popup.style.color = dmg > 3000 ? '#ff3333' : dmg > 1000 ? '#ff8800' : '#ffcc00';
+            bar.appendChild(popup);
+            setTimeout(() => popup.remove(), 1200);
+        }
+
+        // 🔥 Boss rage mode — HP below 25%, attack faster
+        if (this.bossHP > 0 && this.bossHP / this.bossMaxHP < 0.25 && !this._rageMode) {
+            this._rageMode = true;
+            if (bossIcon) bossIcon.classList.add('boss-rage');
+            const bossBar = document.getElementById('boss-bar');
+            if (bossBar) bossBar.classList.add('rage-active');
+        }
+
+        if (this.bossHP <= 0) this._rageMode = false;
         return this.bossHP <= 0 ? 'defeated' : 'alive';
     },
 

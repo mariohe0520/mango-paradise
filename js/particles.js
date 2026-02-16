@@ -286,6 +286,27 @@ class ParticleSystem {
         }
     }
 
+    // 快速火花（combo用）
+    spark(x, y) {
+        if (!this.enabled) return;
+        const colors = ['#ffd700', '#ff6b35', '#ff3366', '#00ff88', '#00ccff', '#ff00ff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 5;
+        this.createParticle({
+            x, y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 2,
+            gravity: 0.15,
+            friction: 0.95,
+            size: 3 + Math.random() * 4,
+            color,
+            life: 300 + Math.random() * 400,
+            scaleEnd: 0,
+            style: 'border-radius:50%;box-shadow:0 0 8px ' + color + ';'
+        });
+    }
+
     // 彩虹效果
     rainbow(x, y) {
         if (!this.enabled) return;

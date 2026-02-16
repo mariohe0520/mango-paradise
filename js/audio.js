@@ -608,27 +608,84 @@ class AudioSystem {
         if (!this.musicEnabled || !this.initialized || this.bgmNode) return;
 
         try {
-            // 创建简单的环境音乐
-            this.bgmNode = this.context.createOscillator();
-            const lfo = this.context.createOscillator();
-            const lfoGain = this.context.createGain();
-            
-            // 基础音
-            this.bgmNode.type = 'sine';
-            this.bgmNode.frequency.value = 220;
-            
-            // LFO 调制
-            lfo.type = 'sine';
-            lfo.frequency.value = 0.5;
-            lfoGain.gain.value = 20;
-            
-            lfo.connect(lfoGain);
-            lfoGain.connect(this.bgmNode.frequency);
-            
-            this.bgmNode.connect(this.bgmGain);
-            
-            this.bgmNode.start();
-            lfo.start();
+            // 🎵 Ambient chiptune melody — warm, relaxing, looping
+            const ctx = this.context;
+            // Melody notes (C major pentatonic, dreamy feel)
+            const melody = [
+                // [note, duration, rest]
+                [523, 0.4, 0.1],  // C5
+                [659, 0.4, 0.1],  // E5
+                [784, 0.6, 0.2],  // G5
+                [659, 0.3, 0.1],  // E5
+                [587, 0.4, 0.1],  // D5
+                [523, 0.6, 0.3],  // C5
+                [440, 0.4, 0.1],  // A4
+                [523, 0.4, 0.1],  // C5
+                [587, 0.6, 0.2],  // D5
+                [523, 0.3, 0.1],  // C5
+                [440, 0.4, 0.1],  // A4
+                [392, 0.6, 0.3],  // G4
+                [440, 0.4, 0.1],  // A4
+                [523, 0.4, 0.1],  // C5
+                [659, 0.6, 0.2],  // E5
+                [587, 0.3, 0.1],  // D5
+                [523, 0.8, 0.5],  // C5 (long)
+            ];
+
+            // Bass pattern (simple root notes)
+            const bass = [
+                [131, 1.6], // C3
+                [110, 1.6], // A2
+                [147, 1.6], // D3
+                [131, 1.6], // C3
+            ];
+
+            const loopLength = melody.reduce((s, n) => s + n[1] + n[2], 0);
+
+            // Create melody loop
+            const playLoop = () => {
+                if (!this.musicEnabled) return;
+                let time = ctx.currentTime + 0.1;
+
+                // Melody voice
+                for (const [freq, dur, rest] of melody) {
+                    const osc = ctx.createOscillator();
+                    const env = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    env.gain.setValueAtTime(0, time);
+                    env.gain.linearRampToValueAtTime(0.12, time + 0.05);
+                    env.gain.linearRampToValueAtTime(0.08, time + dur * 0.7);
+                    env.gain.linearRampToValueAtTime(0, time + dur);
+                    osc.connect(env);
+                    env.connect(this.bgmGain);
+                    osc.start(time);
+                    osc.stop(time + dur + 0.01);
+                    time += dur + rest;
+                }
+
+                // Bass voice
+                let bTime = ctx.currentTime + 0.1;
+                for (const [freq, dur] of bass) {
+                    const osc = ctx.createOscillator();
+                    const env = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    env.gain.setValueAtTime(0.06, bTime);
+                    env.gain.linearRampToValueAtTime(0.03, bTime + dur);
+                    osc.connect(env);
+                    env.connect(this.bgmGain);
+                    osc.start(bTime);
+                    osc.stop(bTime + dur + 0.01);
+                    bTime += dur;
+                }
+
+                // Schedule next loop
+                this._bgmTimer = setTimeout(playLoop, loopLength * 1000);
+            };
+
+            this.bgmNode = true; // flag to indicate BGM active
+            playLoop();
         } catch (error) {
             // 静默失败
         }
@@ -636,12 +693,8 @@ class AudioSystem {
 
     // 停止背景音乐
     stopBGM() {
-        if (this.bgmNode) {
-            try {
-                this.bgmNode.stop();
-            } catch (e) {}
-            this.bgmNode = null;
-        }
+        if (this._bgmTimer) { clearTimeout(this._bgmTimer); this._bgmTimer = null; }
+        this.bgmNode = null;
     }
 
     // 设置音效开关
