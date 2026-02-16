@@ -1140,6 +1140,115 @@ class Game {
                 for (const t in typeCounts) { if (typeCounts[t] > maxCount) { maxCount = typeCounts[t]; maxType = t; } }
                 if (maxType) await this.clearGemType(maxType);
                 break;
+
+            case 'dragon_spirit': {
+                // 龙息吐焰：清除2-3行（根据精灵等级）
+                const dragonLv = Estate.getSpiritLevel('dragon_spirit');
+                const rowCount = dragonLv >= 3 ? 3 : 2;
+                const rows = new Set();
+                while (rows.size < rowCount) rows.add(Utils.randomInt(0, this.height-1));
+                for (const row of rows) {
+                    for (let x = 0; x < this.width; x++) {
+                        if (this.board[row][x]) { this.addScore(50); this.updateObjective(this.board[row][x].type); this.board[row][x] = null; }
+                        if (this.cellStates[row]?.[x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
+                    }
+                }
+                // Lv3: also clear all frozen
+                if (dragonLv >= 3) {
+                    for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++)
+                        if (this.cellStates[y]?.[x]?.frozen) this.cellStates[y][x].frozen = false;
+                }
+                Audio.play('match5'); this.screenShake(10, 400);
+                break;
+            }
+            case 'phoenix_spirit': {
+                // 涅槃烈焰：多次3x3爆炸
+                const phoenixLv = Estate.getSpiritLevel('phoenix_spirit');
+                const blasts = phoenixLv >= 3 ? 8 : phoenixLv >= 2 ? 5 : 3;
+                for (let b = 0; b < blasts; b++) {
+                    const cx = Utils.randomInt(1, this.width-2), cy = Utils.randomInt(1, this.height-2);
+                    for (let dy=-1; dy<=1; dy++) for (let dx=-1; dx<=1; dx++) {
+                        const nx=cx+dx, ny=cy+dy;
+                        if (this.isValidCell(nx,ny) && this.board[ny][nx]) {
+                            this.addScore(50); this.updateObjective(this.board[ny][nx].type); this.board[ny][nx]=null;
+                        }
+                    }
+                    if (b % 2 === 0) { Audio.play('explosion'); this.screenShake(5, 150); }
+                    await Utils.wait(60);
+                }
+                break;
+            }
+            case 'frost_spirit': {
+                // 绝对零度：解除所有冰冻 + 清除N个
+                const frostLv = Estate.getSpiritLevel('frost_spirit');
+                const clearCount = frostLv >= 3 ? 15 : frostLv >= 2 ? 10 : 5;
+                // Defrost all
+                for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++)
+                    if (this.cellStates[y]?.[x]?.frozen) this.cellStates[y][x].frozen = false;
+                // Clear random gems
+                let cleared = 0;
+                while (cleared < clearCount) {
+                    const rx = Utils.randomInt(0, this.width-1), ry = Utils.randomInt(0, this.height-1);
+                    if (this.board[ry][rx]) { this.addScore(50); this.updateObjective(this.board[ry][rx].type); this.board[ry][rx]=null; cleared++; }
+                    if (cleared > 50) break; // safety
+                }
+                Audio.play('match4');
+                break;
+            }
+            case 'time_spirit': {
+                // 时光倒流：+步数 + 随机特殊宝石
+                const timeLv = Estate.getSpiritLevel('time_spirit');
+                const extraMoves = timeLv >= 3 ? 8 : 5;
+                const specials = timeLv >= 3 ? 5 : timeLv >= 2 ? 3 : 0;
+                this.movesLeft += extraMoves;
+                for (let i = 0; i < specials; i++) {
+                    let at = 0;
+                    while (at++ < 30) {
+                        const rx = Utils.randomInt(0, this.width-1), ry = Utils.randomInt(0, this.height-1);
+                        if (this.board[ry][rx] && this.board[ry][rx].special === this.SPECIAL_TYPES.NONE) {
+                            const types = [this.SPECIAL_TYPES.HORIZONTAL, this.SPECIAL_TYPES.VERTICAL, this.SPECIAL_TYPES.BOMB];
+                            this.board[ry][rx].special = types[Math.floor(Math.random()*types.length)];
+                            break;
+                        }
+                    }
+                }
+                Audio.play('powerup');
+                UI.showToast(`⏳ +${extraMoves}步！${specials > 0 ? `+${specials}个特殊宝石！` : ''}`, 'success');
+                break;
+            }
+            case 'chaos_spirit': {
+                // 混沌风暴：随机触发1-3个其他精灵技能
+                const chaosLv = Estate.getSpiritLevel('chaos_spirit');
+                const skillCount = Math.min(chaosLv, 3);
+                const otherSpirits = ['mango_fairy','bee_spirit','rainbow_spirit','dragon_spirit','phoenix_spirit','frost_spirit','time_spirit'];
+                for (let i = 0; i < skillCount; i++) {
+                    const pick = otherSpirits[Math.floor(Math.random() * otherSpirits.length)];
+                    const savedSpirit = Estate.getCurrentSpirit();
+                    // Temporarily set spirit to trigger its skill
+                    UI.showToast(`🌀 混沌召唤: ${Estate.SPIRITS[pick]?.name || pick}！`, 'success');
+                    await Utils.wait(200);
+                    // Execute inline (simplified: just call the key effects)
+                    if (pick === 'mango_fairy') {
+                        for (let j = 0; j < 8; j++) {
+                            const rx = Utils.randomInt(0,this.width-1), ry = Utils.randomInt(0,this.height-1);
+                            if (this.board[ry]?.[rx]) { this.addScore(50); this.board[ry][rx]=null; }
+                        }
+                    } else if (pick === 'bee_spirit') {
+                        const row = Utils.randomInt(0,this.height-1);
+                        for (let x=0;x<this.width;x++) if(this.board[row]?.[x]){this.addScore(50);this.board[row][x]=null;}
+                    } else if (pick === 'frost_spirit') {
+                        for(let y=0;y<this.height;y++) for(let x=0;x<this.width;x++) if(this.cellStates[y]?.[x]?.frozen) this.cellStates[y][x].frozen=false;
+                    } else if (pick === 'time_spirit') {
+                        this.movesLeft += 3;
+                    } else {
+                        // Generic: clear 5 random
+                        for(let j=0;j<5;j++){const rx=Utils.randomInt(0,this.width-1),ry=Utils.randomInt(0,this.height-1);if(this.board[ry]?.[rx]){this.addScore(50);this.board[ry][rx]=null;}}
+                    }
+                    this.render(); await Utils.wait(150);
+                }
+                Audio.play('match5'); this.screenShake(8, 300);
+                break;
+            }
         }
 
         this.render();
@@ -1462,6 +1571,15 @@ class Game {
         Storage.completedLevel(this.level.id, stars, this.score);
         Storage.addScore(this.score);
         Storage.addGold(goldReward);
+        // 💎 Crystal Tree: bonus gems on victory
+        if (Estate.hasBuff('gem_bonus')) {
+            const gemBonus = Estate.getTreeBuffValue('crystal') || 1;
+            const actualBonus = (stars === 3 && Estate.getTreeLevel('crystal') >= 4) ? gemBonus : Math.min(gemBonus, 3);
+            if (actualBonus > 0) {
+                Storage.addGems(actualBonus);
+                UI.showToast(`💎 水晶树: +${actualBonus}宝石！`, 'success');
+            }
+        }
         Storage.addExp(this.score / 10);
         Storage.recordGame(true);
         Estate.addHappiness(10 + stars * 5);
@@ -1484,6 +1602,22 @@ class Game {
     }
 
     defeat() {
+        // 🔥 Phoenix Tree: chance to survive defeat
+        if (Estate.hasBuff('second_chance') && !this._usedSecondChance) {
+            const chance = Estate.getTreeBuffValue('phoenix') || 20;
+            if (Math.random() * 100 < chance) {
+                this._usedSecondChance = true;
+                const bonusMoves = Estate.getTreeLevel('phoenix') >= 4 ? 5 : 3;
+                this.movesLeft += bonusMoves;
+                this.updateUI();
+                Audio.play('powerup');
+                UI.showToast(`🔥 凤凰树发动！+${bonusMoves}步！`, 'success');
+                Utils.vibrate([50, 30, 80, 30, 100]);
+                this.screenShake(6, 300);
+                return; // Don't defeat!
+            }
+        }
+
         this.isGameOver = true;
         if (this.timerInterval) clearInterval(this.timerInterval);
         Storage.recordGame(false);
