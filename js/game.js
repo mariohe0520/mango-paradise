@@ -150,6 +150,16 @@ class Game {
         this.updateUI();
         this.startHintTimer();
 
+        // Resize handler: re-render board on orientation change
+        if (!this._resizeHandler) {
+            let resizeTimer;
+            this._resizeHandler = () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => { if (!this.isGameOver) this.render(); }, 200);
+            };
+            window.addEventListener('resize', this._resizeHandler);
+        }
+
         try { Utils.log.info(`Game initialized: Level ${levelId}${this.isBossLevel ? ' (BOSS)' : ''}${this.level.timed ? ' (TIMED)' : ''}`); } catch(e) { console.log('Game init: Level', levelId); }
         return this;
     }
@@ -225,11 +235,21 @@ class Game {
             const boardEl = document.getElementById('game-board');
             if (!boardEl) { console.error('[Game.render] #game-board not found'); return; }
 
-            // Compute cell size from CSS variable, with px fallback
-            const cs = getComputedStyle(document.documentElement);
-            let cellPx = parseFloat(cs.getPropertyValue('--cell-size'));
-            if (!cellPx || isNaN(cellPx)) cellPx = Math.min(Math.floor(window.innerWidth * 0.11), 55);
-            if (cellPx < 10) cellPx = 42; // sanity floor
+            // ── Cell size: compute from VIEWPORT, never from CSS custom properties ──
+            // CSS vars like "10vw" break parseFloat (returns 10 instead of NaN).
+            // So we bypass CSS entirely and calculate from available screen space.
+            const gap = 2; // matches --board-gap
+            // Horizontal: screen 0.5rem*2 + container 0.5rem*2 + frame 8px*2+border 2px*2 + board 4px*2 = ~56px
+            const hPad = 56;
+            const availW = window.innerWidth - hPad - (this.width - 1) * gap;
+            // Vertical: header ~50px + score-bar ~36px + objectives ~40px + powerups ~70px + progress ~40px + paddings ~40px = ~276px
+            const vChrome = 276;
+            const availH = window.innerHeight - vChrome - (this.height - 1) * gap;
+            let cellPx = Math.min(Math.floor(availW / this.width), Math.floor(availH / this.height));
+            cellPx = Math.max(28, Math.min(65, cellPx)); // clamp: 28–65px
+
+            // Push back to CSS so font-size: calc(var(--cell-size) * 0.65) works
+            document.documentElement.style.setProperty('--cell-size', cellPx + 'px');
 
             // Set grid columns via BOTH CSS-var and explicit px (belt + suspenders)
             boardEl.style.gridTemplateColumns = `repeat(${this.width}, ${cellPx}px)`;
@@ -334,7 +354,9 @@ class Game {
         const touch = e.changedTouches[0];
         const dx = touch.clientX - this.touchStartX;
         const dy = touch.clientY - this.touchStartY;
-        if (Math.abs(dx) > 30 || Math.abs(dy) > 30) {
+        // Dynamic swipe threshold: 40% of cell size, minimum 15px
+        const swipeThreshold = Math.max(15, (this._cellPx || 40) * 0.4);
+        if (Math.abs(dx) > swipeThreshold || Math.abs(dy) > swipeThreshold) {
             let tx = this.touchStartCell.x, ty = this.touchStartCell.y;
             if (Math.abs(dx) > Math.abs(dy)) tx += dx > 0 ? 1 : -1;
             else ty += dy > 0 ? 1 : -1;
@@ -577,8 +599,11 @@ class Game {
     async processMatches() {
         let hasMatches = true;
         this.combo = 0;
+        let cascadeDepth = 0;
+        const MAX_CASCADE = 50; // safety valve: no infinite loops
 
-        while (hasMatches) {
+        while (hasMatches && cascadeDepth < MAX_CASCADE) {
+            cascadeDepth++;
             const matches = this.findMatches();
             if (matches.length === 0) { hasMatches = false; break; }
 
