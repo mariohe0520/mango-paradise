@@ -724,31 +724,36 @@ class Game {
 
     findMatches() {
         const matches = [];
-        const checked = new Set();
-        // Horizontal
+        // Horizontal — each run is one complete match
         for (let y = 0; y < this.height; y++) {
-            for (let x = 0; x < this.width - 2; x++) {
-                const gem = this.board[y][x]; if (!gem) continue;
+            let x = 0;
+            while (x < this.width) {
+                const gem = this.board[y][x];
+                if (!gem) { x++; continue; }
                 let count = 1;
                 while (x+count < this.width && this.board[y][x+count] && this.board[y][x+count].type === gem.type) count++;
                 if (count >= 3) {
-                    const match = [];
-                    for (let i = 0; i < count; i++) { const k=`${x+i},${y}`; if(!checked.has(k)){ match.push({x:x+i,y,gem:this.board[y][x+i]}); checked.add(k); } }
-                    if (match.length >= 3) matches.push({cells:match, type:gem.type, direction:'horizontal'});
+                    const cells = [];
+                    for (let i = 0; i < count; i++) cells.push({x:x+i, y, gem:this.board[y][x+i]});
+                    matches.push({cells, type:gem.type, direction:'horizontal'});
                 }
+                x += count;
             }
         }
-        // Vertical
+        // Vertical — each run is one complete match
         for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height - 2; y++) {
-                const gem = this.board[y][x]; if (!gem) continue;
+            let y = 0;
+            while (y < this.height) {
+                const gem = this.board[y][x];
+                if (!gem) { y++; continue; }
                 let count = 1;
                 while (y+count < this.height && this.board[y+count][x] && this.board[y+count][x].type === gem.type) count++;
                 if (count >= 3) {
-                    const match = [];
-                    for (let i = 0; i < count; i++) { const k=`${x},${y+i}`; if(!checked.has(k)){ match.push({x,y:y+i,gem:this.board[y+i][x]}); checked.add(k); } }
-                    if (match.length >= 3) matches.push({cells:match, type:gem.type, direction:'vertical'});
+                    const cells = [];
+                    for (let i = 0; i < count; i++) cells.push({x, y:y+i, gem:this.board[y+i][x]});
+                    matches.push({cells, type:gem.type, direction:'vertical'});
                 }
+                y += count;
             }
         }
         return this.mergeMatches(matches);
