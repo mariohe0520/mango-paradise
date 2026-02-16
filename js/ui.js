@@ -499,15 +499,17 @@ const UI = {
     // showVictory: see story-aware version below
 
     // 失败界面
-    showDefeat(score, progressPercent) {
+    showDefeat(score, progressPercent, nearMissInfo) {
         document.getElementById('defeat-score').textContent = Utils.formatNumber(score);
         document.getElementById('defeat-progress').textContent = `${progressPercent}%`;
 
-        // Encouraging message based on how close they were
         const msgEl = document.getElementById('defeat-message');
         if (msgEl) {
-            if (progressPercent >= 90) msgEl.textContent = '就差一点点！再来一次绝对能过！💪';
-            else if (progressPercent >= 70) msgEl.textContent = '已经很接近了！试试不同的策略？';
+            if (nearMissInfo) {
+                // 🔥 Near-miss is the MOST addictive text — make it prominent
+                msgEl.innerHTML = `<span style="color:#ef4444;font-weight:900;font-size:1.1em;">${nearMissInfo}</span>`;
+            } else if (progressPercent >= 90) msgEl.textContent = '就差一点点！再来一次绝对能过！💪';
+            else if (progressPercent >= 70) msgEl.textContent = '已经很接近了！试试不同的策略？🤔';
             else if (progressPercent >= 50) msgEl.textContent = '快到一半了，继续加油！';
             else msgEl.textContent = '每次失败都是经验，再来！';
         }

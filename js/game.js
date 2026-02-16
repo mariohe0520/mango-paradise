@@ -775,9 +775,15 @@ class Game {
 
             if (this.combo > 1) {
                 this.showCombo();
-                // Progressive combo sound (do-re-mi-fa-sol)
                 Audio.playComboNote(this.combo);
-            }
+                // 🔥 Escalating vibration pattern
+                const vib = this.combo >= 6 ? [50,30,80,30,120,30,150] : this.combo >= 4 ? [40,20,60,20,80] : [30,15,50];
+                Utils.vibrate(vib);
+                // ⏱️ Slow-motion on big combos: cascade wait gets shorter = feels faster & more intense
+                if (this.combo >= 5) this._cascadeSpeed = 60;
+                else if (this.combo >= 3) this._cascadeSpeed = 90;
+                else this._cascadeSpeed = 120;
+            } else { this._cascadeSpeed = 120; }
 
             // ── Apply "matching" visual to all matched gems THEN process ──
             for (const match of matches) {
@@ -786,7 +792,7 @@ class Game {
                     if (gemEl) gemEl.classList.add('matching');
                 }
             }
-            await Utils.wait(120);
+            await Utils.wait(this._cascadeSpeed || 120);
 
             for (const match of matches) await this.processMatch(match);
             Achievements.check('combo', this.combo);
@@ -838,6 +844,9 @@ class Game {
         let score = 0;
         switch(count) { case 3: score=this.SCORES.MATCH_3; break; case 4: score=this.SCORES.MATCH_4; break; case 5: score=this.SCORES.MATCH_5; break; default: score=this.SCORES.MATCH_6; }
         score += this.SCORES.COMBO_BONUS * (this.combo - 1);
+        // 🔥 Combo multiplier: x1.5 at combo 3, x2 at 5, x3 at 7+
+        const comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
+        score = Math.floor(score * comboMultiplier);
         this.addScore(score);
 
         // Charge skill bar — with visual feedback
@@ -1631,7 +1640,28 @@ class Game {
             this.objectives.forEach((obj,i) => { totalProg += Math.min(this.objectiveProgress[i]/obj.target, 1); });
             totalProg /= this.objectives.length;
         }
-        UI.showDefeat(this.score, Math.floor(totalProg * 100));
+        // 🧠 "Almost!" psychology — tell them EXACTLY how close
+        const pct = Math.floor(totalProg * 100);
+        let nearMissInfo = '';
+        if (pct >= 90) {
+            // Calculate how many more moves they'd need
+            nearMissInfo = '再多1-2步就过了！';
+        } else if (pct >= 80) {
+            nearMissInfo = '再多3步绝对能过！';
+        }
+        // Check if any single objective was super close
+        if (!this.isBossLevel) {
+            this.objectives.forEach((obj, i) => {
+                const remaining = obj.target - this.objectiveProgress[i];
+                if (remaining > 0 && remaining <= 3) {
+                    nearMissInfo = `只差${remaining}个${obj.type === 'score' ? '分' : obj.type}就过了！`;
+                }
+            });
+        } else if (Boss.currentBoss && Boss.bossHP > 0) {
+            const bossHpPct = (Boss.bossHP / Boss.bossMaxHP * 100).toFixed(0);
+            if (bossHpPct <= 15) nearMissInfo = `Boss只剩${bossHpPct}%血！再来一次稳过！`;
+        }
+        UI.showDefeat(this.score, pct, nearMissInfo);
     }
 
     calculateStars() {
