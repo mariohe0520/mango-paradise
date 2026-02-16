@@ -232,18 +232,20 @@ const Estate = {
         const cost = this.getTreeUpgradeCost(treeId);
         if (!Storage.spendGold(cost)) { UI.showToast('金币不足！'); return false; }
 
+        const newLevel = level + 1;
         if (level === 0) {
             estate.trees[treeId] = true;
             if (!estate.treeLevels) estate.treeLevels = {};
             estate.treeLevels[treeId] = 1;
             estate.happiness = (estate.happiness || 0) + 50;
-            UI.showToast(`🌱 ${tree.name}种植成功！`);
         } else {
             if (!estate.treeLevels) estate.treeLevels = {};
-            estate.treeLevels[treeId] = level + 1;
+            estate.treeLevels[treeId] = newLevel;
             estate.happiness = (estate.happiness || 0) + 20;
-            UI.showToast(`⬆️ ${tree.name}升级到Lv.${level + 1}！`);
         }
+        // 🔥 Show EXACTLY what changed — feel the power
+        const buffDesc = tree.levels[Math.min(newLevel-1, tree.levels.length-1)]?.desc || '';
+        UI.showToast(`${tree.emoji} ${tree.name} Lv.${newLevel}！\n${buffDesc}`, 'success');
         Storage.saveEstate(estate);
         Audio.play('levelUp');
         Achievements.check('collection');
@@ -296,12 +298,15 @@ const Estate = {
         if (level >= spirit.skillLevels.length) { UI.showToast('技能已满级！'); return false; }
         const cost = this.getSpiritUpgradeCost(spiritId);
         if (!Storage.spendGold(cost)) { UI.showToast('金币不足！'); return false; }
+        const newLevel = level + 1;
         if (!estate.spiritLevels) estate.spiritLevels = {};
-        estate.spiritLevels[spiritId] = level + 1;
+        estate.spiritLevels[spiritId] = newLevel;
         estate.happiness = (estate.happiness || 0) + 30;
         Storage.saveEstate(estate);
         Audio.play('levelUp');
-        UI.showToast(`⬆️ ${spirit.skillName}升级到Lv.${level + 1}！`);
+        // 🔥 Show skill upgrade details
+        const skillInfo = spirit.skillLevels[Math.min(newLevel-1, spirit.skillLevels.length-1)];
+        UI.showToast(`${spirit.emoji} ${spirit.skillName} Lv.${newLevel}！\n${skillInfo?.desc || ''}`, 'success');
         return true;
     },
 
