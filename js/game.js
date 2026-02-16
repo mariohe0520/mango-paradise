@@ -879,45 +879,78 @@ class Game {
 
         const spirit = Estate.getCurrentSpirit();
         Audio.play('special');
-        UI.showToast(`🌟 ${spirit.skillName}！`);
 
-        // Flash effect
+        // ── EPIC skill activation sequence ──
+        // 1. Full-screen flash
+        const flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;inset:0;background:rgba(255,215,0,0.4);z-index:800;pointer-events:none;animation:cell-flash 0.5s ease forwards;';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 600);
+
+        // 2. Big centered skill name
+        const skillDisplay = document.createElement('div');
+        skillDisplay.style.cssText = 'position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);z-index:801;pointer-events:none;font-size:2rem;font-weight:900;color:#ffd700;text-shadow:0 0 30px #ffd700,0 0 60px #ff8800;animation:combo-pop 1.2s cubic-bezier(0.175,0.885,0.32,1.275) forwards;text-align:center;';
+        skillDisplay.innerHTML = `${spirit.emoji}<br>${spirit.skillName}`;
+        document.body.appendChild(skillDisplay);
+        setTimeout(() => skillDisplay.remove(), 1200);
+
+        // 3. Vibrate
+        Utils.vibrate([50, 30, 80]);
+
+        // 4. Particles
         Particles.magicRing(window.innerWidth/2, window.innerHeight/2, '#ffd700');
-        await Utils.wait(300);
+        await Utils.wait(600); // dramatic pause before effect
 
         switch (spirit.id) {
             case 'mango_fairy':
-                // Place 3 random bombs
+                // Place 3 random bombs with staggered visual
                 for (let i = 0; i < 3; i++) {
                     let attempts = 0;
                     while (attempts < 30) {
                         const x = Utils.randomInt(0, this.width-1), y = Utils.randomInt(0, this.height-1);
                         if (this.board[y][x] && this.board[y][x].special === this.SPECIAL_TYPES.NONE) {
                             this.board[y][x].special = this.SPECIAL_TYPES.BOMB;
+                            this.render(); // show bomb appear
                             const c = this.getCell(x,y);
-                            if(c) Particles.sparkle(c.getBoundingClientRect().left+c.offsetWidth/2, c.getBoundingClientRect().top+c.offsetHeight/2);
+                            if (c) {
+                                const r = c.getBoundingClientRect();
+                                Particles.burst(r.left+r.width/2, r.top+r.height/2, ['#ef4444','#ff6b35','#ffd700'], 12);
+                                Particles.sparkle(r.left+r.width/2, r.top+r.height/2);
+                            }
+                            Audio.play('powerup');
+                            await Utils.wait(200); // stagger for drama
                             break;
                         }
                         attempts++;
                     }
                 }
                 break;
-            case 'bee_spirit':
-                // Clear a random row
+            case 'bee_spirit': {
+                // Clear a random row — with sweep animation
                 const row = Utils.randomInt(0, this.height-1);
+                // Visual: flash each cell in sequence (sweep effect)
                 for (let x = 0; x < this.width; x++) {
+                    const c = this.getCell(x, row);
+                    if (c) {
+                        c.style.animation = 'cell-flash 0.2s ease';
+                        const r = c.getBoundingClientRect();
+                        Particles.burst(r.left+r.width/2, r.top+r.height/2, '#eab308', 4);
+                    }
                     if (this.board[row][x]) {
                         this.addScore(50);
                         this.updateObjective(this.board[row][x].type);
                         this.board[row][x] = null;
                     }
                     if (this.cellStates[row][x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
+                    await Utils.wait(40); // stagger sweep left-to-right
                 }
+                this.screenShake(6, 200);
                 const boardEl = document.getElementById('game-board');
                 if (boardEl) {
                     const r = boardEl.getBoundingClientRect();
                     Particles.lineHorizontal(r.top + (row+0.5)*(r.height/this.height), r.left, r.right, '#eab308');
                 }
+            }
                 break;
             case 'rainbow_spirit':
                 // Find the most common gem type on board and clear all of it

@@ -918,9 +918,12 @@ const UI = {
             this.showScreen('game-screen');
             game.init(levelId);
 
-            // Show boss bar if boss level
+            // Show boss bar if boss level + visual tension
+            const isBoss = Boss.isBossLevel(levelId);
             const bossBar = document.getElementById('boss-bar');
-            if (bossBar) bossBar.style.display = Boss.isBossLevel(levelId) ? 'block' : 'none';
+            if (bossBar) bossBar.style.display = isBoss ? 'block' : 'none';
+            const gameScreen = document.getElementById('game-screen');
+            if (gameScreen) gameScreen.classList.toggle('boss-active', isBoss);
 
             if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
 

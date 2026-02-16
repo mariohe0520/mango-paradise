@@ -2081,9 +2081,10 @@ input[type="range"]::-webkit-slider-thumb {
 .skill-activate-btn.ready {
     opacity: 1;
     border-color: var(--wow-gold);
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    box-shadow: 0 0 15px rgba(255,209,0,0.5);
-    animation: glow-pulse 1.5s ease-in-out infinite;
+    background: linear-gradient(135deg, var(--primary), var(--wow-gold));
+    box-shadow: 0 0 20px rgba(255,209,0,0.6), 0 0 40px rgba(255,209,0,0.3);
+    animation: glow-pulse 1s ease-in-out infinite;
+    transform: scale(1.15);
 }
 
 .skill-activate-btn:disabled {
@@ -2354,4 +2355,18 @@ input[type="range"]::-webkit-slider-thumb {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary);
+}
+
+/* Boss level visual tension */
+#game-screen.boss-active {
+    background: linear-gradient(180deg, 
+        rgba(220,38,38,0.08) 0%, 
+        var(--board-bg) 30%, 
+        var(--board-bg) 70%, 
+        rgba(220,38,38,0.08) 100%);
+}
+
+#game-screen.boss-active .board-frame {
+    border-color: rgba(239,68,68,0.5);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(239,68,68,0.15);
 }
