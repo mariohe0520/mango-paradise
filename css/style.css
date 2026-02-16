@@ -1821,14 +1821,7 @@ input[type="range"]::-webkit-slider-thumb {
    Tutorial
    ========================================== */
 .tutorial-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 900;
-    pointer-events: none; /* Let touches pass through to board */
+    display: none !important;
 }
 
 .tutorial-spotlight {

@@ -1275,7 +1275,8 @@ const UI = {
                 gameScreen.dataset.theme = chapter.background || 'forest';
             }
 
-            if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
+            // Tutorial disabled — match-3 is intuitive, tutorial was blocking gameplay on mobile
+            // if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
 
             // 🛡️ Board render fallback: verify board actually rendered
             requestAnimationFrame(() => {
