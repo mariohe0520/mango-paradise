@@ -163,7 +163,9 @@ class StorageSystem {
                 Utils.log.info('New save created');
             }
         } catch (error) {
-            Utils.log.error('Failed to load save:', error);
+            Utils.log.error('Failed to load save (corrupted data, resetting):', error);
+            // Backup corrupted data for potential recovery
+            try { localStorage.setItem(this.STORAGE_KEY + '_corrupt_backup', localStorage.getItem(this.STORAGE_KEY) || ''); } catch(e) {}
             this.data = Utils.deepClone(this.defaultData);
         }
         return this.data;
@@ -649,7 +651,19 @@ class StorageSystem {
     // ==========================================
 
     getEstate() {
-        return this.data.estate;
+        // Defensive: ensure all required sub-objects exist (corruption recovery)
+        if (!this.data.estate) this.data.estate = Utils.deepClone(this.defaultData.estate);
+        const e = this.data.estate;
+        if (!e.trees) e.trees = {};
+        if (!e.spirits) e.spirits = { mango_fairy: true };
+        if (!e.activeSpirit) e.activeSpirit = 'mango_fairy';
+        if (!e.decorations) e.decorations = {};
+        if (!e.treeLevels) e.treeLevels = {};
+        if (!e.spiritLevels) e.spiritLevels = {};
+        if (!e.spiritAffinity) e.spiritAffinity = {};
+        if (!e.spiritTrialAffection) e.spiritTrialAffection = {};
+        if (typeof e.happiness !== 'number') e.happiness = 0;
+        return e;
     }
 
     saveEstate(estate) {

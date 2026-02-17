@@ -269,6 +269,9 @@ class Game {
         this.gravityShiftActive = !!(this.level.special && this.level.special.gravityShift);
         this.fogCells = [];
         this.chainDepth = 0;
+        // Clean up previous gravity indicator DOM element on restart
+        const oldGravInd = document.querySelector('.gravity-shift-indicator');
+        if (oldGravInd) oldGravInd.remove();
         if (this.level.special && this.level.special.fog) {
             const fogCount = this.level.special.fogCount || this.level.special.fogCells || 10;
             this.initFog(fogCount);
@@ -494,7 +497,7 @@ class Game {
                 this._lastCellPx = cellPx;
             }
 
-            // ── Ultra-fast update: skip unchanged cells entirely ──
+            // ── Ultra-fast update: gem skip optimization + ALWAYS check fog ──
             const children = boardEl.children;
             for (let y = 0; y < this.height; y++) {
                 for (let x = 0; x < this.width; x++) {
@@ -503,54 +506,72 @@ class Game {
                     if (!cell) continue;
                     const gem = this.board[y][x];
                     const gemId = gem ? gem.id : '';
+                    const gemChanged = cell._lastGemId !== gemId || !!cell._dirty;
 
-                    // Skip entirely if gem hasn't changed
-                    if (cell._lastGemId === gemId && !cell._dirty) continue;
-                    cell._lastGemId = gemId;
-                    cell._dirty = false;
+                    // ── Gem content update (only if changed) ──
+                    if (gemChanged) {
+                        cell._lastGemId = gemId;
+                        cell._dirty = false;
 
-                    // Update gem content
-                    const existingGem = cell.firstChild;
-                    if (gem) {
-                        if (!existingGem || existingGem.dataset.id !== gem.id) {
-                            cell.textContent = '';
-                            cell.appendChild(this.createGemElement(gem));
+                        // Update gem content
+                        const existingGem = cell.querySelector('.gem');
+                        if (gem) {
+                            if (!existingGem || existingGem.dataset.id !== gem.id) {
+                                // Remove old gem (preserve fog overlay if present)
+                                const oldGem = cell.querySelector('.gem');
+                                if (oldGem) oldGem.remove();
+                                cell.insertBefore(this.createGemElement(gem), cell.firstChild);
+                            }
+                        } else {
+                            if (existingGem) existingGem.remove();
                         }
-                    } else if (existingGem) {
-                        cell.textContent = '';
+
+                        // Update cell states (frozen/locked)
+                        const cs = this.cellStates[y] && this.cellStates[y][x];
+                        if (cs) {
+                            cell.classList.toggle('frozen', !!cs.frozen);
+                            cell.classList.toggle('locked-cell', cs.locked > 0);
+                            if (cs.locked > 0) cell.dataset.lockLevel = cs.locked;
+                        }
                     }
 
-                    // Update cell states (frozen/locked)
-                    const cs = this.cellStates[y] && this.cellStates[y][x];
-                    if (cs) {
-                        cell.classList.toggle('frozen', !!cs.frozen);
-                        cell.classList.toggle('locked-cell', cs.locked > 0);
-                        if (cs.locked > 0) cell.dataset.lockLevel = cs.locked;
-                    }
-
-                    // Fog overlay (Ch8+): hide gem content behind fog
+                    // ── Fog overlay (Ch8+): ALWAYS check — fog changes independently of gems ──
                     const fogged = this.isFogged(x, y);
-                    cell.classList.toggle('fogged', fogged);
-                    if (fogged) {
-                        // Replace gem display with fog indicator
-                        let fogOverlay = cell.querySelector('.fog-overlay');
-                        if (!fogOverlay) {
-                            fogOverlay = document.createElement('div');
-                            fogOverlay.className = 'fog-overlay';
-                            fogOverlay.textContent = '?';
-                            cell.appendChild(fogOverlay);
+                    const wasFogged = cell.classList.contains('fogged');
+                    if (fogged !== wasFogged || gemChanged) {
+                        cell.classList.toggle('fogged', fogged);
+                        if (fogged) {
+                            let fogOverlay = cell.querySelector('.fog-overlay');
+                            if (!fogOverlay) {
+                                fogOverlay = document.createElement('div');
+                                fogOverlay.className = 'fog-overlay';
+                                fogOverlay.textContent = '?';
+                                cell.appendChild(fogOverlay);
+                            }
+                            const gemEl = cell.querySelector('.gem');
+                            if (gemEl) gemEl.style.visibility = 'hidden';
+                        } else {
+                            const fogOverlay = cell.querySelector('.fog-overlay');
+                            if (fogOverlay) fogOverlay.remove();
+                            const gemEl = cell.querySelector('.gem');
+                            if (gemEl) gemEl.style.visibility = '';
                         }
-                        // Hide the actual gem element
-                        const gemEl = cell.querySelector('.gem');
-                        if (gemEl) gemEl.style.visibility = 'hidden';
-                    } else {
-                        // Remove fog overlay if cell was unfogged
-                        const fogOverlay = cell.querySelector('.fog-overlay');
-                        if (fogOverlay) fogOverlay.remove();
-                        const gemEl = cell.querySelector('.gem');
-                        if (gemEl) gemEl.style.visibility = '';
                     }
                 }
+            }
+
+            // ── Gravity shift indicator (Ch9+) ──
+            const boardFrame = boardEl.parentElement;
+            let gravIndicator = boardFrame ? boardFrame.querySelector('.gravity-shift-indicator') : null;
+            if (this.gravityShiftActive) {
+                if (!gravIndicator && boardFrame) {
+                    gravIndicator = document.createElement('div');
+                    gravIndicator.className = 'gravity-shift-indicator';
+                    gravIndicator.textContent = '⬅ 重力向左';
+                    boardFrame.appendChild(gravIndicator);
+                }
+            } else if (gravIndicator) {
+                gravIndicator.remove();
             }
         } catch (e) {
             console.error('[Game.render] error:', e);
@@ -579,10 +600,14 @@ class Game {
     updateCell(x, y) {
         const cell = this.getCell(x, y);
         if (!cell) return;
-        cell.innerHTML = '';
+
+        // Remove old gem (preserve fog overlay separately)
+        const oldGem = cell.querySelector('.gem');
+        if (oldGem) oldGem.remove();
+
         // Reapply cell state classes
         const cs = this.cellStates[y] && this.cellStates[y][x];
-        cell.classList.remove('frozen', 'locked-cell', 'fogged');
+        cell.classList.remove('frozen', 'locked-cell');
         if (cs) {
             if (cs.frozen) cell.classList.add('frozen');
             if (cs.locked > 0) { cell.classList.add('locked-cell'); cell.dataset.lockLevel = cs.locked; }
@@ -591,17 +616,30 @@ class Game {
         const gem = this.board[y][x];
         if (gem) {
             const gemEl = this.createGemElement(gem);
-            cell.appendChild(gemEl);
-            // Fog: hide gem if fogged
-            if (this.isFogged(x, y)) {
-                cell.classList.add('fogged');
-                gemEl.style.visibility = 'hidden';
-                const fogOverlay = document.createElement('div');
+            cell.insertBefore(gemEl, cell.firstChild);
+        }
+
+        // Fog overlay
+        const fogged = this.isFogged(x, y);
+        cell.classList.toggle('fogged', fogged);
+        if (fogged) {
+            let fogOverlay = cell.querySelector('.fog-overlay');
+            if (!fogOverlay) {
+                fogOverlay = document.createElement('div');
                 fogOverlay.className = 'fog-overlay';
                 fogOverlay.textContent = '?';
                 cell.appendChild(fogOverlay);
             }
+            const gemEl = cell.querySelector('.gem');
+            if (gemEl) gemEl.style.visibility = 'hidden';
+        } else {
+            const fogOverlay = cell.querySelector('.fog-overlay');
+            if (fogOverlay) fogOverlay.remove();
+            const gemEl = cell.querySelector('.gem');
+            if (gemEl) gemEl.style.visibility = '';
         }
+        // Mark render cache dirty so next render() picks up the change
+        cell._lastGemId = gem ? gem.id : '';
     }
 
     getCell(x, y) {
@@ -775,6 +813,15 @@ class Game {
         if (this.board[y1][x1]) { this.board[y1][x1].x = x1; this.board[y1][x1].y = y1; }
         if (this.board[y2][x2]) { this.board[y2][x2].x = x2; this.board[y2][x2].y = y2; }
         this.updateCell(x1, y1); this.updateCell(x2, y2);
+    }
+
+    // Data-only swap — no DOM updates. Used by hasValidMoves/findValidMove for perf.
+    swapData(x1, y1, x2, y2) {
+        const tmp = this.board[y1][x1];
+        this.board[y1][x1] = this.board[y2][x2];
+        this.board[y2][x2] = tmp;
+        if (this.board[y1][x1]) { this.board[y1][x1].x = x1; this.board[y1][x1].y = y1; }
+        if (this.board[y2][x2]) { this.board[y2][x2].x = x2; this.board[y2][x2].y = y2; }
     }
 
     async animateSwap(x1, y1, x2, y2) {
@@ -1264,6 +1311,29 @@ class Game {
                     }
                 }
                 break;
+            case this.SPECIAL_TYPES.RAINBOW: {
+                // Rainbow in a regular match: clear all gems of the same type as the match
+                const gem = this.board[y] && this.board[y][x];
+                const matchType = gem ? gem.type : null;
+                if (matchType) {
+                    Particles.explosion(rect.left+rect.width/2, rect.top+rect.height/2, '#ffd700');
+                    await this.clearGemType(matchType);
+                } else {
+                    // Fallback: clear a random gem type on the board
+                    const types = {};
+                    for (let by=0;by<this.height;by++) for (let bx=0;bx<this.width;bx++) {
+                        const g = this.board[by][bx];
+                        if (g && g.type !== 'skull') types[g.type] = (types[g.type]||0)+1;
+                    }
+                    let best = null, bestC = 0;
+                    for (const t in types) if (types[t]>bestC) { best=t; bestC=types[t]; }
+                    if (best) {
+                        Particles.explosion(rect.left+rect.width/2, rect.top+rect.height/2, '#ffd700');
+                        await this.clearGemType(best);
+                    }
+                }
+                break;
+            }
         }
         await Utils.wait(200);
         this.render();
@@ -1667,16 +1737,16 @@ class Game {
 
     hasValidMoves() {
         for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++) {
-            if (x<this.width-1) { this.swap(x,y,x+1,y); if(this.findMatches().length>0){this.swap(x,y,x+1,y);return true;} this.swap(x,y,x+1,y); }
-            if (y<this.height-1) { this.swap(x,y,x,y+1); if(this.findMatches().length>0){this.swap(x,y,x,y+1);return true;} this.swap(x,y,x,y+1); }
+            if (x<this.width-1) { this.swapData(x,y,x+1,y); if(this.findMatches().length>0){this.swapData(x,y,x+1,y);return true;} this.swapData(x,y,x+1,y); }
+            if (y<this.height-1) { this.swapData(x,y,x,y+1); if(this.findMatches().length>0){this.swapData(x,y,x,y+1);return true;} this.swapData(x,y,x,y+1); }
         }
         return false;
     }
 
     findValidMove() {
         for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++) {
-            if (x<this.width-1) { this.swap(x,y,x+1,y); if(this.findMatches().length>0){this.swap(x,y,x+1,y);return[{x,y},{x:x+1,y}];} this.swap(x,y,x+1,y); }
-            if (y<this.height-1) { this.swap(x,y,x,y+1); if(this.findMatches().length>0){this.swap(x,y,x,y+1);return[{x,y},{x,y:y+1}];} this.swap(x,y,x,y+1); }
+            if (x<this.width-1) { this.swapData(x,y,x+1,y); if(this.findMatches().length>0){this.swapData(x,y,x+1,y);return[{x,y},{x:x+1,y}];} this.swapData(x,y,x+1,y); }
+            if (y<this.height-1) { this.swapData(x,y,x,y+1); if(this.findMatches().length>0){this.swapData(x,y,x,y+1);return[{x,y},{x,y:y+1}];} this.swapData(x,y,x,y+1); }
         }
         return null;
     }
@@ -1718,6 +1788,10 @@ class Game {
         } catch(e) {}
 
         this.score += adjusted;
+
+        // Real-time score display update during chains (don't wait for updateUI)
+        const scoreEl = document.getElementById('current-score');
+        if (scoreEl) scoreEl.textContent = Utils.formatNumber(this.score);
 
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
