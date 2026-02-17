@@ -107,7 +107,17 @@
                 <button class="menu-btn" id="btn-endless" data-sound="click">
                     <span class="btn-icon">♾️</span>
                     <span class="btn-text">无尽模式</span>
-                    <span class="btn-subtitle">无限关卡 · 刷分 · 排行</span>
+                    <span class="btn-subtitle">经典 · 限时 · 生存</span>
+                </button>
+                <button class="menu-btn" id="btn-stats" data-sound="click">
+                    <span class="btn-icon">📊</span>
+                    <span class="btn-text">统计数据</span>
+                    <span class="btn-subtitle">成就 · 数据 · 趋势</span>
+                </button>
+                <button class="menu-btn highlight" id="btn-seasonal" data-sound="click">
+                    <span class="btn-icon">🎄</span>
+                    <span class="btn-text">季节活动</span>
+                    <span class="btn-subtitle" id="seasonal-subtitle">当月活动</span>
                 </button>
                 <button class="menu-btn highlight" id="btn-weekly" data-sound="click">
                     <span class="btn-icon">🏆</span>
@@ -409,6 +419,28 @@
         </div>
     </div>
 
+    <!-- 统计界面 -->
+    <div id="stats-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-stats">←</button>
+            <h2>📊 统计数据</h2>
+        </div>
+        <div class="stats-content" id="stats-content" style="padding:12px;overflow-y:auto;max-height:calc(100vh - 60px);">
+            <!-- Stats will be rendered by JS -->
+        </div>
+    </div>
+
+    <!-- 季节活动界面 -->
+    <div id="seasonal-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-seasonal">←</button>
+            <h2 id="seasonal-title">🎄 季节活动</h2>
+        </div>
+        <div class="seasonal-content" id="seasonal-content" style="padding:12px;overflow-y:auto;max-height:calc(100vh - 60px);">
+            <!-- Seasonal content will be rendered by JS -->
+        </div>
+    </div>
+
     <!-- 设置界面 -->
     <div id="settings-screen" class="screen">
         <div class="screen-header">
@@ -567,13 +599,16 @@
     <script src="js/audio.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/particles.js"></script>
+    <script src="js/levelgen.js"></script>
     <script src="js/levels.js"></script>
     <script src="js/achievements.js"></script>
     <script src="js/collection.js"></script>
     <script src="js/estate.js"></script>
     <script src="js/boss.js"></script>
     <script src="js/story.js"></script>
-<script src="js/daily.js"></script>
+    <script src="js/daily.js"></script>
+    <script src="js/seasons.js"></script>
+    <script src="js/stats.js"></script>
     <script src="js/game.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/tutorial.js"></script>

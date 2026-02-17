@@ -69,6 +69,9 @@ class App {
             // 步骤5b：初始化教程系统
             Tutorial.init();
             
+            // 步骤5c：初始化统计系统
+            if (typeof Stats !== 'undefined') Stats.startSession();
+            
             // 步骤6：应用保存的设置
             this.updateProgress(95, '应用设置...');
             this.applySettings();

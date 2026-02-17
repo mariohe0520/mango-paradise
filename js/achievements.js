@@ -725,7 +725,364 @@ const ACHIEVEMENTS = [
         category: 'combo',
         reward: { gold: 600, gems: 10 },
         condition: { type: 'combo', target: 7 }
-    }
+    },
+
+    // ==========================================
+    // 🌅 每日挑战成就
+    // ==========================================
+    {
+        id: 'daily_first',
+        name: '每日勇士',
+        description: '完成第一次每日挑战',
+        icon: '🌅',
+        category: 'daily_challenge',
+        reward: { gold: 200, gems: 5 },
+        condition: { type: 'daily_complete', target: 1 }
+    },
+    {
+        id: 'daily_10',
+        name: '每日达人',
+        description: '完成 10 次每日挑战',
+        icon: '📆',
+        category: 'daily_challenge',
+        reward: { gold: 800, gems: 15 },
+        condition: { type: 'daily_complete', target: 10 }
+    },
+    {
+        id: 'daily_50',
+        name: '每日传说',
+        description: '完成 50 次每日挑战',
+        icon: '🏅',
+        category: 'daily_challenge',
+        reward: { gold: 3000, gems: 50 },
+        condition: { type: 'daily_complete', target: 50 }
+    },
+    {
+        id: 'daily_streak_7',
+        name: '一周不停歇',
+        description: '每日挑战连续 7 天',
+        icon: '🔥',
+        category: 'daily_challenge',
+        reward: { gold: 1000, gems: 20 },
+        condition: { type: 'daily_streak', target: 7 }
+    },
+    {
+        id: 'daily_streak_30',
+        name: '铁人三十天',
+        description: '每日挑战连续 30 天',
+        icon: '💎',
+        category: 'daily_challenge',
+        reward: { gold: 5000, gems: 100 },
+        condition: { type: 'daily_streak', target: 30 }
+    },
+
+    // ==========================================
+    // ♾️ 无尽模式成就
+    // ==========================================
+    {
+        id: 'endless_first',
+        name: '无尽探索者',
+        description: '在无尽模式中存活 5 波',
+        icon: '♾️',
+        category: 'endless',
+        reward: { gold: 300, gems: 5 },
+        condition: { type: 'endless_wave', target: 5 }
+    },
+    {
+        id: 'endless_10',
+        name: '无尽勇者',
+        description: '在无尽模式中存活 10 波',
+        icon: '🌊',
+        category: 'endless',
+        reward: { gold: 800, gems: 15 },
+        condition: { type: 'endless_wave', target: 10 }
+    },
+    {
+        id: 'endless_25',
+        name: '无尽大师',
+        description: '在无尽模式中存活 25 波',
+        icon: '🏔️',
+        category: 'endless',
+        reward: { gold: 2000, gems: 30 },
+        condition: { type: 'endless_wave', target: 25 }
+    },
+    {
+        id: 'endless_50',
+        name: '无尽传说',
+        description: '在无尽模式中存活 50 波',
+        icon: '👑',
+        category: 'endless',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'endless_wave', target: 50 }
+    },
+    {
+        id: 'endless_score_50k',
+        name: '无尽得分王',
+        description: '无尽模式累计得分 50000',
+        icon: '📊',
+        category: 'endless',
+        reward: { gold: 1500, gems: 25 },
+        condition: { type: 'endless_score', target: 50000 }
+    },
+    {
+        id: 'endless_score_200k',
+        name: '无尽积分传说',
+        description: '无尽模式累计得分 200000',
+        icon: '🎯',
+        category: 'endless',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'endless_score', target: 200000 }
+    },
+    {
+        id: 'survival_first',
+        name: '生存新手',
+        description: '生存模式存活 3 波',
+        icon: '🛡️',
+        category: 'endless',
+        reward: { gold: 200, gems: 5 },
+        condition: { type: 'survival_wave', target: 3 }
+    },
+    {
+        id: 'survival_10',
+        name: '生存专家',
+        description: '生存模式存活 10 波',
+        icon: '⚔️',
+        category: 'endless',
+        reward: { gold: 1500, gems: 25 },
+        condition: { type: 'survival_wave', target: 10 }
+    },
+
+    // ==========================================
+    // 🎄 季节活动成就
+    // ==========================================
+    {
+        id: 'season_first',
+        name: '季节探索者',
+        description: '完成第一个季节关卡',
+        icon: '🌸',
+        category: 'seasonal',
+        reward: { gold: 200, gems: 5 },
+        condition: { type: 'seasonal_complete', target: 1 }
+    },
+    {
+        id: 'season_all_10',
+        name: '季节征服者',
+        description: '完成一个季节的全部 10 关',
+        icon: '🎄',
+        category: 'seasonal',
+        reward: { gold: 2000, gems: 30 },
+        condition: { type: 'seasonal_complete', target: 10 }
+    },
+    {
+        id: 'season_boss',
+        name: '季节Boss终结者',
+        description: '击败季节Boss',
+        icon: '🎃',
+        category: 'seasonal',
+        reward: { gold: 1500, gems: 25 },
+        condition: { type: 'seasonal_boss', target: 1 }
+    },
+    {
+        id: 'season_points_1000',
+        name: '赛季积分达人',
+        description: '单赛季积分达到 1000',
+        icon: '🏆',
+        category: 'seasonal',
+        reward: { gold: 1000, gems: 20 },
+        condition: { type: 'season_points', target: 1000 }
+    },
+    {
+        id: 'season_points_5000',
+        name: '赛季传说',
+        description: '单赛季积分达到 5000',
+        icon: '🔥',
+        category: 'seasonal',
+        reward: { gold: 5000, gems: 100 },
+        condition: { type: 'season_points', target: 5000 }
+    },
+
+    // ==========================================
+    // 🗺️ 无限冒险成就 (101+)
+    // ==========================================
+    {
+        id: 'procedural_first',
+        name: '无限冒险家',
+        description: '通关第 101 关 (程序化关卡)',
+        icon: '🗺️',
+        category: 'procedural',
+        reward: { gold: 500, gems: 10 },
+        condition: { type: 'level', target: 101 }
+    },
+    {
+        id: 'procedural_150',
+        name: '深渊探索者',
+        description: '通关第 150 关',
+        icon: '🌊',
+        category: 'procedural',
+        reward: { gold: 2000, gems: 30 },
+        condition: { type: 'level', target: 150 }
+    },
+    {
+        id: 'procedural_200',
+        name: '永恒战士',
+        description: '通关第 200 关',
+        icon: '⚡',
+        category: 'procedural',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'level', target: 200 }
+    },
+    {
+        id: 'procedural_300',
+        name: '传说中的冒险者',
+        description: '通关第 300 关',
+        icon: '🌟',
+        category: 'procedural',
+        reward: { gold: 10000, gems: 150 },
+        condition: { type: 'level', target: 300 }
+    },
+    {
+        id: 'procedural_500',
+        name: '芒果宇宙之神',
+        description: '通关第 500 关',
+        icon: '🥭',
+        category: 'procedural',
+        reward: { gold: 20000, gems: 300 },
+        condition: { type: 'level', target: 500 }
+    },
+
+    // ==========================================
+    // 🎨 收藏成就 (Cosmetics)
+    // ==========================================
+    {
+        id: 'achievement_points_100',
+        name: '成就猎人',
+        description: '解锁 25 个成就',
+        icon: '🏅',
+        category: 'collection',
+        reward: { gold: 1000, gems: 15 },
+        condition: { type: 'achievement_count', target: 25 }
+    },
+    {
+        id: 'achievement_points_200',
+        name: '成就大师',
+        description: '解锁 50 个成就',
+        icon: '🎖️',
+        category: 'collection',
+        reward: { gold: 3000, gems: 40 },
+        condition: { type: 'achievement_count', target: 50 }
+    },
+    {
+        id: 'achievement_points_all',
+        name: '完美主义者·终极',
+        description: '解锁全部 100 个成就',
+        icon: '👑',
+        category: 'collection',
+        reward: { gold: 10000, gems: 200 },
+        condition: { type: 'achievement_count', target: 99 }
+    },
+    {
+        id: 'collect_all_common',
+        name: '普通收藏家',
+        description: '消除所有 7 种普通宝石各 100 次',
+        icon: '📦',
+        category: 'collection',
+        reward: { gold: 1000, gems: 15 },
+        condition: { type: 'all_gems_100', target: 7 }
+    },
+
+    // ==========================================
+    // 🎯 技巧成就
+    // ==========================================
+    {
+        id: 'perfect_chapter',
+        name: '完美章节',
+        description: '一个章节全部 3 星',
+        icon: '⭐',
+        category: 'skill',
+        reward: { gold: 1500, gems: 25 },
+        condition: { type: 'perfect_chapter', target: 1 }
+    },
+    {
+        id: 'no_moves_wasted',
+        name: '零浪费',
+        description: '恰好用完所有步数通关',
+        icon: '🎯',
+        category: 'skill',
+        reward: { gold: 500, gems: 10 },
+        condition: { type: 'exact_moves', target: 1 }
+    },
+    {
+        id: 'score_200k',
+        name: '二十万俱乐部',
+        description: '单局得分超过 200000',
+        icon: '💎',
+        category: 'skill',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'single_score', target: 200000 }
+    },
+    {
+        id: 'total_5m',
+        name: '五百万传说',
+        description: '累计得分 5000000',
+        icon: '🏆',
+        category: 'skill',
+        reward: { gold: 8000, gems: 120 },
+        condition: { type: 'total_score', target: 5000000 }
+    },
+    {
+        id: 'match_10000',
+        name: '万次消除',
+        description: '累计消除 10000 次',
+        icon: '💫',
+        category: 'skill',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'matches', target: 10000 }
+    },
+    {
+        id: 'combo_25',
+        name: '超神连击',
+        description: '达成 25 连击',
+        icon: '💥',
+        category: 'skill',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'combo', target: 25 }
+    },
+    {
+        id: 'special_500',
+        name: '特效工厂',
+        description: '创建 500 个特殊宝石',
+        icon: '⚡',
+        category: 'skill',
+        reward: { gold: 3000, gems: 50 },
+        condition: { type: 'specials', target: 500 }
+    },
+    {
+        id: 'rainbow_50',
+        name: '彩虹大师·终极',
+        description: '创建 50 个彩虹宝石',
+        icon: '🌈',
+        category: 'skill',
+        reward: { gold: 3000, gems: 50 },
+        condition: { type: 'rainbow', target: 50 }
+    },
+    {
+        id: 'speedrun_15',
+        name: '光速通关',
+        description: '15 秒内完成一关',
+        icon: '⚡',
+        category: 'skill',
+        reward: { gold: 1000, gems: 20 },
+        condition: { type: 'speedrun', target: 15 }
+    },
+    {
+        id: 'games_1000',
+        name: '千场老将',
+        description: '游玩 1000 局',
+        icon: '🎮',
+        category: 'skill',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'games', target: 1000 }
+    },
 ];
 
 // 成就管理器
@@ -1006,6 +1363,93 @@ class AchievementManager {
                         try {
                             const totalGold = Storage.data?.statistics?.totalGoldEarned || Storage.getGold();
                             shouldUnlock = totalGold >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                // Daily challenge achievements
+                case 'daily_complete':
+                    if (type === 'daily_complete') {
+                        const progress = (Storage.getAchievementProgress(achievement.id) || 0) + 1;
+                        Storage.setAchievementProgress(achievement.id, progress);
+                        shouldUnlock = progress >= condition.target;
+                    }
+                    break;
+                case 'daily_streak':
+                    if (type === 'daily_complete') {
+                        try {
+                            const dData = JSON.parse(localStorage.getItem('mango_daily_v2') || '{}');
+                            shouldUnlock = (dData.streak || 0) >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                // Endless mode achievements
+                case 'endless_wave':
+                    if (type === 'endless_complete') {
+                        shouldUnlock = (value || 0) >= condition.target;
+                    }
+                    break;
+                case 'endless_score':
+                    if (type === 'endless_complete') {
+                        shouldUnlock = (extra.totalScore || 0) >= condition.target;
+                    }
+                    break;
+                case 'survival_wave':
+                    if (type === 'survival_complete') {
+                        shouldUnlock = (value || 0) >= condition.target;
+                    }
+                    break;
+
+                // Seasonal achievements
+                case 'seasonal_complete':
+                    if (type === 'seasonal_complete') {
+                        const progress = (Storage.getAchievementProgress(achievement.id) || 0) + 1;
+                        Storage.setAchievementProgress(achievement.id, progress);
+                        shouldUnlock = progress >= condition.target;
+                    }
+                    break;
+                case 'seasonal_boss':
+                    if (type === 'seasonal_boss') {
+                        shouldUnlock = true;
+                    }
+                    break;
+                case 'season_points':
+                    if (type === 'seasonal_complete' || type === 'season_points') {
+                        try {
+                            const pts = typeof Seasons !== 'undefined' ? Seasons.getSeasonPoints() : 0;
+                            shouldUnlock = pts >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                // Achievement meta-achievements
+                case 'achievement_count':
+                    if (type === 'win' || type === 'match' || type === 'score') {
+                        shouldUnlock = this.getUnlockedCount() >= condition.target;
+                    }
+                    break;
+
+                // Skill: exact moves
+                case 'exact_moves':
+                    if (type === 'win' && extra.movesLeft === 0) {
+                        shouldUnlock = true;
+                    }
+                    break;
+
+                // Perfect chapter (all 10 levels 3-star)
+                case 'perfect_chapter':
+                    if (type === 'perfect') {
+                        try {
+                            for (let ch = 1; ch <= 10; ch++) {
+                                let allPerfect = true;
+                                const start = (ch - 1) * 10 + 1;
+                                for (let l = start; l < start + 10; l++) {
+                                    const ld = Storage.getLevelData(l);
+                                    if (ld.stars < 3) { allPerfect = false; break; }
+                                }
+                                if (allPerfect) { shouldUnlock = true; break; }
+                            }
                         } catch(e) {}
                     }
                     break;

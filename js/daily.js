@@ -98,26 +98,82 @@ const DailyChallenge = {
         };
     },
 
-    // Check if already played today
-    hasPlayedToday() {
-        const data = JSON.parse(localStorage.getItem('mango_daily') || '{}');
-        return data.lastSeed === this.getSeed();
+    // Enhanced: 3 attempts per day
+    _getData() {
+        return JSON.parse(localStorage.getItem('mango_daily_v2') || '{}');
+    },
+    _save(data) {
+        localStorage.setItem('mango_daily_v2', JSON.stringify(data));
     },
 
-    // Record completion
-    recordCompletion(score, stars) {
-        const data = JSON.parse(localStorage.getItem('mango_daily') || '{}');
-        data.lastSeed = this.getSeed();
-        data.lastScore = score;
-        data.lastStars = stars;
-        data.streak = (data.streak || 0) + 1;
+    hasPlayedToday() {
+        const data = this._getData();
+        return data.lastSeed === this.getSeed() && (data.attempts || 0) >= 3;
+    },
+
+    getAttemptsLeft() {
+        const data = this._getData();
+        if (data.lastSeed !== this.getSeed()) return 3;
+        return Math.max(0, 3 - (data.attempts || 0));
+    },
+
+    canPlay() {
+        return this.getAttemptsLeft() > 0;
+    },
+
+    recordAttempt(score, stars, won) {
+        const data = this._getData();
+        const seed = this.getSeed();
+
+        if (data.lastSeed !== seed) {
+            // New day — check streak
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yestSeed = yesterday.getFullYear() * 10000 + (yesterday.getMonth()+1) * 100 + yesterday.getDate();
+            if (data.lastSeed === yestSeed) {
+                data.streak = (data.streak || 0) + 1;
+            } else {
+                data.streak = 1;
+            }
+            data.lastSeed = seed;
+            data.attempts = 0;
+            data.bestScore = 0;
+            data.bestStars = 0;
+        }
+
+        data.attempts = (data.attempts || 0) + 1;
+        if (score > (data.bestScore || 0)) {
+            data.bestScore = score;
+            data.bestStars = stars;
+        }
         data.totalPlayed = (data.totalPlayed || 0) + 1;
-        localStorage.setItem('mango_daily', JSON.stringify(data));
+        if (won) data.totalWon = (data.totalWon || 0) + 1;
+
+        this._save(data);
+
+        // Track streak bonus
+        return {
+            attemptsLeft: Math.max(0, 3 - data.attempts),
+            bestScore: data.bestScore,
+            streak: data.streak,
+            streakBonus: Math.min(data.streak * 50, 500), // 50 gold per streak day, max 500
+        };
+    },
+
+    getBestScore() {
+        const data = this._getData();
+        if (data.lastSeed !== this.getSeed()) return 0;
+        return data.bestScore || 0;
     },
 
     getStreak() {
-        const data = JSON.parse(localStorage.getItem('mango_daily') || '{}');
+        const data = this._getData();
         return data.streak || 0;
+    },
+
+    getTotalPlayed() {
+        const data = this._getData();
+        return data.totalPlayed || 0;
     }
 };
 
@@ -129,8 +185,10 @@ const EndlessMode = {
     currentWave: 0,
     totalScore: 0,
     isActive: false,
+    mode: 'classic', // 'classic' | 'timed' | 'survival'
 
-    start() {
+    start(mode) {
+        this.mode = mode || 'classic';
         this.currentWave = 1;
         this.totalScore = 0;
         this.isActive = true;
@@ -138,38 +196,29 @@ const EndlessMode = {
     },
 
     generateWave() {
+        // Use LevelGen for timed and survival modes
+        if (typeof LevelGen !== 'undefined') {
+            if (this.mode === 'timed') return LevelGen.generateEndlessTimed(this.currentWave);
+            if (this.mode === 'survival') return LevelGen.generateEndlessSurvival(this.currentWave);
+        }
+
+        // Classic mode (original)
         const w = this.currentWave;
         const allGems = Object.keys(GEM_TYPES);
         const commonGems = allGems.filter(g => GEM_TYPES[g].rarity === 'common');
-
-        // Progressively add more gem types (harder = more types = harder to match)
         const numGems = Math.min(4 + Math.floor(w / 5), commonGems.length);
         const gems = commonGems.slice(0, numGems);
-        // Every 10 waves, add rare gems
         if (w >= 10 && w % 10 === 0) gems.push('mango');
         if (w >= 20 && w % 20 === 0) gems.push('dragon');
         if (w >= 30) gems.push('phoenix');
 
-        // Moves decrease as waves progress (harder)
         const moves = Math.max(12, 30 - Math.floor(w / 3));
-
-        // Score target increases
         const scoreTarget = 1000 + w * 500;
-
-        // Every 5th wave is a boss
         const isBoss = w % 5 === 0;
-
-        // Board size varies
         const sizes = [[7,9],[8,10],[8,10],[9,11],[7,9]];
         const [bw, bh] = sizes[w % sizes.length];
 
-        // Modifiers get crazier at higher waves
-        const blockers = [];
-        if (w >= 8) blockers.push('frozen');
-        if (w >= 15) blockers.push('locked');
-
         const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
-        // Add extra objectives at higher waves
         if (w >= 5) {
             const gem = gems[w % gems.length];
             objectives.push({ type: 'clear', target: 10 + w, gem, icon: GEM_TYPES[gem]?.emoji || '❓' });
@@ -178,21 +227,27 @@ const EndlessMode = {
             objectives.push({ type: 'combo', target: Math.min(3 + Math.floor(w/8), 8), icon: '🔥' });
         }
 
+        const special = {};
+        if (w >= 8) special.chainBonus = true;
+        if (w >= 12) { special.fog = true; special.fogCount = Math.min(w - 10, 15); }
+        if (w >= 16) special.gravityShift = true;
+
         return {
             id: 8000 + w,
             endless: true,
+            endlessMode: this.mode,
             wave: w,
-            width: bw,
-            height: bh,
+            width: bw, height: bh,
             moves,
             gems,
             objectives,
             boss: isBoss,
             stars: [scoreTarget, scoreTarget * 1.5, scoreTarget * 2.5],
-            blockers,
-            special: {},
-            timed: w % 7 === 0, // every 7th wave is timed
-            timeLimit: w % 7 === 0 ? Math.max(45, 90 - w) : 0
+            special,
+            blockers: [],
+            timed: w % 7 === 0,
+            timeLimit: w % 7 === 0 ? Math.max(45, 90 - w) : 0,
+            chapter: 1,
         };
     },
 
@@ -202,23 +257,40 @@ const EndlessMode = {
         return this.generateWave();
     },
 
-    getHighScore() {
-        return parseInt(localStorage.getItem('mango_endless_high') || '0');
+    // Leaderboard per mode
+    _getKey(mode) { return `mango_endless_${mode || this.mode}`; },
+
+    getHighScore(mode) {
+        return parseInt(localStorage.getItem(this._getKey(mode) + '_high') || '0');
+    },
+
+    getHighWave(mode) {
+        return parseInt(localStorage.getItem(this._getKey(mode) + '_wave') || '0');
     },
 
     saveHighScore() {
-        const prev = this.getHighScore();
+        const key = this._getKey();
+        const prev = parseInt(localStorage.getItem(key + '_high') || '0');
         if (this.totalScore > prev) {
-            localStorage.setItem('mango_endless_high', this.totalScore.toString());
-            localStorage.setItem('mango_endless_wave', this.currentWave.toString());
-            return true; // new record!
+            localStorage.setItem(key + '_high', this.totalScore.toString());
+            localStorage.setItem(key + '_wave', this.currentWave.toString());
+            // Also update Stats
+            if (typeof Stats !== 'undefined') {
+                Stats.recordEndless(this.mode, this.totalScore, this.currentWave);
+            }
+            return true;
         }
         return false;
     },
 
-    getHighWave() {
-        return parseInt(localStorage.getItem('mango_endless_wave') || '0');
-    }
+    // Get all-mode leaderboard
+    getAllHighScores() {
+        return {
+            classic: { score: this.getHighScore('classic'), wave: this.getHighWave('classic') },
+            timed: { score: this.getHighScore('timed'), wave: this.getHighWave('timed') },
+            survival: { score: this.getHighScore('survival'), wave: this.getHighWave('survival') },
+        };
+    },
 };
 
 /* ==========================================

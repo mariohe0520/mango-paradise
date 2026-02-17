@@ -38,18 +38,42 @@ const UI = {
         
         document.getElementById('btn-daily-challenge')?.addEventListener('click', () => {
             Audio.play('click');
-            if (DailyChallenge.hasPlayedToday()) {
-                this.showToast('今天已挑战过了，明天再来！', 'info');
+            if (!DailyChallenge.canPlay()) {
+                this.showToast(`今日 3 次已用完！最高分: ${Utils.formatNumber(DailyChallenge.getBestScore())} 🔥连续${DailyChallenge.getStreak()}天`, 'info');
                 return;
             }
-            const level = DailyChallenge.generate();
+            const attemptsLeft = DailyChallenge.getAttemptsLeft();
+            this.showToast(`每日挑战 (剩余${attemptsLeft}次) 🔥连续${DailyChallenge.getStreak()}天`, 'info');
+            // Use LevelGen if available
+            const level = typeof LevelGen !== 'undefined'
+                ? LevelGen.generateDailyChallenge()
+                : DailyChallenge.generate();
             this.startSpecialLevel(level);
         });
 
         document.getElementById('btn-endless')?.addEventListener('click', () => {
             Audio.play('click');
-            const level = EndlessMode.start();
-            this.startSpecialLevel(level);
+            this.showEndlessModePicker();
+        });
+
+        document.getElementById('btn-stats')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showStats();
+        });
+
+        document.getElementById('btn-seasonal')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showSeasonalEvents();
+        });
+
+        document.getElementById('btn-back-stats')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showScreen('main-menu');
+        });
+
+        document.getElementById('btn-back-seasonal')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showScreen('main-menu');
         });
 
         document.getElementById('btn-leaderboard')?.addEventListener('click', () => {
@@ -426,6 +450,28 @@ const UI = {
                 powerEl.innerHTML = html;
             } catch(e) { powerEl.innerHTML = ''; }
         }
+
+        // Season indicator
+        try {
+            if (typeof Seasons !== 'undefined') {
+                const season = Seasons.getCurrentSeason();
+                const subEl = document.getElementById('seasonal-subtitle');
+                if (subEl) subEl.textContent = `${season.emoji} ${season.nameShort} · 剩${season.daysRemaining}天`;
+            }
+        } catch(e) {}
+
+        // Daily challenge subtitle update
+        try {
+            const dcBtn = document.getElementById('btn-daily-challenge');
+            if (dcBtn) {
+                const sub = dcBtn.querySelector('.btn-subtitle');
+                if (sub) {
+                    const attemptsLeft = DailyChallenge.getAttemptsLeft();
+                    const streak = DailyChallenge.getStreak();
+                    sub.textContent = `剩${attemptsLeft}次 · 🔥${streak}天连续`;
+                }
+            }
+        } catch(e) {}
 
         // 离线奖励
         this.checkOfflineReward();
@@ -1476,6 +1522,305 @@ const UI = {
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.remove(); if (callback) callback(); }, 400);
         });
+    },
+
+    // ==========================================
+    // 无尽模式选择器
+    // ==========================================
+    showEndlessModePicker() {
+        const scores = EndlessMode.getAllHighScores();
+        const overlay = document.createElement('div');
+        overlay.id = 'endless-picker';
+        overlay.className = 'modal active';
+        overlay.innerHTML = `
+            <div class="modal-content" style="max-width:340px;">
+                <h2>♾️ 无尽模式</h2>
+                <div style="display:flex;flex-direction:column;gap:8px;margin:12px 0;">
+                    <button class="modal-btn primary" id="endless-classic" style="text-align:left;padding:12px;">
+                        <div style="font-size:1.1rem;font-weight:700;">🎮 经典模式</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">无限关卡，步数递减，看你能走多远</div>
+                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.classic.wave} · ${Utils.formatNumber(scores.classic.score)}分</div>
+                    </button>
+                    <button class="modal-btn" id="endless-timed" style="text-align:left;padding:12px;">
+                        <div style="font-size:1.1rem;font-weight:700;">⏱️ 限时模式</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">每波60秒，完成目标续命！</div>
+                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.timed.wave} · ${Utils.formatNumber(scores.timed.score)}分</div>
+                    </button>
+                    <button class="modal-btn" id="endless-survival" style="text-align:left;padding:12px;">
+                        <div style="font-size:1.1rem;font-weight:700;">🛡️ 生存模式</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">障碍越来越多，步数越来越少</div>
+                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.survival.wave} · ${Utils.formatNumber(scores.survival.score)}分</div>
+                    </button>
+                </div>
+                <button class="modal-btn" onclick="document.getElementById('endless-picker').remove()">返回</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        document.getElementById('endless-classic').addEventListener('click', () => {
+            overlay.remove();
+            const level = EndlessMode.start('classic');
+            this.startSpecialLevel(level);
+        });
+        document.getElementById('endless-timed').addEventListener('click', () => {
+            overlay.remove();
+            const level = EndlessMode.start('timed');
+            this.startSpecialLevel(level);
+        });
+        document.getElementById('endless-survival').addEventListener('click', () => {
+            overlay.remove();
+            const level = EndlessMode.start('survival');
+            this.startSpecialLevel(level);
+        });
+    },
+
+    // ==========================================
+    // 统计数据界面
+    // ==========================================
+    showStats() {
+        const container = document.getElementById('stats-content');
+        if (!container) return;
+
+        const overview = typeof Stats !== 'undefined' ? Stats.getOverview() : { totalLevelsCleared: 0, totalScore: 0, totalTimePlayed: 0, totalGamesPlayed: 0, winRate: 0, maxCombo: 0 };
+        const gemStats = typeof Stats !== 'undefined' ? Stats.getGemStats() : [];
+        const chapterRates = typeof Stats !== 'undefined' ? Stats.getChapterWinRates() : [];
+        const specialStats = typeof Stats !== 'undefined' ? Stats.getSpecialStats() : {};
+        const dailyStats = typeof Stats !== 'undefined' ? Stats.getDailyStats() : {};
+        const endlessStats = typeof Stats !== 'undefined' ? Stats.getEndlessStats() : {};
+        const bossStats = typeof Stats !== 'undefined' ? Stats.getBossStats() : {};
+        const playTime = typeof Stats !== 'undefined' ? Stats.getPlayTimeTrend('daily') : [];
+
+        // Also pull from Storage stats as fallback
+        const storageStats = Storage.getStatistics();
+        const totalScore = overview.totalScore || storageStats.totalScore || 0;
+        const totalGames = overview.totalGamesPlayed || storageStats.totalGames || 0;
+        const totalWins = overview.totalWins || storageStats.totalWins || 0;
+        const maxCombo = overview.maxCombo || storageStats.maxCombo || 0;
+        const maxLevel = Storage.getMaxUnlockedLevel();
+        const totalStars = Storage.getTotalStars();
+
+        // Build gem bar chart
+        const topGems = gemStats.slice(0, 7);
+        const maxMatched = topGems.length > 0 ? Math.max(...topGems.map(g => g.matched)) : 1;
+        const gemBarsHtml = topGems.map(g => {
+            const pct = Math.max(5, (g.matched / maxMatched) * 100);
+            return `<div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
+                <span style="width:24px;text-align:center;">${g.emoji}</span>
+                <div style="flex:1;background:rgba(100,100,100,0.2);border-radius:4px;height:16px;overflow:hidden;">
+                    <div style="background:linear-gradient(90deg,#fbbf24,#f97316);height:100%;width:${pct}%;border-radius:4px;transition:width 0.3s;"></div>
+                </div>
+                <span style="font-size:0.7rem;color:var(--text-secondary);min-width:40px;text-align:right;">${Utils.formatNumber(g.matched)}</span>
+            </div>`;
+        }).join('');
+
+        // Chapter win rates
+        const chapterHtml = chapterRates.map(ch => {
+            if (ch.played === 0) return '';
+            const chData = typeof CHAPTERS !== 'undefined' ? CHAPTERS[ch.chapter - 1] : null;
+            return `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(100,100,100,0.15);">
+                <span>${chData ? chData.icon : ''} 第${ch.chapter}章</span>
+                <span style="color:${ch.winRate >= 80 ? '#22c55e' : ch.winRate >= 50 ? '#eab308' : '#ef4444'};">${ch.winRate}% (${ch.wins}/${ch.played})</span>
+            </div>`;
+        }).filter(Boolean).join('');
+
+        // Play time bars
+        const maxPlayTime = playTime.length > 0 ? Math.max(...playTime.map(p => p.seconds), 1) : 1;
+        const playTimeBars = playTime.map(p => {
+            const pct = Math.max(3, (p.seconds / maxPlayTime) * 100);
+            const time = typeof Stats !== 'undefined' ? Stats.formatTime(p.seconds) : `${p.seconds}s`;
+            return `<div style="text-align:center;flex:1;">
+                <div style="height:60px;display:flex;align-items:flex-end;justify-content:center;">
+                    <div style="background:linear-gradient(to top,#3b82f6,#60a5fa);width:70%;height:${pct}%;border-radius:4px 4px 0 0;min-height:3px;"></div>
+                </div>
+                <div style="font-size:0.55rem;color:var(--text-secondary);margin-top:2px;">${p.label}</div>
+                <div style="font-size:0.55rem;color:#60a5fa;">${time}</div>
+            </div>`;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
+                <h3 style="margin:0 0 8px;font-size:1rem;">📊 总览</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
+                        <div style="font-size:1.5rem;">🏆</div>
+                        <div style="font-size:0.8rem;font-weight:700;">${Utils.formatNumber(totalScore)}</div>
+                        <div style="font-size:0.6rem;color:var(--text-secondary);">总分数</div>
+                    </div>
+                    <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
+                        <div style="font-size:1.5rem;">⭐</div>
+                        <div style="font-size:0.8rem;font-weight:700;">${totalStars} / ${maxLevel * 3}</div>
+                        <div style="font-size:0.6rem;color:var(--text-secondary);">星星</div>
+                    </div>
+                    <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
+                        <div style="font-size:1.5rem;">🎮</div>
+                        <div style="font-size:0.8rem;font-weight:700;">${totalGames} (${totalWins}胜)</div>
+                        <div style="font-size:0.6rem;color:var(--text-secondary);">总局数 (胜率${totalGames > 0 ? Math.round(totalWins / totalGames * 100) : 0}%)</div>
+                    </div>
+                    <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
+                        <div style="font-size:1.5rem;">🔥</div>
+                        <div style="font-size:0.8rem;font-weight:700;">x${maxCombo}</div>
+                        <div style="font-size:0.6rem;color:var(--text-secondary);">最高连击</div>
+                    </div>
+                </div>
+                <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;font-size:0.7rem;">
+                    <div>关卡: <b>${maxLevel - 1}</b></div>
+                    <div>消除: <b>${Utils.formatNumber(storageStats.totalMatches || 0)}</b></div>
+                    <div>特殊: <b>${Utils.formatNumber(storageStats.specialGemsCreated || 0)}</b></div>
+                </div>
+            </div>
+
+            ${gemBarsHtml ? `
+            <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
+                <h3 style="margin:0 0 8px;font-size:1rem;">💎 宝石统计</h3>
+                ${gemBarsHtml}
+            </div>` : ''}
+
+            ${chapterHtml ? `
+            <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
+                <h3 style="margin:0 0 8px;font-size:1rem;">📖 章节胜率</h3>
+                <div style="font-size:0.8rem;">${chapterHtml}</div>
+            </div>` : ''}
+
+            <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
+                <h3 style="margin:0 0 8px;font-size:1rem;">⚔️ 特殊模式</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.75rem;">
+                    <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
+                        <div style="font-weight:700;">📆 每日挑战</div>
+                        <div>完成: ${dailyStats.won || 0}/${dailyStats.played || 0}</div>
+                        <div>最高连续: ${dailyStats.bestStreak || 0}天</div>
+                    </div>
+                    <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
+                        <div style="font-weight:700;">♾️ 无尽模式</div>
+                        <div>限时最高: Wave ${endlessStats.timedHighWave || 0}</div>
+                        <div>生存最高: Wave ${endlessStats.survivalHighWave || 0}</div>
+                    </div>
+                    <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
+                        <div style="font-weight:700;">👹 Boss战</div>
+                        <div>击败: ${bossStats.defeated || 0}/${bossStats.attempts || 0}</div>
+                        <div>胜率: ${bossStats.winRate || 0}%</div>
+                    </div>
+                    <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
+                        <div style="font-weight:700;">✨ 特殊宝石</div>
+                        <div>线: ${specialStats.line || 0} 炸弹: ${specialStats.bomb || 0}</div>
+                        <div>彩虹: ${specialStats.rainbow || 0}</div>
+                    </div>
+                </div>
+            </div>
+
+            ${playTimeBars ? `
+            <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
+                <h3 style="margin:0 0 8px;font-size:1rem;">⏱️ 游玩时间 (最近7天)</h3>
+                <div style="display:flex;gap:2px;align-items:flex-end;">${playTimeBars}</div>
+            </div>` : ''}
+        `;
+
+        this.showScreen('stats-screen');
+    },
+
+    // ==========================================
+    // 季节活动界面
+    // ==========================================
+    showSeasonalEvents() {
+        if (typeof Seasons === 'undefined') {
+            this.showToast('季节系统加载中...', 'info');
+            return;
+        }
+
+        const season = Seasons.getCurrentSeason();
+        const points = Seasons.getSeasonPoints();
+        const tier = Seasons.getCurrentTier();
+        const completed = Seasons.getCompletedSeasonLevels();
+        const seasonData = Seasons.getSeasonData();
+
+        const title = document.getElementById('seasonal-title');
+        if (title) title.textContent = `${season.emoji} ${season.name}`;
+
+        // Season pass tiers
+        const tiersHtml = Seasons.PASS_TIERS.map((t, i) => {
+            const unlocked = points >= t.points;
+            const claimed = Seasons.isTierClaimed(i);
+            return `<div style="display:flex;align-items:center;gap:8px;padding:6px;border-radius:8px;
+                background:${unlocked ? 'rgba(34,197,94,0.15)' : 'rgba(100,100,100,0.1)'};
+                border:1px solid ${unlocked ? '#22c55e' : '#333'};margin-bottom:4px;">
+                <span style="font-size:1.2rem;">${t.icon}</span>
+                <div style="flex:1;">
+                    <div style="font-size:0.75rem;font-weight:700;color:${unlocked ? '#22c55e' : 'var(--text-secondary)'};">${t.points}分 — ${t.reward}</div>
+                </div>
+                ${unlocked && !claimed && i > 0 ? `<button class="season-claim-btn" data-tier="${i}" style="padding:4px 8px;background:var(--wow-gold);color:#000;border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;">领取</button>` : ''}
+                ${claimed ? '<span style="font-size:0.7rem;color:#22c55e;">✅</span>' : ''}
+            </div>`;
+        }).join('');
+
+        // Season levels grid
+        const levelsHtml = Array.from({ length: 10 }, (_, i) => {
+            const levelData = seasonData.levels?.[i];
+            const isCompleted = levelData?.completed;
+            const stars = levelData?.stars || 0;
+            const isBoss = i === 9;
+            return `<button class="level-btn ${isCompleted ? 'completed' : ''}" data-seasonal-level="${i}" style="min-width:60px;position:relative;">
+                ${isBoss ? '👹' : i + 1}
+                ${isCompleted ? `<div style="font-size:0.6rem;">${'⭐'.repeat(stars)}</div>` : ''}
+            </button>`;
+        }).join('');
+
+        const nextTier = Seasons.PASS_TIERS[tier + 1];
+        const progressPct = nextTier ? Math.min(100, ((points - Seasons.PASS_TIERS[tier].points) / (nextTier.points - Seasons.PASS_TIERS[tier].points) * 100)) : 100;
+
+        const container = document.getElementById('seasonal-content');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div style="text-align:center;margin-bottom:12px;">
+                <div style="font-size:2.5rem;">${season.emoji}</div>
+                <div style="font-weight:900;font-size:1.3rem;color:${season.color};">${season.name}</div>
+                <div style="font-size:0.8rem;color:var(--text-secondary);">${season.description}</div>
+                <div style="font-size:0.75rem;color:#f472b6;margin-top:4px;">🎁 赛季加成: ${season.bonus}</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">剩余 ${season.daysRemaining} 天</div>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <div style="font-size:0.8rem;font-weight:700;">赛季积分: ${Utils.formatNumber(points)}</div>
+                <div style="background:#333;border-radius:6px;height:8px;margin:4px 0;">
+                    <div style="background:${season.color};height:100%;border-radius:6px;width:${progressPct}%;transition:width 0.3s;"></div>
+                </div>
+                ${nextTier ? `<div style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextTier.points}分 (还差${nextTier.points - points})</div>` : '<div style="font-size:0.7rem;color:var(--wow-gold);">🏆 已达最高等级！</div>'}
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <h3 style="margin:0 0 8px;">🎯 季节关卡 (${completed}/10)</h3>
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+                    ${levelsHtml}
+                </div>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <h3 style="margin:0 0 8px;">🏅 赛季通行证</h3>
+                ${tiersHtml}
+            </div>
+        `;
+
+        // Wire seasonal level buttons
+        container.querySelectorAll('[data-seasonal-level]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.dataset.seasonalLevel);
+                Audio.play('click');
+                const level = Seasons.getSeasonalLevel(idx);
+                this.startSpecialLevel(level);
+            });
+        });
+
+        // Wire claim buttons
+        container.querySelectorAll('.season-claim-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tierIdx = parseInt(btn.dataset.tier);
+                if (Seasons.claimTierReward(tierIdx)) {
+                    Audio.play('levelUp');
+                    this.showSeasonalEvents(); // refresh
+                }
+            });
+        });
+
+        this.showScreen('seasonal-screen');
     },
 
     showVictory(stars, score, maxCombo, goldReward) {

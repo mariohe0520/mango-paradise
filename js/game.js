@@ -1255,6 +1255,7 @@ class Game {
             Audio.play('special');
             Storage.data.statistics.specialGemsCreated++;
             Achievements.check('special');
+            if (typeof Stats !== 'undefined') Stats.recordSpecialCreated(specialType);
             this.updateObjective('special', specialType);
         }
 
@@ -1274,6 +1275,11 @@ class Game {
         }
         Storage.addMatch();
         Achievements.check('match');
+        // Record gem and combo stats
+        if (typeof Stats !== 'undefined') {
+            Stats.recordGemMatch(match.type, match.cells.length);
+            if (this.combo > 1) Stats.recordCombo(this.combo);
+        }
     }
 
     // ==========================================
@@ -2195,8 +2201,8 @@ class Game {
             const affinityGain = 5 + stars * 3 + (this.isBossLevel ? 15 : 0);
             Estate.addSpiritAffinity(activeSpirit.id, affinityGain);
         }
-        // 🏅 Season points
-        if (typeof SeasonSystem !== 'undefined') {
+        // 🏅 Season points (legacy — new Seasons system handles this above)
+        if (typeof SeasonSystem !== 'undefined' && typeof Seasons === 'undefined') {
             const seasonPts = 10 + stars * 5 + (this.isBossLevel ? 20 : 0);
             SeasonSystem.addSeasonPoints(seasonPts);
         }
@@ -2205,12 +2211,39 @@ class Game {
         // Use tracked skull flag (not just current board state — skulls may have been cleared)
         const hadSkulls = this._hadSkulls || false;
         const bossRaged = this.isBossLevel && Boss._rageMode;
+        // Record to Stats system
+        if (typeof Stats !== 'undefined') {
+            Stats.recordLevelComplete(this.level.id, this.score, stars, this.level.moves - this.movesLeft, gameTime * 1000);
+            Stats.recordPlayTime(gameTime);
+            if (this.isBossLevel) Stats.recordBossAttempt(true);
+        }
+        // Record to Seasons system
+        if (typeof Seasons !== 'undefined') {
+            Seasons.addPoints(10 + stars * 5 + (this.isBossLevel ? 20 : 0));
+            if (this.level.seasonal) Seasons.completeSeasonalLevel(this.level.seasonLevelIndex, this.score, stars);
+        }
+        // Record daily challenge
+        if (this.level.daily) {
+            const dcResult = DailyChallenge.recordAttempt(this.score, stars, true);
+            if (dcResult.streakBonus > 0) {
+                Storage.addGold(dcResult.streakBonus);
+                UI.showToast(`🔥 连续${dcResult.streak}天！+${dcResult.streakBonus}金币`, 'success');
+            }
+            Achievements.check('daily_complete', 1);
+        }
+        // Record endless
+        if (this.level.endless) {
+            EndlessMode.saveHighScore();
+            const mode = this.level.endlessMode || 'classic';
+            Achievements.check(mode === 'survival' ? 'survival_complete' : 'endless_complete', EndlessMode.currentWave, { totalScore: EndlessMode.totalScore });
+        }
         Achievements.check('win', this.level.id, {
             noPowerup: this.powerupsUsed===0,
             time: gameTime,
             bossLevel: this.isBossLevel ? this.level.id : null,
             hadSkulls: hadSkulls,
-            bossRaged: bossRaged
+            bossRaged: bossRaged,
+            movesLeft: this.movesLeft,
         });
         Achievements.check('level_complete', this.level.id);
         Achievements.check('score', this.score);
@@ -2274,7 +2307,24 @@ class Game {
         this.isGameOver = true;
         if (this.timerInterval) clearInterval(this.timerInterval);
         Storage.recordGame(false);
-        Storage.addPlayTime(Math.floor((Date.now()-this.gameStartTime)/1000));
+        const defeatTime = Math.floor((Date.now()-this.gameStartTime)/1000);
+        Storage.addPlayTime(defeatTime);
+        // Record to Stats
+        if (typeof Stats !== 'undefined') {
+            Stats.recordLevelFail(this.level.id, this.score, this.level.moves - this.movesLeft);
+            Stats.recordPlayTime(defeatTime);
+            if (this.isBossLevel) Stats.recordBossAttempt(false);
+        }
+        // Record daily challenge failure
+        if (this.level.daily) {
+            DailyChallenge.recordAttempt(this.score, 0, false);
+        }
+        // Endless: save high score on defeat
+        if (this.level.endless) {
+            EndlessMode.totalScore += this.score;
+            EndlessMode.saveHighScore();
+            EndlessMode.isActive = false;
+        }
         Achievements.check('game');
         Audio.play('defeat');
         let totalProg = 0;
