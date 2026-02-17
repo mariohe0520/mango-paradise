@@ -51,13 +51,14 @@ const LevelGenerator = {
         return {...defaults, ...config};
     },
     getChapterGems(chapter) {
+        // Aligned with difficulty curve: ch1=3, ch2-3=4, ch4-6=5, ch7-10=6
         const pools = {
-            1: ['murloc','orc','elf','mage','knight'],
-            2: ['murloc','orc','elf','mage','knight','dwarf'],
-            3: ['orc','elf','mage','knight','dwarf','undead'],
-            4: ['elf','mage','knight','dwarf','undead','mango'],
-            5: ['mage','knight','dwarf','undead','mango','dragon'],
-            6: ['knight','dwarf','undead','mango','dragon','phoenix'],
+            1: ['murloc','orc','elf'],
+            2: ['murloc','orc','elf','mage'],
+            3: ['orc','elf','mage','knight'],
+            4: ['elf','mage','knight','dwarf','undead'],
+            5: ['mage','knight','dwarf','undead','mango'],
+            6: ['knight','dwarf','undead','mango','dragon'],
             7: ['elf','mage','mango','dragon','phoenix','murloc'],
             8: ['orc','knight','undead','mango','dragon','phoenix'],
             9: ['mage','dwarf','mango','dragon','phoenix','elf'],
@@ -306,5 +307,94 @@ function getTotalChapters() { return CHAPTERS.length; }
                 }
             }
         });
+    });
+})();
+
+// ====================================
+// DIFFICULTY CURVE PATCH v2
+// Enforce:
+//   L1-10:  max 3 gem types, moves 20+, no fog/gravity
+//   L11-30: 4 gem types, fog mechanic, moves 15-18
+//   L31-60: 5 gem types, gravity + chain bonus
+//   L61-100: all mechanics, tight moves (10-14), combos required
+// ====================================
+(function difficultyCurvePatch() {
+    // Helper: trim gem pool to N, keeping gems referenced by objectives
+    function trimGems(level, maxGems) {
+        if (level.gems.length <= maxGems) return;
+        const needed = new Set();
+        (level.objectives || []).forEach(obj => { if (obj.gem) needed.add(obj.gem); });
+        const pool = [...needed];
+        for (const g of level.gems) {
+            if (pool.length >= maxGems) break;
+            if (!pool.includes(g)) pool.push(g);
+        }
+        level.gems = pool;
+    }
+
+    // Helper: scale objective targets proportionally
+    function scaleObjectives(level, factor) {
+        (level.objectives || []).forEach(obj => {
+            if (obj.type === 'clear') obj.target = Math.max(5, Math.round(obj.target * factor));
+            else if (obj.type === 'score') obj.target = Math.round(obj.target * factor);
+            else if (obj.type === 'special') obj.target = Math.max(1, Math.round(obj.target * factor));
+        });
+        // Scale stars proportionally
+        if (level.stars) level.stars = level.stars.map(s => Math.round(s * factor));
+    }
+
+    LEVELS.forEach(level => {
+        const id = level.id;
+
+        // ── L1-10: max 3 gem types, moves 20+, no fog/gravity ──
+        if (id >= 1 && id <= 10) {
+            trimGems(level, 3);
+            if (level.moves < 20) level.moves = 20;
+            if (level.special) {
+                delete level.special.fog;
+                delete level.special.fogCount;
+                delete level.special.gravityShift;
+                delete level.special.chainBonus;
+            }
+        }
+        // ── L11-30: 4 gem types, fog, moves 15-18 (boss +5) ──
+        else if (id >= 11 && id <= 30) {
+            trimGems(level, 4);
+            if (level.boss) {
+                level.moves = Math.max(20, Math.min(25, level.moves));
+            } else {
+                level.moves = Math.max(15, Math.min(18, level.moves));
+            }
+            if (!level.special) level.special = {};
+            level.special.fog = true;
+            level.special.fogCount = level.special.fogCount || Math.min(4 + Math.floor((id - 11) / 3), 12);
+            delete level.special.gravityShift;
+            delete level.special.chainBonus;
+        }
+        // ── L31-60: 5 gem types, gravity + chain bonus ──
+        else if (id >= 31 && id <= 60) {
+            trimGems(level, 5);
+            if (!level.special) level.special = {};
+            level.special.gravityShift = true;
+            level.special.chainBonus = true;
+        }
+        // ── L61-100: all mechanics, tight moves 10-14 (boss 16-20) ──
+        else if (id >= 61 && id <= 100) {
+            if (!level.special) level.special = {};
+            level.special.fog = true;
+            level.special.fogCount = level.special.fogCount || Math.min(8 + Math.floor((id - 61) / 4), 25);
+            level.special.gravityShift = true;
+            level.special.chainBonus = true;
+            // Tight moves
+            const oldMoves = level.moves;
+            if (level.boss) {
+                level.moves = Math.max(16, Math.min(20, level.moves));
+            } else {
+                level.moves = Math.max(10, Math.min(14, level.moves));
+            }
+            // Scale objectives down proportionally to move reduction
+            const moveFactor = level.moves / oldMoves;
+            if (moveFactor < 0.8) scaleObjectives(level, Math.max(0.4, moveFactor));
+        }
     });
 })();

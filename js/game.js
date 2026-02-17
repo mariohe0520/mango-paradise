@@ -2263,7 +2263,7 @@ class Game {
         // Record endless
         if (this.level.endless) {
             EndlessMode.saveHighScore();
-            const mode = this.level.endlessMode || 'classic';
+            const mode = this.level.endlessMode || 'zen';
             Achievements.check(mode === 'survival' ? 'survival_complete' : 'endless_complete', EndlessMode.currentWave, { totalScore: EndlessMode.totalScore });
         }
         Achievements.check('win', this.level.id, {

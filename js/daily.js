@@ -185,74 +185,116 @@ const EndlessMode = {
     currentWave: 0,
     totalScore: 0,
     isActive: false,
-    mode: 'classic', // 'classic' | 'timed' | 'survival'
+    mode: 'zen', // 'zen' | 'sprint' | 'survival'
+    sprintTimeLeft: 0, // global sprint timer (seconds)
+    sprintMultiplier: 1.0, // sprint score multiplier
 
     start(mode) {
-        this.mode = mode || 'classic';
+        this.mode = mode || 'zen';
         this.currentWave = 1;
         this.totalScore = 0;
         this.isActive = true;
+        this.sprintTimeLeft = 180; // 3 minutes for sprint
+        this.sprintMultiplier = 1.0;
         return this.generateWave();
     },
 
     generateWave() {
-        // Use LevelGen for timed and survival modes
-        if (typeof LevelGen !== 'undefined') {
-            if (this.mode === 'timed') return LevelGen.generateEndlessTimed(this.currentWave);
-            if (this.mode === 'survival') return LevelGen.generateEndlessSurvival(this.currentWave);
-        }
-
-        // Classic mode (original)
         const w = this.currentWave;
-        const allGems = Object.keys(GEM_TYPES);
-        const commonGems = allGems.filter(g => GEM_TYPES[g].rarity === 'common');
-        const numGems = Math.min(4 + Math.floor(w / 5), commonGems.length);
-        const gems = commonGems.slice(0, numGems);
-        if (w >= 10 && w % 10 === 0) gems.push('mango');
-        if (w >= 20 && w % 20 === 0) gems.push('dragon');
-        if (w >= 30) gems.push('phoenix');
 
-        const moves = Math.max(12, 30 - Math.floor(w / 3));
-        const scoreTarget = 1000 + w * 500;
-        const isBoss = w % 5 === 0;
-        const sizes = [[7,9],[8,10],[8,10],[9,11],[7,9]];
-        const [bw, bh] = sizes[w % sizes.length];
-
-        const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
-        if (w >= 5) {
-            const gem = gems[w % gems.length];
-            objectives.push({ type: 'clear', target: 10 + w, gem, icon: GEM_TYPES[gem]?.emoji || '❓' });
+        // ── ZEN MODE: no time pressure, infinite, difficulty slowly creeps ──
+        if (this.mode === 'zen') {
+            const allGems = Object.keys(GEM_TYPES);
+            const commonGems = allGems.filter(g => GEM_TYPES[g].rarity === 'common');
+            // Slowly add more gems: start 4, +1 every 8 waves
+            const numGems = Math.min(4 + Math.floor(w / 8), commonGems.length);
+            const gems = commonGems.slice(0, numGems);
+            if (w >= 15) gems.push('mango');
+            if (w >= 30) gems.push('dragon');
+            if (w >= 50) gems.push('phoenix');
+            // Generous moves that slowly decrease
+            const moves = Math.max(20, 35 - Math.floor(w / 4));
+            const scoreTarget = 800 + w * 300;
+            const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
+            // Slowly add mechanics
+            const special = {};
+            if (w >= 12) special.chainBonus = true;
+            if (w >= 20) { special.fog = true; special.fogCount = Math.min(w - 18, 10); }
+            if (w >= 30) special.gravityShift = true;
+            return {
+                id: 8000 + w, endless: true, endlessMode: 'zen', wave: w,
+                width: 8, height: 9, moves, gems: [...new Set(gems)],
+                objectives, boss: false,
+                stars: [scoreTarget, scoreTarget * 1.5, scoreTarget * 2.5],
+                special, blockers: [], timed: false, timeLimit: 0, chapter: 1,
+            };
         }
-        if (w >= 12) {
-            objectives.push({ type: 'combo', target: Math.min(3 + Math.floor(w/8), 8), icon: '🔥' });
+
+        // ── SPRINT MODE: 3-min timer, score attack, multiplier ramps ──
+        if (this.mode === 'sprint') {
+            // Multiplier increases each wave
+            this.sprintMultiplier = 1 + (w - 1) * 0.25;
+            const commonGems = Object.keys(GEM_TYPES).filter(g => GEM_TYPES[g].rarity === 'common');
+            const numGems = Math.min(5 + Math.floor(w / 6), commonGems.length);
+            const gems = commonGems.slice(0, numGems);
+            if (w >= 3) gems.push('mango');
+            if (w >= 8) gems.push('dragon');
+            const scoreTarget = 2000 + w * 1000;
+            const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
+            if (w >= 2) objectives.push({ type: 'combo', target: Math.min(2 + w, 7), icon: '🔥' });
+            const special = {};
+            if (w >= 4) special.chainBonus = true;
+            if (w >= 6) { special.fog = true; special.fogCount = Math.min(w * 2, 14); }
+            // Each wave uses shared 3-min timer — no per-wave timer, use moves
+            return {
+                id: 8100 + w, endless: true, endlessMode: 'sprint', wave: w,
+                width: 8, height: 9, moves: 999,
+                gems: [...new Set(gems)], objectives, boss: false,
+                stars: [scoreTarget, scoreTarget * 1.5, scoreTarget * 2.5],
+                special, blockers: [],
+                timed: true, timeLimit: this.sprintTimeLeft, // remaining global time
+                _sprintMultiplier: this.sprintMultiplier,
+                chapter: 1,
+            };
         }
 
-        const special = {};
-        if (w >= 8) special.chainBonus = true;
-        if (w >= 12) { special.fog = true; special.fogCount = Math.min(w - 10, 15); }
-        if (w >= 16) special.gravityShift = true;
+        // ── SURVIVAL MODE: board shrinks every wave (~30s), increasingly hostile ──
+        if (this.mode === 'survival') {
+            const commonGems = Object.keys(GEM_TYPES).filter(g => GEM_TYPES[g].rarity === 'common');
+            const numGems = Math.min(5 + Math.floor(w / 4), commonGems.length);
+            const gems = commonGems.slice(0, numGems);
+            if (w >= 3) gems.push('mango');
+            // Board shrinks: start 8x9 → min 5x5
+            const boardW = Math.max(5, 8 - Math.floor(w / 4));
+            const boardH = Math.max(5, 9 - Math.floor(w / 3));
+            const moves = Math.max(8, 20 - Math.floor(w * 1.5));
+            const scoreTarget = 1500 + w * 800;
+            const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
+            const special = {};
+            if (w >= 2) { special.fog = true; special.fogCount = Math.min(w * 2, 20); }
+            if (w >= 4) special.chainBonus = true;
+            if (w >= 6) special.gravityShift = true;
+            return {
+                id: 8200 + w, endless: true, endlessMode: 'survival', wave: w,
+                width: boardW, height: boardH, moves, gems: [...new Set(gems)],
+                objectives, boss: false,
+                stars: [scoreTarget, scoreTarget * 1.5, scoreTarget * 2],
+                special, blockers: [],
+                timed: true, timeLimit: 30, // 30s per wave (board shrinks each wave)
+                chapter: 1,
+            };
+        }
 
-        return {
-            id: 8000 + w,
-            endless: true,
-            endlessMode: this.mode,
-            wave: w,
-            width: bw, height: bh,
-            moves,
-            gems,
-            objectives,
-            boss: isBoss,
-            stars: [scoreTarget, scoreTarget * 1.5, scoreTarget * 2.5],
-            special,
-            blockers: [],
-            timed: w % 7 === 0,
-            timeLimit: w % 7 === 0 ? Math.max(45, 90 - w) : 0,
-            chapter: 1,
-        };
+        // Fallback (shouldn't reach here)
+        return this.generateWaveClassic();
     },
 
     nextWave(score) {
         this.totalScore += score;
+        // For sprint mode: carry over remaining time from game
+        if (this.mode === 'sprint' && typeof game !== 'undefined' && game.timeLeft > 0) {
+            this.sprintTimeLeft = game.timeLeft;
+        }
         this.currentWave++;
         return this.generateWave();
     },
@@ -261,11 +303,25 @@ const EndlessMode = {
     _getKey(mode) { return `mango_endless_${mode || this.mode}`; },
 
     getHighScore(mode) {
-        return parseInt(localStorage.getItem(this._getKey(mode) + '_high') || '0');
+        // Support legacy keys: check new name first, then old
+        const key = this._getKey(mode);
+        const val = parseInt(localStorage.getItem(key + '_high') || '0');
+        if (val > 0) return val;
+        // Legacy fallback (classic→zen, timed→sprint)
+        const legacyMap = { zen: 'classic', sprint: 'timed' };
+        const legacyMode = legacyMap[mode || this.mode];
+        if (legacyMode) return parseInt(localStorage.getItem(`mango_endless_${legacyMode}_high`) || '0');
+        return val;
     },
 
     getHighWave(mode) {
-        return parseInt(localStorage.getItem(this._getKey(mode) + '_wave') || '0');
+        const key = this._getKey(mode);
+        const val = parseInt(localStorage.getItem(key + '_wave') || '0');
+        if (val > 0) return val;
+        const legacyMap = { zen: 'classic', sprint: 'timed' };
+        const legacyMode = legacyMap[mode || this.mode];
+        if (legacyMode) return parseInt(localStorage.getItem(`mango_endless_${legacyMode}_wave`) || '0');
+        return val;
     },
 
     saveHighScore() {
@@ -274,7 +330,6 @@ const EndlessMode = {
         if (this.totalScore > prev) {
             localStorage.setItem(key + '_high', this.totalScore.toString());
             localStorage.setItem(key + '_wave', this.currentWave.toString());
-            // Also update Stats
             if (typeof Stats !== 'undefined') {
                 Stats.recordEndless(this.mode, this.totalScore, this.currentWave);
             }
@@ -286,8 +341,8 @@ const EndlessMode = {
     // Get all-mode leaderboard
     getAllHighScores() {
         return {
-            classic: { score: this.getHighScore('classic'), wave: this.getHighWave('classic') },
-            timed: { score: this.getHighScore('timed'), wave: this.getHighWave('timed') },
+            zen: { score: this.getHighScore('zen'), wave: this.getHighWave('zen') },
+            sprint: { score: this.getHighScore('sprint'), wave: this.getHighWave('sprint') },
             survival: { score: this.getHighScore('survival'), wave: this.getHighWave('survival') },
         };
     },

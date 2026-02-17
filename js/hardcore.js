@@ -741,24 +741,45 @@ const ChallengeTower = {
         if (floorNum > 40) base.gems.push('dragon');
         if (floorNum > 45) base.gems.push('phoenix');
 
+        // ── Floor 1-5: basic constraints (no special gems, limited moves) ──
+        if (floorNum <= 5) {
+            base.constraints.push({ name: '禁特殊', desc: '无法生成特殊宝石', icon: '🚫', type: 'no_specials' });
+            base.moves = Math.max(12, 22 - floorNum * 2); // 20, 18, 16, 14, 12
+        }
+        // ── Floor 6-10: harder (fog + gravity combo, restricted gem types) ──
+        else if (floorNum <= 10) {
+            base.special = { fog: true, fogCount: 6 + (floorNum - 6) * 2, gravityShift: true };
+            // Restrict to 4 gem types
+            base.gems = base.gems.slice(0, 4);
+            base.constraints.push({ name: '迷雾重力', desc: '迷雾+重力偏移', icon: '🌀' });
+        }
+
         // Scale objectives
         const scoreTarget = 3000 + floorNum * 500;
         base.objectives.push({ type: 'score', target: scoreTarget, icon: '⭐' });
         base.stars = [scoreTarget, Math.floor(scoreTarget * 1.5), Math.floor(scoreTarget * 2.5)];
 
-        // Apply floor-specific constraints
-        const constraint = this.getFloorConstraint(floorNum);
-        if (constraint) {
-            base.constraints.push(constraint);
-            Object.assign(base, constraint.modifiers || {});
-            if (constraint.extraObjectives) base.objectives.push(...constraint.extraObjectives);
+        // Apply floor-specific constraints (only for floors > 10 that aren't bosses)
+        const isBoss = floorNum % 5 === 0;
+        if (floorNum > 10 && !isBoss) {
+            const constraint = this.getFloorConstraint(floorNum);
+            if (constraint) {
+                base.constraints.push(constraint);
+                Object.assign(base, constraint.modifiers || {});
+                if (constraint.extraObjectives) base.objectives.push(...constraint.extraObjectives);
+            }
         }
 
-        // Every 10th floor is a mini-boss
-        if (floorNum % 10 === 0 && floorNum < 50) {
+        // ── Boss floors: every 5th floor (5, 10, 15, 20, ..., 50) ──
+        if (isBoss && floorNum < 50) {
             base.boss = true;
-            base.moves += 10;
-            base.objectives.push({ type: 'combo', target: 5 + Math.floor(floorNum / 10), icon: '🔥' });
+            const bossIndex = Math.floor(floorNum / 5);
+            base.moves += 8;
+            // Boss HP scales: 3000 + 2000 per boss index
+            base._bossHP = 3000 + bossIndex * 2000;
+            // Attacks per turn scale: 1 at floor 5, 2+ at higher floors
+            base._bossAttacksPerTurn = Math.min(1 + Math.floor(bossIndex / 3), 3);
+            base.objectives.push({ type: 'combo', target: Math.min(3 + bossIndex, 8), icon: '🔥' });
         }
 
         // Floor 50: Ultimate Boss
@@ -768,9 +789,11 @@ const ChallengeTower = {
             base.height = 9;
             base.moves = 50;
             base.gems = ['knight', 'dwarf', 'undead', 'mango', 'dragon', 'phoenix'];
+            base._bossHP = 25000;
+            base._bossAttacksPerTurn = 3;
             base.objectives = [
                 { type: 'score', target: 100000, icon: '⭐' },
-                { type: 'combo', target: 20, icon: '🔥' },
+                { type: 'combo', target: 8, icon: '🔥' },
                 { type: 'special', target: 10, specialType: 'any', icon: '✨' },
             ];
             base.stars = [100000, 150000, 250000];

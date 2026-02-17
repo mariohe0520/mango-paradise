@@ -1574,19 +1574,19 @@ const UI = {
             <div class="modal-content" style="max-width:340px;">
                 <h2>♾️ 无尽模式</h2>
                 <div style="display:flex;flex-direction:column;gap:8px;margin:12px 0;">
-                    <button class="modal-btn primary" id="endless-classic" style="text-align:left;padding:12px;">
-                        <div style="font-size:1.1rem;font-weight:700;">🎮 经典模式</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">无限关卡，步数递减，看你能走多远</div>
-                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.classic.wave} · ${Utils.formatNumber(scores.classic.score)}分</div>
+                    <button class="modal-btn primary" id="endless-zen" style="text-align:left;padding:12px;">
+                        <div style="font-size:1.1rem;font-weight:700;">🧘 禅意模式</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">无时间压力，无尽关卡，难度缓慢提升</div>
+                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.zen.wave} · ${Utils.formatNumber(scores.zen.score)}分</div>
                     </button>
-                    <button class="modal-btn" id="endless-timed" style="text-align:left;padding:12px;">
-                        <div style="font-size:1.1rem;font-weight:700;">⏱️ 限时模式</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">每波60秒，完成目标续命！</div>
-                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.timed.wave} · ${Utils.formatNumber(scores.timed.score)}分</div>
+                    <button class="modal-btn" id="endless-sprint" style="text-align:left;padding:12px;">
+                        <div style="font-size:1.1rem;font-weight:700;">⚡ 冲刺模式</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">3分钟限时！连续通关，分数倍率递增</div>
+                        <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.sprint.wave} · ${Utils.formatNumber(scores.sprint.score)}分</div>
                     </button>
                     <button class="modal-btn" id="endless-survival" style="text-align:left;padding:12px;">
                         <div style="font-size:1.1rem;font-weight:700;">🛡️ 生存模式</div>
-                        <div style="font-size:0.75rem;color:var(--text-secondary);">障碍越来越多，步数越来越少</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">棋盘每30秒缩小！越来越紧迫</div>
                         <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.survival.wave} · ${Utils.formatNumber(scores.survival.score)}分</div>
                     </button>
                 </div>
@@ -1595,14 +1595,14 @@ const UI = {
         `;
         document.body.appendChild(overlay);
 
-        document.getElementById('endless-classic').addEventListener('click', () => {
+        document.getElementById('endless-zen').addEventListener('click', () => {
             overlay.remove();
-            const level = EndlessMode.start('classic');
+            const level = EndlessMode.start('zen');
             this.startSpecialLevel(level);
         });
-        document.getElementById('endless-timed').addEventListener('click', () => {
+        document.getElementById('endless-sprint').addEventListener('click', () => {
             overlay.remove();
-            const level = EndlessMode.start('timed');
+            const level = EndlessMode.start('sprint');
             this.startSpecialLevel(level);
         });
         document.getElementById('endless-survival').addEventListener('click', () => {

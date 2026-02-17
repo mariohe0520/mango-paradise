@@ -173,9 +173,9 @@ const Stats = {
 
     recordEndless(mode, score, wave) {
         const data = this._getData();
-        if (mode === 'timed') {
-            data.endlessTimedHighScore = Math.max(data.endlessTimedHighScore, score);
-            data.endlessTimedHighWave = Math.max(data.endlessTimedHighWave, wave);
+        if (mode === 'sprint' || mode === 'timed') {
+            data.endlessTimedHighScore = Math.max(data.endlessTimedHighScore || 0, score);
+            data.endlessTimedHighWave = Math.max(data.endlessTimedHighWave || 0, wave);
         } else if (mode === 'survival') {
             data.endlessSurvivalHighScore = Math.max(data.endlessSurvivalHighScore, score);
             data.endlessSurvivalHighWave = Math.max(data.endlessSurvivalHighWave, wave);
