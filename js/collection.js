@@ -25,8 +25,8 @@ const COLLECTION_DATA = {
             name: '兽人',
             emoji: '鬼',
             rarity: 'common',
-            description: '来自德拉诺的勇猛战士，现在他们也被芒果的美味所征服。',
-            lore: '为了部落！为了...芒果！',
+            description: '芒果庄园中勇猛的战士，力量惊人，也被芒果的美味所征服。',
+            lore: '为了芒果！为了庄园！',
             unlockCondition: '首次消除兽人即可解锁',
             stats: { attack: 5, health: 6, speed: 2 }
         },
@@ -36,7 +36,7 @@ const COLLECTION_DATA = {
             emoji: '灵',
             rarity: 'common',
             description: '优雅的精灵族，他们的魔法让芒果园更加繁茂。',
-            lore: '愿艾露恩照耀你的芒果园',
+            lore: '愿星光照耀你的芒果园',
             unlockCondition: '首次消除精灵即可解锁',
             stats: { attack: 3, health: 3, speed: 5 }
         },
@@ -65,7 +65,7 @@ const COLLECTION_DATA = {
             name: '矮人',
             emoji: '⚒',
             rarity: 'uncommon',
-            description: '来自铁炉堡的工匠，他们发明了芒果收割机。',
+            description: '技艺精湛的工匠，他们发明了芒果收割机。',
             lore: '没有什么是一杯芒果酒解决不了的',
             unlockCondition: '通关第 11 关解锁',
             stats: { attack: 4, health: 7, speed: 2 }

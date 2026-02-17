@@ -181,18 +181,18 @@ const Estate = {
 
     // ── Decorations: collectible cosmetic items ──
     DECORATIONS: {
-        horde_banner: { id: 'horde_banner', name: '部落战旗', emoji: '▶', cost: 100, happiness: 15 },
+        mango_banner: { id: 'mango_banner', name: '庄园旗帜', emoji: '▶', cost: 100, happiness: 15 },
         lantern: { id: 'lantern', name: '庄园灯笼', emoji: '◆', cost: 200, happiness: 20 },
-        garden: { id: 'garden', name: '花园', emoji: '✿', cost: 300, happiness: 25 },
-        totem: { id: 'totem', name: '萨满图腾', emoji: '↯', cost: 400, happiness: 30 },
+        garden: { id: 'garden', name: '芒果花园', emoji: '✿', cost: 300, happiness: 25 },
+        totem: { id: 'totem', name: '守护图腾', emoji: '↯', cost: 400, happiness: 30 },
         fountain: { id: 'fountain', name: '许愿喷泉', emoji: '≈', cost: 500, happiness: 40 },
         bridge: { id: 'bridge', name: '小桥', emoji: '♜', cost: 600, happiness: 45 },
-        statue: { id: 'statue', name: '萨尔雕像', emoji: '♜', cost: 800, happiness: 60 },
-        windmill: { id: 'windmill', name: '部落风车', emoji: '◇', cost: 1000, happiness: 70 },
-        wolf_den: { id: 'wolf_den', name: '狼骑兵营', emoji: '狼', cost: 1500, happiness: 85 },
-        war_drum: { id: 'war_drum', name: '战鼓', emoji: '♪', cost: 2000, happiness: 100 },
+        statue: { id: 'statue', name: '芒果之神像', emoji: '♜', cost: 800, happiness: 60 },
+        windmill: { id: 'windmill', name: '热带风车', emoji: '◇', cost: 1000, happiness: 70 },
+        treehouse: { id: 'treehouse', name: '芒果树屋', emoji: '♠', cost: 1500, happiness: 85 },
+        drum: { id: 'drum', name: '丰收之鼓', emoji: '♪', cost: 2000, happiness: 100 },
         dragon_nest: { id: 'dragon_nest', name: '龙巢', emoji: '龙', cost: 3000, happiness: 120 },
-        org_gate: { id: 'org_gate', name: '奥格瑞玛之门', emoji: '♜', cost: 5000, happiness: 200 },
+        paradise_gate: { id: 'paradise_gate', name: '芒果天堂之门', emoji: '♜', cost: 5000, happiness: 200 },
     },
 
     // ── Core Methods ──

@@ -598,7 +598,7 @@ const SeasonSystem = {
         { name: '彩虹赛季', emoji: '◇', color: '#ec4899', bonus: 'rainbow gem spawn rate +25%', spiritBonus: 'rainbow_spirit' },
         { name: '蜂群赛季', emoji: '蜂', color: '#fbbf24', bonus: 'combo multiplier +0.5x', spiritBonus: 'bee_spirit' },
         { name: '翡翠赛季', emoji: '♥', color: '#22c55e', bonus: 'all tree buffs +20%', spiritBonus: null },
-        { name: '部落赛季', emoji: '▶', color: '#dc2626', bonus: 'all spirit affinity gain x2', spiritBonus: null },
+        { name: '守护赛季', emoji: '▶', color: '#dc2626', bonus: 'all spirit affinity gain x2', spiritBonus: null },
         { name: '龙息赛季', emoji: '龙', color: '#f97316', bonus: 'line gems deal 3x damage', spiritBonus: 'dragon_spirit' },
         { name: '凤凰赛季', emoji: '☆', color: '#fb923c', bonus: 'free revive once per level', spiritBonus: 'phoenix_spirit' }
     ],

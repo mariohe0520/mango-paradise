@@ -508,6 +508,31 @@ const UI = {
             }
         } catch(e) {}
 
+        // ── Module Fusion: Estate button buff summary ──
+        try {
+            const estateBtn = document.getElementById('btn-estate');
+            if (estateBtn) {
+                const sub = estateBtn.querySelector('.btn-subtitle');
+                if (sub) {
+                    const buffs = Estate.getActiveBuffs();
+                    const happiness = Estate.getHappiness();
+                    if (buffs.length > 0) {
+                        const buffNames = [];
+                        if (buffs.includes('start_bomb')) buffNames.push('炸弹');
+                        if (buffs.includes('extra_moves')) buffNames.push('+步数');
+                        if (buffs.includes('rainbow_4')) buffNames.push('彩虹↓');
+                        if (buffs.includes('score_multiplier')) buffNames.push('分数×');
+                        if (buffs.includes('gem_bonus')) buffNames.push('+宝石');
+                        if (buffs.includes('second_chance')) buffNames.push('复活');
+                        if (buffs.includes('skill_boost')) buffNames.push('充能↑');
+                        sub.textContent = `♥${happiness} · ${buffNames.slice(0,3).join('·')}${buffNames.length > 3 ? '…' : ''}`;
+                    } else {
+                        sub.textContent = '种树 · 精灵 · Buff';
+                    }
+                }
+            }
+        } catch(e) {}
+
         // 离线奖励
         this.checkOfflineReward();
     },
@@ -1433,6 +1458,37 @@ const UI = {
                     const introTexts = [];
                     if (story.pre) introTexts.push(story.pre);
                     if (story.bossIntro) introTexts.push(...story.bossIntro);
+
+                    // ── Module Fusion: estate-aware story text ──
+                    try {
+                        const estate = Storage.getEstate();
+                        const buffs = Estate.getActiveBuffs();
+                        // Mention planted trees giving power
+                        if (buffs.length > 0 && Math.random() < 0.5) {
+                            const treePhrases = [];
+                            if (estate.trees?.golden_mango) treePhrases.push('金芒树的光芒在你周围闪耀');
+                            if (estate.trees?.moonlight) treePhrases.push('月光树赐予你额外的时间');
+                            if (estate.trees?.rainbow) treePhrases.push('彩虹树的力量降低了彩虹门槛');
+                            if (estate.trees?.phoenix) treePhrases.push('凤凰树守护着你');
+                            if (estate.trees?.ancient) treePhrases.push('远古之树加速了精灵充能');
+                            if (treePhrases.length > 0) {
+                                const pick = treePhrases[Math.floor(Math.random() * treePhrases.length)];
+                                introTexts.push(`✦ ${pick}，你感受到庄园的力量！`);
+                            }
+                        }
+                        // Boss encouragement based on estate happiness
+                        if (story.bossIntro) {
+                            const happiness = Estate.getHappiness();
+                            if (happiness >= 500) {
+                                introTexts.push('♕ 庄园繁荣昌盛，所有精灵都在为你加油！力量全开！');
+                            } else if (happiness >= 200) {
+                                introTexts.push('♠ 庄园的祝福与你同在，勇敢战斗吧！');
+                            } else if (happiness > 0) {
+                                introTexts.push('※ 庄园还在成长中，多种树可以获得更强的Buff哦！');
+                            }
+                        }
+                    } catch(e) { /* fusion text is optional */ }
+
                     if (introTexts.length > 0) {
                         const charEl = document.getElementById('story-character');
                         if (charEl) {
@@ -2062,6 +2118,26 @@ const UI = {
                         const outroTexts = [];
                         if (story.bossOutro) outroTexts.push(...story.bossOutro);
                         else if (story.post) outroTexts.push(story.post);
+
+                        // ── Module Fusion: random estate rewards on completion ──
+                        try {
+                            const roll = Math.random();
+                            if (roll < 0.25 && stars >= 2) {
+                                // 25% chance of estate bonus on 2+ star clear
+                                const rewards = [
+                                    { text: '✿ 战斗中掉落了一颗芒果种子！庄园幸福度+10', action: () => Estate.addHappiness(10) },
+                                    { text: '◆ 发现了隐藏的宝石矿！+50金币', action: () => Storage.addGold(50) },
+                                    { text: '♠ 精灵被你的勇气感动！庄园幸福度+15', action: () => Estate.addHappiness(15) },
+                                    { text: '☆ 芒果树结出了金色果实！+80金币', action: () => Storage.addGold(80) },
+                                ];
+                                if (stars === 3) {
+                                    rewards.push({ text: '♕ 完美通关！庄园幸福度+25，+100金币', action: () => { Estate.addHappiness(25); Storage.addGold(100); } });
+                                }
+                                const reward = rewards[Math.floor(Math.random() * rewards.length)];
+                                outroTexts.push(reward.text);
+                                reward.action();
+                            }
+                        } catch(e) { /* fusion rewards optional */ }
 
                         if (outroTexts.length > 0) {
                             const charEl = document.getElementById('story-character');

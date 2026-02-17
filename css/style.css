@@ -240,8 +240,8 @@ h1, h2, h3 {
     flex-direction: column;
     height: 100%;
     padding: 1rem;
-    padding-top: env(safe-area-inset-top, 1rem);
-    padding-bottom: env(safe-area-inset-bottom, 1rem);
+    padding-top: calc(env(safe-area-inset-top, 20px) + 1rem);
+    padding-bottom: calc(env(safe-area-inset-bottom, 10px) + 0.5rem);
     z-index: 2;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -519,7 +519,7 @@ h1, h2, h3 {
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    padding-top: calc(env(safe-area-inset-top, 1rem) + 0.5rem);
+    padding-top: calc(env(safe-area-inset-top, 20px) + 1rem);
     background: var(--bg-secondary);
     border-bottom: var(--border-primary);
 }
@@ -723,7 +723,7 @@ h1, h2, h3 {
     align-items: center;
     justify-content: space-between;
     padding: 0.1rem 0.5rem;
-    padding-top: env(safe-area-inset-top, 2px);
+    padding-top: calc(env(safe-area-inset-top, 20px) + 0.25rem);
     flex-shrink: 0;
 }
 

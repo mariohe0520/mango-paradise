@@ -20,16 +20,16 @@ const GEM_TYPES = {
 
 // 章节定义 - 10 chapters
 const CHAPTERS = [
-    { id:1,  name:'艾尔文森林', description:'芒果树林中潜伏着神秘的力量...',    icon:'♠', levels:[1,10],   unlockLevel:0,  background:'forest' },
-    { id:2,  name:'西部荒野',   description:'在荒野中寻找珍贵的芒果矿石...',    icon:'△', levels:[11,20],  unlockLevel:10, background:'desert' },
-    { id:3,  name:'暴风城',     description:'王国的中心，芒果贸易的枢纽...',     icon:'♜', levels:[21,30],  unlockLevel:20, background:'castle' },
-    { id:4,  name:'诅咒之地',   description:'被黑暗力量笼罩的神秘区域...',       icon:'●', levels:[31,40],  unlockLevel:30, background:'dark' },
-    { id:5,  name:'燃烧平原',   description:'熔岩与火焰的试炼之地...',           icon:'△', levels:[41,50],  unlockLevel:40, background:'fire' },
-    { id:6,  name:'诺森德',     description:'冰封王座的极寒挑战...',             icon:'※', levels:[51,60],  unlockLevel:50, background:'ice' },
-    { id:7,  name:'翡翠森林',   description:'连锁反应在翡翠丛林中回荡...',         icon:'♧', levels:[61,70],  unlockLevel:60, background:'emerald' },
-    { id:8,  name:'水晶洞穴',   description:'迷雾笼罩的水晶洞穴，视野受限...',    icon:'◆', levels:[71,80],  unlockLevel:70, background:'crystal' },
-    { id:9,  name:'星空之境',   description:'重力在星光下不再恒定...',             icon:'★', levels:[81,90],  unlockLevel:80, background:'starlight' },
-    { id:10, name:'芒果天堂',   description:'终极挑战——所有机制的融合！',          icon:'芒', levels:[91,100], unlockLevel:90, background:'paradise' }
+    { id:1,  name:'芒果林',     description:'芒果树林中潜伏着神秘的力量...',      icon:'♠', levels:[1,10],   unlockLevel:0,  background:'forest' },
+    { id:2,  name:'阳光沙滩',   description:'在沙滩中寻找珍贵的芒果矿石...',      icon:'△', levels:[11,20],  unlockLevel:10, background:'desert' },
+    { id:3,  name:'芒果城',     description:'芒果王国的中心，贸易的枢纽...',       icon:'♜', levels:[21,30],  unlockLevel:20, background:'castle' },
+    { id:4,  name:'迷雾沼泽',   description:'被黑暗力量笼罩的神秘沼泽...',         icon:'●', levels:[31,40],  unlockLevel:30, background:'dark' },
+    { id:5,  name:'火山岛',     description:'熔岩与火焰的试炼之地...',             icon:'△', levels:[41,50],  unlockLevel:40, background:'fire' },
+    { id:6,  name:'冰霜雪原',   description:'冰晶王座的极寒挑战...',               icon:'※', levels:[51,60],  unlockLevel:50, background:'ice' },
+    { id:7,  name:'翡翠森林',   description:'连锁反应在翡翠丛林中回荡...',          icon:'♧', levels:[61,70],  unlockLevel:60, background:'emerald' },
+    { id:8,  name:'水晶洞穴',   description:'迷雾笼罩的水晶洞穴，视野受限...',     icon:'◆', levels:[71,80],  unlockLevel:70, background:'crystal' },
+    { id:9,  name:'星空之境',   description:'重力在星光下不再恒定...',              icon:'★', levels:[81,90],  unlockLevel:80, background:'starlight' },
+    { id:10, name:'芒果天堂',   description:'终极挑战——所有机制的融合！',           icon:'芒', levels:[91,100], unlockLevel:90, background:'paradise' }
 ];
 
 // 目标类型
@@ -74,7 +74,7 @@ const L = LevelGenerator.createLevel.bind(LevelGenerator);
 // ALL 100 LEVELS
 // ====================================
 const LEVELS = [
-// =========== Ch1: 艾尔文森林 (1-10) ===========
+// =========== Ch1: 芒果林 (1-10) ===========
 // Design: tight moves, escalating objectives, teach mechanics through pressure
 L(1,  { moves:20, gems:['murloc','orc','elf','mage'], objectives:[{type:'score',target:600,icon:'★'}], stars:[600,1200,2000], tutorial:'basic' }),
 L(2,  { moves:20, gems:['murloc','orc','elf','mage'], objectives:[{type:'clear',target:12,gem:'murloc',icon:'鱼'}], stars:[600,1200,2000], tutorial:'collect' }),
@@ -87,7 +87,7 @@ L(8,  { moves:22, gems:['murloc','orc','elf','mage','knight'], objectives:[{type
 L(9,  { moves:22, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'special',target:3,specialType:'any',icon:'✦'},{type:'combo',target:3,icon:'☆'}], stars:[3000,5000,7500] }),
 L(10, { moves:30, gems:['murloc','orc','elf','mage','knight'], boss:true, objectives:[{type:'score',target:5000,icon:'★'}], stars:[5000,8000,12000] }),
 
-// =========== Ch2: 西部荒野 (11-20) ===========
+// =========== Ch2: 阳光沙滩 (11-20) ===========
 // Design: introduce 6th gem (harder to match), frozen cells, tighter multi-objectives
 L(11, { moves:22, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'clear',target:20,gem:'dwarf',icon:'⚒'},{type:'score',target:2000,icon:'★'}], stars:[2500,4000,6000] }),
 L(12, { moves:24, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'special',target:3,specialType:'line',icon:'↯',label:'连4消生成'},{type:'score',target:3000,icon:'★'}], stars:[3500,5500,8000] }),
@@ -100,7 +100,7 @@ L(18, { moves:25, gems:['murloc','orc','elf','mage','knight','dwarf'], objective
 L(19, { moves:25, gems:['murloc','orc','elf','mage','knight','dwarf'], objectives:[{type:'special',target:4,specialType:'any',icon:'✦'},{type:'combo',target:4,icon:'☆'}], stars:[5000,8000,11000] }),
 L(20, { moves:32, gems:['murloc','orc','elf','mage','knight','dwarf'], boss:true, objectives:[{type:'score',target:7000,icon:'★'}], stars:[7000,11000,15000] }),
 
-// =========== Ch3: 暴风城 (21-30) — combo theme ===========
+// =========== Ch3: 芒果城 (21-30) — combo theme ===========
 L(21, { moves:24, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:20,gem:'undead',icon:'☠'},{type:'combo',target:3,icon:'☆'}], stars:[5000,8000,12000] }),
 L(22, { width:9, height:7, moves:22, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'score',target:6000,icon:'★'},{type:'combo',target:4,icon:'☆'}], stars:[6000,9500,13000] }),
 L(23, { moves:28, gems:['elf','mage','knight','dwarf','undead'], objectives:[{type:'clear',target:30,gem:'elf',icon:'灵'},{type:'special',target:1,specialType:'bomb',icon:'✸'},{type:'combo',target:3,icon:'☆'}], stars:[6500,10000,14000] }),
@@ -112,7 +112,7 @@ L(28, { moves:24, gems:['elf','mage','knight','dwarf','undead'], objectives:[{ty
 L(29, { moves:28, gems:['orc','elf','mage','knight','dwarf','undead'], objectives:[{type:'special',target:2,specialType:'line',icon:'↯',label:'连4消生成'},{type:'special',target:1,specialType:'bomb',icon:'✸'},{type:'combo',target:6,icon:'☆'}], stars:[7000,11000,15000] }),
 L(30, { moves:32, gems:['orc','elf','mage','knight','dwarf','undead'], boss:true, objectives:[{type:'score',target:10000,icon:'★'},{type:'combo',target:8,icon:'☆'},{type:'special',target:3,specialType:'any',icon:'✦'},{type:'clear',target:30,gem:'undead',icon:'☠'}], stars:[10000,15000,20000] }),
 
-// =========== Ch4: 诅咒之地 (31-40) — special theme ===========
+// =========== Ch4: 迷雾沼泽 (31-40) — special theme ===========
 L(31, { moves:24, gems:['elf','mage','knight','dwarf','undead','mango'], objectives:[{type:'clear',target:15,gem:'mango',icon:'芒'},{type:'special',target:3,specialType:'any',icon:'✦'}], stars:[8000,12000,17000] }),
 L(32, { moves:26, gems:['elf','mage','knight','dwarf','undead','mango'], objectives:[{type:'score',target:9000,icon:'★'},{type:'clear',target:20,gem:'mango',icon:'芒'},{type:'special',target:2,specialType:'line',icon:'↯'}], stars:[9000,14000,19000] }),
 L(33, { width:9, height:9, moves:28, gems:['elf','mage','knight','dwarf','undead','mango'], objectives:[{type:'score',target:12000,icon:'★'},{type:'special',target:4,specialType:'bomb',icon:'✸'}], stars:[12000,18000,24000] }),
@@ -124,7 +124,7 @@ L(38, { moves:28, gems:['elf','mage','knight','dwarf','undead','mango'], objecti
 L(39, { moves:28, gems:['elf','mage','knight','dwarf','undead','mango'], objectives:[{type:'score',target:12000,icon:'★'},{type:'combo',target:8,icon:'☆'},{type:'special',target:3,specialType:'bomb',icon:'✸'}], stars:[12000,18000,24000] }),
 L(40, { moves:34, gems:['elf','mage','knight','dwarf','undead','mango'], boss:true, objectives:[{type:'score',target:15000,icon:'★'},{type:'special',target:5,specialType:'any',icon:'✦'},{type:'special',target:2,specialType:'rainbow',icon:'◇'},{type:'clear',target:35,gem:'mango',icon:'芒'}], stars:[15000,22000,30000] }),
 
-// =========== Ch5: 燃烧平原 (41-50) — timed theme ===========
+// =========== Ch5: 火山岛 (41-50) — timed theme ===========
 L(41, { moves:26, gems:['mage','knight','dwarf','undead','mango','dragon'], timed:true, timeLimit:90, objectives:[{type:'clear',target:10,gem:'dragon',icon:'龙'},{type:'score',target:10000,icon:'★'}], stars:[12000,18000,25000] }),
 L(42, { moves:28, gems:['mage','knight','dwarf','undead','mango','dragon'], objectives:[{type:'score',target:14000,icon:'★'},{type:'clear',target:15,gem:'dragon',icon:'龙'}], stars:[14000,21000,28000] }),
 L(43, { width:9, height:8, moves:26, gems:['knight','dwarf','undead','mango','dragon'], timed:true, timeLimit:80, objectives:[{type:'clear',target:40,gem:'dwarf',icon:'⚒'},{type:'clear',target:20,gem:'dragon',icon:'龙'}], stars:[13000,20000,27000] }),
@@ -136,7 +136,7 @@ L(48, { moves:28, gems:['mage','knight','dwarf','undead','mango','dragon'], obje
 L(49, { moves:30, gems:['knight','dwarf','undead','mango','dragon'], timed:true, timeLimit:60, objectives:[{type:'clear',target:60,gem:'knight',icon:'⚔'},{type:'special',target:6,specialType:'line',icon:'↯',label:'连4消生成'}], stars:[17000,25000,34000] }),
 L(50, { moves:38, gems:['mage','knight','dwarf','undead','mango','dragon'], boss:true, timed:true, timeLimit:120, objectives:[{type:'score',target:22000,icon:'★'},{type:'special',target:4,specialType:'rainbow',icon:'◇'},{type:'combo',target:10,icon:'☆'},{type:'clear',target:30,gem:'dragon',icon:'龙'}], stars:[25000,35000,50000] }),
 
-// =========== Ch6: 诺森德 (51-60) — multi-objective + hard ===========
+// =========== Ch6: 冰霜雪原 (51-60) — multi-objective + hard ===========
 L(51, { moves:28, gems:['knight','dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:10,gem:'phoenix',icon:'☆'},{type:'special',target:3,specialType:'any',icon:'✦'},{type:'score',target:15000,icon:'★'}], stars:[18000,27000,36000] }),
 L(52, { width:9, height:9, moves:32, gems:['knight','dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'score',target:22000,icon:'★'},{type:'clear',target:15,gem:'phoenix',icon:'☆'},{type:'combo',target:8,icon:'☆'}], stars:[22000,32000,42000] }),
 L(53, { moves:28, gems:['dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:50,gem:'mango',icon:'芒'},{type:'clear',target:30,gem:'phoenix',icon:'☆'},{type:'special',target:2,specialType:'bomb',icon:'✸'}], stars:[20000,30000,40000] }),
