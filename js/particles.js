@@ -173,6 +173,29 @@ class ParticleSystem {
         this.burst(x, y, ['#fbbf24', '#ffd700', '#f59e0b'], 5);
     }
 
+    // Background particles in a container
+    backgroundParticles(selector, count = 10) {
+        if (!this.enabled) return;
+        const container = typeof selector === 'string' ? document.querySelector(selector) : selector;
+        if (!container) return;
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.style.cssText = `
+                position: absolute;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                width: ${3 + Math.random() * 6}px;
+                height: ${3 + Math.random() * 6}px;
+                background: rgba(247, 147, 30, ${0.15 + Math.random() * 0.2});
+                border-radius: 50%;
+                pointer-events: none;
+                animation: float ${4 + Math.random() * 6}s ease-in-out infinite;
+                animation-delay: ${-Math.random() * 5}s;
+            `;
+            container.appendChild(p);
+        }
+    }
+
     // Backward compat stubs
     startLoop() {}
     stopLoop() {}

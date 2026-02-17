@@ -2031,23 +2031,28 @@ const UI = {
                 });
             }
 
-            // Show post-level story
-            const story = StoryData.getLevel(game.level.id);
-            if (story) {
-                const outroTexts = [];
-                if (story.bossOutro) outroTexts.push(...story.bossOutro);
-                else if (story.post) outroTexts.push(story.post);
+            // Show post-level story (only for story mode levels, not specials)
+            try {
+                const levelId = game.level?.id;
+                if (levelId && levelId <= 100 && typeof StoryData !== 'undefined') {
+                    const story = StoryData.getLevel(levelId);
+                    if (story) {
+                        const outroTexts = [];
+                        if (story.bossOutro) outroTexts.push(...story.bossOutro);
+                        else if (story.post) outroTexts.push(story.post);
 
-                if (outroTexts.length > 0) {
-                    const charEl = document.getElementById('story-character');
-                    if (charEl) charEl.textContent = '🥭';
-                    this.showStoryDialog(outroTexts, () => {
-                        this.showModal('victory-screen');
-                        setTimeout(() => this.showPendingAchievements(), 2000);
-                    });
-                    return;
+                        if (outroTexts.length > 0) {
+                            const charEl = document.getElementById('story-character');
+                            if (charEl) charEl.textContent = '🥭';
+                            this.showStoryDialog(outroTexts, () => {
+                                this.showModal('victory-screen');
+                                setTimeout(() => this.showPendingAchievements(), 2000);
+                            });
+                            return;
+                        }
+                    }
                 }
-            }
+            } catch(e) { console.warn('[showVictory] story lookup error:', e); }
 
             this.showModal('victory-screen');
             // Update next-level button text for special modes
@@ -2069,7 +2074,7 @@ const UI = {
             // Estate nudge after level 3 if no trees planted yet
             if (game.level.id === 3 && !Estate.isTreePlanted('golden_mango') && Storage.getGold() >= 150) {
                 setTimeout(() => {
-                    this.showToast('💡 攒够金币了！去庄园种棵金芒树，开局自带炸弹！', 'info', 4000);
+                    this.showToast('💡 攒够金币了！去庄园种棵金芒树，开局自带炸弹！', 'info');
                 }, 3000);
             }
             setTimeout(() => this.showPendingAchievements(), 2000);

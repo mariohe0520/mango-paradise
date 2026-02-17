@@ -1840,8 +1840,11 @@ class Game {
             }
         }
 
-        // Boss damage
-        if (this.isBossLevel && Boss.currentBoss) Boss.dealDamage(adjusted);
+        // Boss damage — pass active spirit for weakness multiplier
+        if (this.isBossLevel && Boss.currentBoss) {
+            const spiritId = Estate.getCurrentSpirit()?.id;
+            Boss.dealDamage(adjusted, spiritId);
+        }
     }
 
     updateObjective(gemType, specialType = null) {
@@ -2410,6 +2413,13 @@ class Game {
 
     calculateStars() {
         const t = this.level.stars;
+        if (!t || !Array.isArray(t) || t.length < 3) {
+            // Fallback for special levels without proper star thresholds
+            if (this.score >= 3000) return 3;
+            if (this.score >= 1500) return 2;
+            if (this.score >= 500) return 1;
+            return 0;
+        }
         if (this.score >= t[2]) return 3;
         if (this.score >= t[1]) return 2;
         if (this.score >= t[0]) return 1;

@@ -75,8 +75,8 @@ const L = LevelGenerator.createLevel.bind(LevelGenerator);
 const LEVELS = [
 // =========== Ch1: 艾尔文森林 (1-10) ===========
 // Design: tight moves, escalating objectives, teach mechanics through pressure
-L(1,  { moves:15, gems:['murloc','orc','elf','mage'], objectives:[{type:'score',target:800,icon:'⭐'}], stars:[800,1500,2200], tutorial:'basic' }),
-L(2,  { moves:16, gems:['murloc','orc','elf','mage'], objectives:[{type:'clear',target:15,gem:'murloc',icon:'🐟'}], stars:[600,1200,2000], tutorial:'collect' }),
+L(1,  { moves:20, gems:['murloc','orc','elf','mage'], objectives:[{type:'score',target:600,icon:'⭐'}], stars:[600,1200,2000], tutorial:'basic' }),
+L(2,  { moves:20, gems:['murloc','orc','elf','mage'], objectives:[{type:'clear',target:12,gem:'murloc',icon:'🐟'}], stars:[600,1200,2000], tutorial:'collect' }),
 L(3,  { moves:18, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'clear',target:12,gem:'orc',icon:'👹'},{type:'clear',target:12,gem:'elf',icon:'🧝♀️'}], stars:[1000,1800,2800] }),
 L(4,  { moves:18, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'special',target:2,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[1200,2200,3200], tutorial:'special' }),
 L(5,  { moves:20, gems:['murloc','orc','elf','mage','knight'], objectives:[{type:'score',target:2500,icon:'⭐'},{type:'combo',target:2,icon:'🔥'}], stars:[2500,4000,6000] }),
@@ -171,7 +171,7 @@ L(76, { moves:28, gems:['orc','knight','undead','mango','dragon'], special:{fog:
 L(77, { moves:30, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:20}, objectives:[{type:'special',target:3,specialType:'rainbow',icon:'🌈'},{type:'clear',target:35,gem:'phoenix',icon:'🔥'}], stars:[38000,54000,72000] }),
 L(78, { width:9, height:8, moves:30, gems:['knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:22}, objectives:[{type:'score',target:36000,icon:'⭐'},{type:'combo',target:9,icon:'🔥'},{type:'special',target:5,specialType:'any',icon:'✨'}], stars:[40000,56000,75000] }),
 L(79, { moves:32, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:24}, objectives:[{type:'clear',target:50,gem:'mango',icon:'🥭'},{type:'special',target:4,specialType:'line',icon:'⚡'},{type:'combo',target:8,icon:'🔥'}], stars:[42000,59000,78000] }),
-L(80, { width:9, height:9, moves:34, gems:['orc','knight','undead','mango','dragon','phoenix'], boss:true, special:{fog:true,fogCount:30}, objectives:[{type:'clear',target:30,gem:'skull',icon:'🌫️',label:'清除全部迷雾'},{type:'special',target:6,specialType:'any',icon:'✨'},{type:'combo',target:10,icon:'🔥'},{type:'score',target:38000,icon:'⭐'}], stars:[45000,63000,85000] }),
+L(80, { width:9, height:9, moves:34, gems:['orc','knight','undead','mango','dragon','phoenix'], boss:true, special:{fog:true,fogCount:30}, objectives:[{type:'clear',target:40,gem:'orc',icon:'👹'},{type:'special',target:6,specialType:'any',icon:'✨'},{type:'combo',target:6,icon:'🔥'},{type:'score',target:38000,icon:'⭐'}], stars:[45000,63000,85000] }),
 
 // =========== Ch9: 星空之境 (81-90) — Gravity shift theme ===========
 // Gems periodically fall sideways instead of downward. gravityShift = true enables the mechanic.
@@ -274,3 +274,37 @@ function getChapterLevelsExtended(chapterId) {
     return builtIn;
 }
 function getTotalChapters() { return CHAPTERS.length; }
+
+// ====================================
+// BALANCE PATCH — Combo objectives were unrealistically high.
+// Cascade depth 5 is uncommon, 6+ is rare even with chainBonus.
+// Cap combo targets to achievable ranges.
+// ====================================
+(function balancePatch() {
+    const COMBO_CAP_DEFAULT = 5;   // Ch1-6: max cascade target
+    const COMBO_CAP_CHAIN = 7;     // Ch7+ with chainBonus: max cascade target
+    const COMBO_CAP_BOSS = 8;      // Boss levels with chainBonus can be slightly harder
+
+    LEVELS.forEach(level => {
+        if (!level.objectives) return;
+        const hasChainBonus = level.special && level.special.chainBonus;
+        const isBoss = level.boss;
+
+        level.objectives.forEach(obj => {
+            if (obj.type !== OBJECTIVE_TYPES.COMBO) return;
+            let cap;
+            if (hasChainBonus) {
+                cap = isBoss ? COMBO_CAP_BOSS : COMBO_CAP_CHAIN;
+            } else {
+                cap = isBoss ? COMBO_CAP_DEFAULT + 1 : COMBO_CAP_DEFAULT;
+            }
+            if (obj.target > cap) {
+                obj.target = cap;
+                // Update label if present
+                if (obj.label && obj.label.includes('×')) {
+                    obj.label = `连锁×${cap}`;
+                }
+            }
+        });
+    });
+})();

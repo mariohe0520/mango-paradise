@@ -368,9 +368,10 @@ h1, h2, h3 {
     width: 100%;
     margin: 0 auto;
     padding: 0 1rem;
-    justify-content: center;
+    justify-content: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 2rem;
 }
 
 .menu-btn {
@@ -2564,6 +2565,22 @@ input[type="range"]::-webkit-slider-thumb {
 
 #game-screen[data-theme="final"] { background: linear-gradient(180deg, #1a0000 0%, #300505 30%, #1a0000 70%, #0d0000 100%); }
 #game-screen[data-theme="final"] .board-frame { border-color: rgba(239,68,68,0.6); box-shadow: var(--shadow-lg), 0 0 40px rgba(239,68,68,0.2), inset 0 0 20px rgba(239,68,68,0.05); }
+
+/* Ch7: 翡翠森林 — Emerald */
+#game-screen[data-theme="emerald"] { background: linear-gradient(180deg, #071a0a 0%, #0f2d14 50%, #071a0a 100%); }
+#game-screen[data-theme="emerald"] .board-frame { border-color: rgba(74,222,128,0.45); box-shadow: var(--shadow-lg), 0 0 35px rgba(74,222,128,0.12); }
+
+/* Ch8: 水晶洞穴 — Crystal */
+#game-screen[data-theme="crystal"] { background: linear-gradient(180deg, #0a0820 0%, #151040 50%, #0a0820 100%); }
+#game-screen[data-theme="crystal"] .board-frame { border-color: rgba(168,130,255,0.5); box-shadow: var(--shadow-lg), 0 0 35px rgba(168,130,255,0.15); }
+
+/* Ch9: 星空之境 — Starlight */
+#game-screen[data-theme="starlight"] { background: linear-gradient(180deg, #05081a 0%, #0d1530 50%, #05081a 100%); }
+#game-screen[data-theme="starlight"] .board-frame { border-color: rgba(200,200,255,0.4); box-shadow: var(--shadow-lg), 0 0 35px rgba(200,200,255,0.1); }
+
+/* Ch10: 芒果天堂 — Paradise */
+#game-screen[data-theme="paradise"] { background: linear-gradient(180deg, #1a0d00 0%, #2d1800 30%, #1a0d00 70%, #0d0600 100%); }
+#game-screen[data-theme="paradise"] .board-frame { border-color: rgba(251,191,36,0.6); box-shadow: var(--shadow-lg), 0 0 40px rgba(251,191,36,0.2), inset 0 0 20px rgba(251,191,36,0.05); }
 
 /* Gem type colors via CSS classes (no inline styles = faster rendering) */
 .gem-murloc { background: radial-gradient(circle at 35% 35%, #22c55e40, transparent 70%); }
