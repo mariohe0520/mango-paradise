@@ -775,3 +775,99 @@
     0% { transform: scale(0.85); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
+
+/* ══════════════════════════════════════════
+   14. INLINE SVG ICON UTILITIES
+   ══════════════════════════════════════════ */
+
+.inline-icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Spirit portrait circles (used in estate rendering) */
+.spirit-portrait {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.spirit-portrait::before {
+    content: '';
+    position: absolute;
+    top: 8%;
+    left: 18%;
+    width: 40%;
+    height: 30%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.4), transparent);
+    border-radius: 50%;
+}
+
+.spirit-portrait.active {
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    outline: 2px solid rgba(255, 215, 0, 0.7);
+}
+
+/* Individual spirit portraits */
+.spirit-portrait-mango_fairy    { background: radial-gradient(circle at 35% 35%, #bbf7d0, #22c55e 60%, #166534); }
+.spirit-portrait-bee_spirit     { background: radial-gradient(circle at 35% 35%, #fef3c7, #f59e0b 60%, #92400e); }
+.spirit-portrait-rainbow_spirit { background: radial-gradient(circle at 35% 35%, #e9d5ff, #a855f7 60%, #581c87); }
+.spirit-portrait-dragon_spirit  { background: radial-gradient(circle at 35% 35%, #fecaca, #dc2626 60%, #450a0a); }
+.spirit-portrait-phoenix_spirit { background: radial-gradient(circle at 35% 35%, #ffedd5, #f97316 60%, #7c2d12); }
+.spirit-portrait-frost_spirit   { background: radial-gradient(circle at 35% 35%, #e0f2fe, #0ea5e9 60%, #0c4a6e); }
+.spirit-portrait-time_spirit    { background: radial-gradient(circle at 35% 35%, #fef9c3, #eab308 60%, #713f12); }
+.spirit-portrait-chaos_spirit   { background: radial-gradient(circle at 35% 35%, #f0abfc, #d946ef 60%, #701a75); }
+
+/* Tree icons (CSS circles for estate) */
+.tree-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tree-icon-golden_mango { background: radial-gradient(circle at 35% 35%, #fef3c7, #f59e0b 60%, #78350f); }
+.tree-icon-moonlight    { background: radial-gradient(circle at 35% 35%, #e0e7ff, #818cf8 60%, #312e81); }
+.tree-icon-rainbow      { background: conic-gradient(#ef4444, #f59e0b, #22c55e, #3b82f6, #a855f7, #ef4444); }
+.tree-icon-crystal      { background: radial-gradient(circle at 35% 35%, #cffafe, #22d3ee 60%, #164e63); }
+.tree-icon-phoenix      { background: radial-gradient(circle at 35% 35%, #ffedd5, #f97316 60%, #7c2d12); }
+.tree-icon-ancient      { background: radial-gradient(circle at 35% 35%, #bbf7d0, #16a34a 60%, #052e16); }
+
+/* Decoration icons (CSS circles for estate) */
+.deco-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Achievement category SVG icon styles */
+.ach-cat-icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+/* Star icon for level select */
+.star-icon-svg {
+    display: inline-block;
+    vertical-align: middle;
+}

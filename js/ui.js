@@ -604,7 +604,7 @@ const UI = {
                 if (isCompleted) {
                     starsHtml = '<div class="level-stars">' +
                         [1, 2, 3].map(s => 
-                            `<span class="star ${s <= levelData.stars ? 'earned' : ''}">⭐</span>`
+                            `<span class="star ${s <= levelData.stars ? 'earned' : ''}"><svg class="star-icon-svg" viewBox="0 0 24 24" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z" fill="${s <= levelData.stars ? '#fbbf24' : '#4b5563'}" stroke="${s <= levelData.stars ? '#d97706' : '#374151'}" stroke-width="1"/></svg></span>`
                         ).join('') +
                         '</div>';
                 }
@@ -678,7 +678,15 @@ const UI = {
         // 渲染日历
         const calendarEl = document.getElementById('checkin-calendar');
         if (calendarEl) {
-            const rewards = ['💰', '💰', '💎', '💡', '💰', '🔨', '🎁'];
+            const rewards = [
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>',
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>',
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2L4 10l8 12 8-12z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 4 12.9V17H8v-2.1A7 7 0 0 1 12 2z" fill="none" stroke="#fbbf24" stroke-width="2"/></svg>',
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>',
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><path d="M6 12L10 3h4l4 9" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/><rect x="11" y="12" width="2" height="10" rx="1" fill="#92400e"/></svg>',
+                '<svg class="inline-icon" viewBox="0 0 24 24" width="16" height="16"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" fill="none" stroke="#f472b6" stroke-width="1.5"/></svg>'
+            ];
             
             calendarEl.innerHTML = [1, 2, 3, 4, 5, 6, 7].map(day => {
                 const dayInStreak = ((checkinData.streak) % 7) || 7;
@@ -747,15 +755,29 @@ const UI = {
                 categories[cat].push(a);
             });
 
+            const _ach = (d) => `<svg class="ach-cat-icon" viewBox="0 0 24 24">${d}</svg>`;
             const categoryNames = {
-                basic: '🎯 入门', match: '💫 消除', combo: '🔥 连击',
-                special: '✨ 特殊', level: '🗺️ 关卡', stars: '⭐ 星星',
-                score: '📊 分数', daily: '📅 签到', collect: '🐟 收集',
-                play: '🎮 游玩', spirit: '🏋️ 精灵试炼', estate: '🏡 庄园',
-                boss: '👹 Boss', wealth: '💰 财富',
-                daily_challenge: '🌅 每日挑战', endless: '♾️ 无尽模式',
-                seasonal: '🎄 季节活动', procedural: '🗺️ 无限冒险',
-                collection: '🎨 收藏', skill: '🎯 技巧', other: '📋 其他'
+                basic: _ach('<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>') + ' 入门',
+                match: _ach('<path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z"/>') + ' 消除',
+                combo: _ach('<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>') + ' 连击',
+                special: _ach('<path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z"/><path d="M5 16l1 2.5L3 20l2.5-1z" opacity="0.6"/><path d="M19 16l-1 2.5 3 1.5-2.5-1z" opacity="0.6"/>') + ' 特殊',
+                level: _ach('<path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"/><path d="M1 3h22v4H1z"/><path d="M12 7v12"/>') + ' 关卡',
+                stars: _ach('<path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/>') + ' 星星',
+                score: _ach('<path d="M18 20V10M12 20V4M6 20v-6"/>') + ' 分数',
+                daily: _ach('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>') + ' 签到',
+                collect: _ach('<circle cx="12" cy="12" r="8"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/>') + ' 收集',
+                play: _ach('<rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/>') + ' 游玩',
+                spirit: _ach('<circle cx="12" cy="6" r="4"/><path d="M4 20v-2a8 8 0 0 1 16 0v2"/>') + ' 精灵试炼',
+                estate: _ach('<path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>') + ' 庄园',
+                boss: _ach('<circle cx="12" cy="12" r="10"/><path d="M8 9l2 2M16 9l-2 2M8 16c2 2 6 2 8 0"/><path d="M6 4l3 3M18 4l-3 3"/>') + ' Boss',
+                wealth: _ach('<circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h8"/>') + ' 财富',
+                daily_challenge: _ach('<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>') + ' 每日挑战',
+                endless: _ach('<path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/>') + ' 无尽模式',
+                seasonal: _ach('<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>') + ' 季节活动',
+                procedural: _ach('<path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"/><path d="M1 3h22v4H1z"/>') + ' 无限冒险',
+                collection: _ach('<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/><circle cx="12" cy="7" r="1.5" fill="currentColor"/><circle cx="16" cy="10" r="1.5" fill="currentColor"/>') + ' 收藏',
+                skill: _ach('<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>') + ' 技巧',
+                other: _ach('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/>') + ' 其他'
             };
 
             let html = '';
@@ -780,8 +802,8 @@ const UI = {
                                 <div class="badge-progress-text">${progress.current}/${progress.target}</div>
                             ` : isUnlocked ? `
                                 <div class="badge-reward">
-                                    ${achievement.reward.gold ? `💰${achievement.reward.gold}` : ''}
-                                    ${achievement.reward.gems ? ` 💎${achievement.reward.gems}` : ''}
+                                    ${achievement.reward.gold ? `<svg class="inline-icon" viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>${achievement.reward.gold}` : ''}
+                                    ${achievement.reward.gems ? ` <svg class="inline-icon" viewBox="0 0 24 24" width="12" height="12"><path d="M12 2L4 10l8 12 8-12z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.5" stroke-linejoin="round"/></svg>${achievement.reward.gems}` : ''}
                                 </div>
                             ` : ''}
                         </div>
@@ -1121,13 +1143,13 @@ const UI = {
                 const nextDesc = !isMaxed && level > 0 ? tree.levels[level].desc : '';
 
                 return `<div class="tree-card ${level > 0 ? 'planted' : ''}" data-tree="${tree.id}">
-                    <div class="tree-emoji">${tree.emoji}</div>
+                    <div class="tree-emoji"><div class="tree-icon tree-icon-${tree.id}"></div></div>
                     <div class="tree-name">${tree.name} ${level > 0 ? `<small>Lv.${level}/${maxLevel}</small>` : ''}</div>
                     <div class="tree-desc">${currentDesc}</div>
                     ${nextDesc ? `<div class="tree-next" style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextDesc}</div>` : ''}
                     ${isMaxed
-                        ? '<div class="tree-status">🌟 满级</div>'
-                        : `<button class="tree-plant-btn" data-tree="${tree.id}">${level === 0 ? '种植' : '升级'} 💰${Utils.formatNumber(upgradeCost)}</button>`}
+                        ? '<div class="tree-status"><svg class="inline-icon" viewBox="0 0 24 24" width="14" height="14"><path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z" fill="#fbbf24"/></svg> 满级</div>'
+                        : `<button class="tree-plant-btn" data-tree="${tree.id}">${level === 0 ? '种植' : '升级'} <svg class="inline-icon" viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>${Utils.formatNumber(upgradeCost)}</button>`}
                 </div>`;
             }).join('');
 
@@ -1169,11 +1191,11 @@ const UI = {
                         background:${isUnlocked ? 'rgba(34,197,94,0.2)' : 'rgba(100,100,100,0.2)'};
                         color:${isUnlocked ? '#22c55e' : '#666'};
                         border:1px solid ${isUnlocked ? '#22c55e' : '#444'};"
-                        title="${a.desc}">${isUnlocked ? '✅' : '🔒'} ${a.name}</span>`;
+                        title="${a.desc}">${isUnlocked ? '<svg class="inline-icon" viewBox="0 0 16 16" width="10" height="10"><path d="M2 8l4 4 8-8" fill="none" stroke="#22c55e" stroke-width="2.5"/></svg>' : '<svg class="inline-icon" viewBox="0 0 16 16" width="10" height="10"><rect x="3" y="2" width="10" height="12" rx="2" fill="none" stroke="#666" stroke-width="1.5"/><path d="M5 2V1a3 3 0 0 1 6 0v1" fill="none" stroke="#666" stroke-width="1.5"/></svg>'} ${a.name}</span>`;
                 }).join(' ');
 
                 return `<div class="spirit-card ${active ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-spirit="${spirit.id}">
-                    <div class="spirit-emoji">${spirit.emoji}</div>
+                    <div class="spirit-emoji"><div class="spirit-portrait spirit-portrait-${spirit.id}"></div></div>
                     <div class="spirit-name">${spirit.name} ${level > 0 ? `<small>Lv.${level}</small>` : ''}</div>
                     <div class="spirit-desc">${spirit.skillName}: ${skillDesc}</div>
 
@@ -1181,13 +1203,13 @@ const UI = {
                     <!-- Affection Progress Bar -->
                     <div class="spirit-affection-section" style="margin:6px 0;width:100%;">
                         <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.65rem;color:var(--text-secondary);margin-bottom:2px;">
-                            <span>💕 亲密度</span>
+                            <span><svg class="inline-icon" viewBox="0 0 16 16" width="12" height="12"><path d="M8 14s-5.5-3.5-5.5-7A3.5 3.5 0 0 1 8 4.5 3.5 3.5 0 0 1 13.5 7c0 3.5-5.5 7-5.5 7z" fill="#f472b6" stroke="#ec4899" stroke-width="1"/></svg> 亲密度</span>
                             <span style="color:${affColor};font-weight:700;">${affection}/100</span>
                         </div>
                         <div style="background:rgba(100,100,100,0.3);border-radius:6px;height:6px;overflow:hidden;">
                             <div style="background:linear-gradient(90deg, ${affColor}, ${affection >= 80 ? '#f472b6' : affColor});height:100%;width:${affPct}%;border-radius:6px;transition:width 0.3s;"></div>
                         </div>
-                        ${nextMilestone ? `<div style="font-size:0.55rem;color:#888;margin-top:1px;">下一级: ${nextMilestone.icon} ${nextMilestone.name} (${nextMilestone.affection})</div>` : '<div style="font-size:0.55rem;color:var(--wow-gold);">❤️‍🔥 满亲密度！</div>'}
+                        ${nextMilestone ? `<div style="font-size:0.55rem;color:#888;margin-top:1px;">下一级: ${nextMilestone.name} (${nextMilestone.affection})</div>` : '<div style="font-size:0.55rem;color:var(--wow-gold);">MAX 满亲密度！</div>'}
                     </div>
 
                     <!-- Abilities -->
@@ -1199,15 +1221,15 @@ const UI = {
                     <button class="spirit-trial-btn" data-spirit="${spirit.id}" style="
                         margin-top:4px;padding:4px 10px;border-radius:8px;border:1px solid #a855f7;
                         background:rgba(168,85,247,0.15);color:#c084fc;font-size:0.7rem;font-weight:700;cursor:pointer;">
-                        🏋️ 精灵试炼 ${trialData ? `(${trialData.gemEmoji}x2)` : ''}
+                        <svg class="inline-icon" viewBox="0 0 16 16" width="12" height="12"><circle cx="8" cy="6" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 14v-1a4 4 0 0 1 8 0v1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg> 精灵试炼 ${trialData ? `(<span class="obj-gem obj-gem-${trialData.preferredGem}" style="width:1em;height:1em;"></span>x2)` : ''}
                     </button>
                     ` : ''}
 
                     <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
-                    ${active ? '<span class="spirit-status">🌟 已派遣</span>' : ''}
+                    ${active ? '<span class="spirit-status"><svg class="inline-icon" viewBox="0 0 16 16" width="12" height="12"><path d="M8 1l1.5 4.5L14 7l-4.5 1.5L8 13l-1.5-4.5L2 7l4.5-1.5z" fill="#fbbf24"/></svg> 已派遣</span>' : ''}
                     ${unlocked && !active ? `<button class="spirit-select-btn" data-spirit="${spirit.id}">派遣</button>` : ''}
-                    ${!unlocked ? `<button class="spirit-unlock-btn" data-spirit="${spirit.id}">解锁 💰${spirit.unlockCost}</button>` : ''}
-                    ${unlocked && !isMaxed ? `<button class="spirit-upgrade-btn" data-spirit="${spirit.id}">⬆️ 💰${Utils.formatNumber(upgradeCost)}</button>` : ''}
+                    ${!unlocked ? `<button class="spirit-unlock-btn" data-spirit="${spirit.id}">解锁 <svg class="inline-icon" viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>${spirit.unlockCost}</button>` : ''}
+                    ${unlocked && !isMaxed ? `<button class="spirit-upgrade-btn" data-spirit="${spirit.id}"><svg class="inline-icon" viewBox="0 0 16 16" width="12" height="12"><path d="M8 12V4M4 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> <svg class="inline-icon" viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>${Utils.formatNumber(upgradeCost)}</button>` : ''}
                     ${isMaxed ? '<span style="color:var(--wow-gold);font-size:0.7rem;">MAX</span>' : ''}
                     </div>
                 </div>`;
@@ -1240,11 +1262,11 @@ const UI = {
             decoGrid.innerHTML = Object.values(Estate.DECORATIONS).map(deco => {
                 const owned = Estate.hasDecoration(deco.id);
                 return `<div class="tree-card ${owned ? 'planted' : ''}" style="min-width:80px;">
-                    <div class="tree-emoji">${deco.emoji}</div>
+                    <div class="tree-emoji"><div class="deco-icon" style="background:linear-gradient(135deg, rgba(200,180,255,0.3), rgba(100,80,160,0.3));border:1px solid rgba(168,85,247,0.3);"><svg class="inline-icon" viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.555C21.965 6.012 17.461 2 12 2z" fill="none" stroke="#c084fc" stroke-width="1.5"/></svg></div></div>
                     <div class="tree-name" style="font-size:0.75rem;">${deco.name}</div>
                     <div class="tree-desc" style="font-size:0.65rem;">幸福度+${deco.happiness}</div>
-                    ${owned ? '<div class="tree-status" style="font-size:0.65rem;">✅</div>'
-                        : `<button class="tree-plant-btn deco-buy-btn" data-deco="${deco.id}" style="font-size:0.7rem;">💰${deco.cost}</button>`}
+                    ${owned ? '<div class="tree-status" style="font-size:0.65rem;"><svg class="inline-icon" viewBox="0 0 16 16" width="12" height="12"><path d="M2 8l4 4 8-8" fill="none" stroke="#22c55e" stroke-width="2.5"/></svg></div>'
+                        : `<button class="tree-plant-btn deco-buy-btn" data-deco="${deco.id}" style="font-size:0.7rem;"><svg class="inline-icon" viewBox="0 0 24 24" width="12" height="12"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/></svg>${deco.cost}</button>`}
                 </div>`;
             }).join('');
             decoGrid.querySelectorAll('.deco-buy-btn').forEach(btn => {
@@ -1264,10 +1286,10 @@ const UI = {
             } else {
                 buffSummary.innerHTML = buffs.map(b => {
                     switch(b) {
-                        case 'start_bomb': return '<div class="buff-item">🌟 开局自带炸弹</div>';
-                        case 'extra_moves': return '<div class="buff-item">🌙 每关多2步</div>';
-                        case 'rainbow_4': return '<div class="buff-item">🌈 4消出彩虹</div>';
-                        case 'score_multiplier': return '<div class="buff-item">✨ 分数1.2倍</div>';
+                        case 'start_bomb': return '<div class="buff-item"><svg class="inline-icon" viewBox="0 0 16 16" width="14" height="14"><path d="M8 1l1.5 4.5L14 7l-4.5 1.5L8 13l-1.5-4.5L2 7l4.5-1.5z" fill="#fbbf24"/></svg> 开局自带炸弹</div>';
+                        case 'extra_moves': return '<div class="buff-item"><svg class="inline-icon" viewBox="0 0 16 16" width="14" height="14"><path d="M14 8.79A6 6 0 1 1 7.21 2 4.7 4.7 0 0 0 14 8.79z" fill="none" stroke="#818cf8" stroke-width="1.5"/></svg> 每关多2步</div>';
+                        case 'rainbow_4': return '<div class="buff-item"><svg class="inline-icon" viewBox="0 0 16 16" width="14" height="14"><path d="M2 14A7 7 0 0 1 14 14" fill="none" stroke="#ef4444" stroke-width="1.5"/><path d="M4 14A5 5 0 0 1 12 14" fill="none" stroke="#22c55e" stroke-width="1.5"/><path d="M6 14A3 3 0 0 1 10 14" fill="none" stroke="#3b82f6" stroke-width="1.5"/></svg> 4消出彩虹</div>';
+                        case 'score_multiplier': return '<div class="buff-item"><svg class="inline-icon" viewBox="0 0 16 16" width="14" height="14"><path d="M8 1l1.5 4.5L14 7l-4.5 1.5L8 13l-1.5-4.5L2 7l4.5-1.5z" fill="#fbbf24"/></svg> 分数1.2倍</div>';
                         default: return '';
                     }
                 }).join('');
