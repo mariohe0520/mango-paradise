@@ -1595,15 +1595,32 @@ class Game {
         const movesEl = document.getElementById('moves-left');
         if (movesEl) {
             movesEl.textContent = this.movesLeft;
-            // Last moves tension: pulse when ≤3 moves
+            // Last moves tension: pulse + shake + board tint when ≤3 moves
             if (this.movesLeft <= 3 && this.movesLeft > 0 && !this.level.timed) {
                 movesEl.style.color = '#ef4444';
                 movesEl.style.fontWeight = '900';
                 movesEl.style.fontSize = '1.3em';
+                // Board urgency tint
+                const board = document.getElementById('game-board');
+                if (board && !board.classList.contains('urgent-mode')) {
+                    board.classList.add('urgent-mode');
+                    Utils.vibrate([100, 50, 100]);
+                }
+                // Screen shake on each move when ≤2
+                if (this.movesLeft <= 2) {
+                    const gameScreen = document.getElementById('game-screen');
+                    if (gameScreen) {
+                        gameScreen.style.animation = 'none';
+                        void gameScreen.offsetWidth;
+                        gameScreen.style.animation = 'urgentShake 0.3s ease';
+                    }
+                }
             } else {
                 movesEl.style.color = '';
                 movesEl.style.fontWeight = '';
                 movesEl.style.fontSize = '';
+                const board = document.getElementById('game-board');
+                if (board) board.classList.remove('urgent-mode');
             }
         }
 
