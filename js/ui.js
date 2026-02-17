@@ -635,7 +635,7 @@ const UI = {
         }
     },
 
-    // 成就界面
+    // 成就界面 — grid of badges
     showAchievements() {
         const unlockedCount = Achievements.getUnlockedCount();
         const totalCount = Achievements.getTotalCount();
@@ -646,31 +646,57 @@ const UI = {
         const listEl = document.getElementById('achievements-list');
         if (listEl) {
             const achievements = Achievements.getAll();
-            
-            listEl.innerHTML = achievements.map(achievement => {
-                const isUnlocked = Achievements.isUnlocked(achievement.id);
-                const progress = Achievements.getProgress(achievement.id);
-                
-                return `
-                    <div class="achievement-item ${isUnlocked ? 'unlocked' : 'locked'}">
-                        <div class="achievement-icon">${achievement.icon}</div>
-                        <div class="achievement-info">
-                            <div class="achievement-name">${achievement.name}</div>
-                            <div class="achievement-desc">${achievement.description}</div>
-                            ${!isUnlocked && progress ? `
-                                <div class="achievement-progress-bar">
-                                    <div class="progress" style="width: ${progress.percentage}%"></div>
+
+            // Group by category
+            const categories = {};
+            achievements.forEach(a => {
+                const cat = a.category || 'other';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(a);
+            });
+
+            const categoryNames = {
+                basic: '🎯 入门', match: '💫 消除', combo: '🔥 连击',
+                special: '✨ 特殊', level: '🗺️ 关卡', stars: '⭐ 星星',
+                score: '📊 分数', daily: '📅 签到', collect: '🐟 收集',
+                play: '🎮 游玩', spirit: '🏋️ 精灵试炼', estate: '🏡 庄园',
+                boss: '👹 Boss', wealth: '💰 财富', other: '📋 其他'
+            };
+
+            let html = '';
+            for (const cat of Object.keys(categories)) {
+                const items = categories[cat];
+                html += `<div class="achievement-category">
+                    <h3 class="achievement-cat-title">${categoryNames[cat] || cat}</h3>
+                    <div class="achievement-grid">`;
+
+                html += items.map(achievement => {
+                    const isUnlocked = Achievements.isUnlocked(achievement.id);
+                    const progress = Achievements.getProgress(achievement.id);
+                    
+                    return `
+                        <div class="achievement-badge ${isUnlocked ? 'unlocked' : 'locked'}" title="${achievement.description}">
+                            <div class="badge-icon ${isUnlocked ? 'badge-glow' : ''}">${achievement.icon}</div>
+                            <div class="badge-name">${achievement.name}</div>
+                            ${!isUnlocked && progress && typeof progress.target === 'number' ? `
+                                <div class="badge-progress-bar">
+                                    <div class="badge-progress-fill" style="width: ${progress.percentage}%"></div>
                                 </div>
-                                <div class="achievement-progress-text">${progress.current}/${progress.target}</div>
+                                <div class="badge-progress-text">${progress.current}/${progress.target}</div>
+                            ` : isUnlocked ? `
+                                <div class="badge-reward">
+                                    ${achievement.reward.gold ? `💰${achievement.reward.gold}` : ''}
+                                    ${achievement.reward.gems ? ` 💎${achievement.reward.gems}` : ''}
+                                </div>
                             ` : ''}
                         </div>
-                        <div class="achievement-reward">
-                            ${achievement.reward.gold ? `💰${achievement.reward.gold}` : ''}
-                            ${achievement.reward.gems ? `💎${achievement.reward.gems}` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+
+                html += `</div></div>`;
+            }
+            
+            listEl.innerHTML = html;
         }
 
         this.showScreen('achievements-screen');
@@ -1012,7 +1038,7 @@ const UI = {
             });
         }
 
-        // Spirits — with upgrade + more spirits
+        // Spirits — with upgrade, trial, and affection progress
         const spiritGrid = document.getElementById('spirit-grid');
         if (spiritGrid) {
             const currentSpirit = Estate.getCurrentSpirit();
@@ -1024,10 +1050,58 @@ const UI = {
                 const isMaxed = level >= maxLevel;
                 const upgradeCost = Estate.getSpiritUpgradeCost(spirit.id);
                 const skillDesc = level > 0 ? spirit.skillLevels[Math.min(level-1, maxLevel-1)].desc : spirit.skillLevels[0].desc;
+
+                // Trial affection data
+                const affection = Estate.getSpiritTrialAffection(spirit.id);
+                const trialData = Estate.SPIRIT_TRIAL_DATA[spirit.id];
+                const unlockedAbilities = Estate.getUnlockedTrialAbilities(spirit.id);
+                const nextMilestone = Estate.TRIAL_MILESTONES.find(m => affection < m.affection);
+
+                // Affection bar
+                const affPct = Math.min(100, affection);
+                const affColor = affection >= 100 ? '#ef4444' : affection >= 50 ? '#a855f7' : affection >= 30 ? '#3b82f6' : '#22c55e';
+
+                // Abilities list
+                const abilitiesHtml = (Estate.SPIRIT_ABILITIES[spirit.id] || []).map(a => {
+                    const isUnlocked = affection >= a.at;
+                    return `<span style="font-size:0.6rem;padding:2px 4px;border-radius:4px;
+                        background:${isUnlocked ? 'rgba(34,197,94,0.2)' : 'rgba(100,100,100,0.2)'};
+                        color:${isUnlocked ? '#22c55e' : '#666'};
+                        border:1px solid ${isUnlocked ? '#22c55e' : '#444'};"
+                        title="${a.desc}">${isUnlocked ? '✅' : '🔒'} ${a.name}</span>`;
+                }).join(' ');
+
                 return `<div class="spirit-card ${active ? 'active' : ''} ${unlocked ? '' : 'locked'}" data-spirit="${spirit.id}">
                     <div class="spirit-emoji">${spirit.emoji}</div>
                     <div class="spirit-name">${spirit.name} ${level > 0 ? `<small>Lv.${level}</small>` : ''}</div>
                     <div class="spirit-desc">${spirit.skillName}: ${skillDesc}</div>
+
+                    ${unlocked ? `
+                    <!-- Affection Progress Bar -->
+                    <div class="spirit-affection-section" style="margin:6px 0;width:100%;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.65rem;color:var(--text-secondary);margin-bottom:2px;">
+                            <span>💕 亲密度</span>
+                            <span style="color:${affColor};font-weight:700;">${affection}/100</span>
+                        </div>
+                        <div style="background:rgba(100,100,100,0.3);border-radius:6px;height:6px;overflow:hidden;">
+                            <div style="background:linear-gradient(90deg, ${affColor}, ${affection >= 80 ? '#f472b6' : affColor});height:100%;width:${affPct}%;border-radius:6px;transition:width 0.3s;"></div>
+                        </div>
+                        ${nextMilestone ? `<div style="font-size:0.55rem;color:#888;margin-top:1px;">下一级: ${nextMilestone.icon} ${nextMilestone.name} (${nextMilestone.affection})</div>` : '<div style="font-size:0.55rem;color:var(--wow-gold);">❤️‍🔥 满亲密度！</div>'}
+                    </div>
+
+                    <!-- Abilities -->
+                    <div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin:4px 0;">
+                        ${abilitiesHtml}
+                    </div>
+
+                    <!-- Trial Button -->
+                    <button class="spirit-trial-btn" data-spirit="${spirit.id}" style="
+                        margin-top:4px;padding:4px 10px;border-radius:8px;border:1px solid #a855f7;
+                        background:rgba(168,85,247,0.15);color:#c084fc;font-size:0.7rem;font-weight:700;cursor:pointer;">
+                        🏋️ 精灵试炼 ${trialData ? `(${trialData.gemEmoji}x2)` : ''}
+                    </button>
+                    ` : ''}
+
                     <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
                     ${active ? '<span class="spirit-status">🌟 已派遣</span>' : ''}
                     ${unlocked && !active ? `<button class="spirit-select-btn" data-spirit="${spirit.id}">派遣</button>` : ''}
@@ -1048,6 +1122,13 @@ const UI = {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (Estate.upgradeSpirit(btn.dataset.spirit)) this.showEstate();
+                });
+            });
+            // Spirit Trial buttons
+            spiritGrid.querySelectorAll('.spirit-trial-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    Estate.startSpiritTrial(btn.dataset.spirit);
                 });
             });
         }

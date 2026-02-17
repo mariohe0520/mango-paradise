@@ -466,5 +466,232 @@ const Estate = {
     // Check if passive is active
     hasAffinityPassive(spiritId) {
         return this.getSpiritAffinityLevel(spiritId) >= 3;
+    },
+
+    // ══════════════════════════════════════
+    // 🏋️ Spirit Trial System — 精灵试炼
+    // ══════════════════════════════════════
+
+    // Each spirit has a preferred gem type for trial bonus
+    SPIRIT_TRIAL_DATA: {
+        mango_fairy:    { preferredGem: 'mango',   gemEmoji: '🥭' },
+        bee_spirit:     { preferredGem: 'murloc',  gemEmoji: '🐸' },
+        rainbow_spirit: { preferredGem: 'elf',     gemEmoji: '🧝‍♀️' },
+        dragon_spirit:  { preferredGem: 'dragon',  gemEmoji: '🐉' },
+        phoenix_spirit: { preferredGem: 'phoenix', gemEmoji: '🔥' },
+        frost_spirit:   { preferredGem: 'mage',    gemEmoji: '🧙‍♂️' },
+        time_spirit:    { preferredGem: 'knight',  gemEmoji: '🛡️' },
+        chaos_spirit:   { preferredGem: 'orc',     gemEmoji: '👹' }
+    },
+
+    // Affection milestones — unlock spirit abilities
+    TRIAL_MILESTONES: [
+        { affection: 10,  name: '初识之力',   icon: '💚' },
+        { affection: 30,  name: '信任之力',   icon: '💙' },
+        { affection: 50,  name: '羁绊之力',   icon: '💜' },
+        { affection: 80,  name: '契约之力',   icon: '💛' },
+        { affection: 100, name: '灵魂共鸣',   icon: '❤️‍🔥' }
+    ],
+
+    // Per-spirit abilities at milestones
+    SPIRIT_ABILITIES: {
+        mango_fairy: [
+            { at: 10, id: 'mf_charge', name: '芒果馨香', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'mf_move', name: '仙子祝福', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'mf_gem', name: '芒果之心', desc: '消芒果+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'mf_combo', name: '仙子连锁', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'mf_soul', name: '灵魂共鸣·芒果', desc: '开局+1彩虹宝石', type: 'start_rainbow', value: 1 }
+        ],
+        bee_spirit: [
+            { at: 10, id: 'bs_charge', name: '蜂蜜能量', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'bs_move', name: '蜂群护佑', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'bs_gem', name: '蜂巢本能', desc: '消鱼人+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'bs_combo', name: '蜂群共振', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'bs_soul', name: '灵魂共鸣·蜜蜂', desc: '额外+2步', type: 'extra_moves', value: 2 }
+        ],
+        rainbow_spirit: [
+            { at: 10, id: 'rs_charge', name: '虹光脉动', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'rs_move', name: '蝶翼祝福', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'rs_gem', name: '彩虹之心', desc: '消精灵+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'rs_combo', name: '光谱共振', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'rs_soul', name: '灵魂共鸣·彩虹', desc: '开局+1彩虹宝石', type: 'start_rainbow', value: 1 }
+        ],
+        dragon_spirit: [
+            { at: 10, id: 'ds_charge', name: '龙焰余温', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'ds_move', name: '龙之庇护', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'ds_gem', name: '龙族之心', desc: '消巨龙+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'ds_combo', name: '龙息连锁', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'ds_soul', name: '灵魂共鸣·龙', desc: 'Boss伤害+15%', type: 'boss_damage', value: 15 }
+        ],
+        phoenix_spirit: [
+            { at: 10, id: 'ps_charge', name: '涅槃余焰', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'ps_move', name: '凤凰祝福', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'ps_gem', name: '凤凰之心', desc: '消凤凰+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'ps_combo', name: '烈焰连锁', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'ps_soul', name: '灵魂共鸣·凤凰', desc: '复活概率+15%', type: 'revive_bonus', value: 15 }
+        ],
+        frost_spirit: [
+            { at: 10, id: 'fs_charge', name: '冰晶脉动', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'fs_move', name: '冰霜祝福', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'fs_gem', name: '冰霜之心', desc: '消法师+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'fs_combo', name: '寒冰连锁', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'fs_soul', name: '灵魂共鸣·冰霜', desc: '冰冻减少1层', type: 'defrost', value: 1 }
+        ],
+        time_spirit: [
+            { at: 10, id: 'ts_charge', name: '时间加速', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'ts_move', name: '时光祝福', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'ts_gem', name: '时光之心', desc: '消骑士+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'ts_combo', name: '时间连锁', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'ts_soul', name: '灵魂共鸣·时光', desc: '额外+2步', type: 'extra_moves', value: 2 }
+        ],
+        chaos_spirit: [
+            { at: 10, id: 'cs_charge', name: '混沌脉动', desc: '充能+5%', type: 'charge_boost', value: 5 },
+            { at: 30, id: 'cs_move', name: '混沌祝福', desc: '+1步', type: 'extra_moves', value: 1 },
+            { at: 50, id: 'cs_gem', name: '混沌之心', desc: '消兽人+50分', type: 'gem_score_bonus', value: 50 },
+            { at: 80, id: 'cs_combo', name: '混沌连锁', desc: '连击+20%', type: 'combo_bonus', value: 20 },
+            { at: 100, id: 'cs_soul', name: '灵魂共鸣·混沌', desc: '开局+1特殊宝石', type: 'start_special', value: 1 }
+        ]
+    },
+
+    // Current trial state
+    _currentTrial: null,
+
+    getSpiritTrialAffection(spiritId) {
+        const estate = Storage.getEstate();
+        return estate.spiritTrialAffection?.[spiritId] || 0;
+    },
+
+    addSpiritTrialAffection(spiritId, amount) {
+        const estate = Storage.getEstate();
+        if (!estate.spiritTrialAffection) estate.spiritTrialAffection = {};
+        const before = this.getSpiritTrialAffection(spiritId);
+        estate.spiritTrialAffection[spiritId] = Math.min(100, before + amount);
+        Storage.saveEstate(estate);
+        const after = this.getSpiritTrialAffection(spiritId);
+        // Check milestone unlocks
+        for (const milestone of this.TRIAL_MILESTONES) {
+            if (before < milestone.affection && after >= milestone.affection) {
+                const spirit = this.SPIRITS[spiritId];
+                const ability = this.SPIRIT_ABILITIES[spiritId]?.find(a => a.at === milestone.affection);
+                UI.showToast(`${milestone.icon} ${spirit?.emoji || ''} 亲密度${after}！\n解锁: ${ability?.name || milestone.name} — ${ability?.desc || ''}`, 'success');
+                Audio.play('levelUp');
+            }
+        }
+        return after;
+    },
+
+    getUnlockedTrialAbilities(spiritId) {
+        const affection = this.getSpiritTrialAffection(spiritId);
+        const abilities = this.SPIRIT_ABILITIES[spiritId];
+        if (!abilities) return [];
+        return abilities.filter(a => affection >= a.at);
+    },
+
+    // Start a spirit trial — special 15-move puzzle challenge
+    startSpiritTrial(spiritId) {
+        const spirit = this.SPIRITS[spiritId];
+        const trialData = this.SPIRIT_TRIAL_DATA[spiritId];
+        if (!spirit || !trialData) { UI.showToast('精灵数据错误！', 'error'); return; }
+        if (!this.isSpiritUnlocked(spiritId)) { UI.showToast('请先解锁该精灵！', 'error'); return; }
+
+        // Build gem list: ensure preferred gem is included
+        const baseGems = ['murloc', 'orc', 'elf', 'mage', 'knight'];
+        const gems = baseGems.includes(trialData.preferredGem)
+            ? baseGems
+            : [...baseGems.slice(0, 4), trialData.preferredGem];
+
+        // Create special trial level
+        const trialLevel = {
+            id: 99900 + Object.keys(this.SPIRITS).indexOf(spiritId),
+            chapter: 0,
+            width: 8,
+            height: 8,
+            moves: 15,
+            gems: gems,
+            objectives: [{ type: 'score', target: 3000, icon: '⭐' }],
+            stars: [1500, 2500, 3000],
+            procedural: true,
+            spiritTrial: true,
+            trialSpiritId: spiritId,
+            trialPreferredGem: trialData.preferredGem
+        };
+
+        this._currentTrial = { spiritId, preferredGem: trialData.preferredGem };
+        UI.startSpecialLevel(trialLevel);
+        UI.showToast(`${spirit.emoji} ${spirit.name}的试炼！\n${trialData.gemEmoji} 偏好宝石得分x2！`, 'success');
+    },
+
+    // Called when a trial ends (hooked from game victory/defeat)
+    endSpiritTrial(won) {
+        if (!this._currentTrial) return;
+        const { spiritId } = this._currentTrial;
+        const gain = won ? 10 : 2;
+        const spirit = this.SPIRITS[spiritId];
+        this.addSpiritTrialAffection(spiritId, gain);
+        UI.showToast(won
+            ? `🎉 试炼胜利！${spirit?.emoji || ''} 亲密度+${gain}`
+            : `💕 虽败犹荣！${spirit?.emoji || ''} 亲密度+${gain}`,
+            won ? 'success' : 'info');
+        this._currentTrial = null;
+        Achievements.check('spirit_trial');
+    },
+
+    isInSpiritTrial() {
+        return !!this._currentTrial;
+    },
+
+    getTrialPreferredGem() {
+        return this._currentTrial?.preferredGem || null;
+    },
+
+    // Get active trial buffs for current spirit (used during normal levels)
+    getTrialBuffs() {
+        const estate = Storage.getEstate();
+        const activeSpirit = estate.activeSpirit || 'mango_fairy';
+        return this.getUnlockedTrialAbilities(activeSpirit);
+    },
+
+    getTrialExtraMoves() {
+        const abilities = this.getTrialBuffs();
+        return abilities.filter(a => a.type === 'extra_moves').reduce((sum, a) => sum + a.value, 0);
+    },
+
+    getTrialChargeBoost() {
+        const abilities = this.getTrialBuffs();
+        return abilities.filter(a => a.type === 'charge_boost').reduce((sum, a) => sum + a.value, 0);
+    },
+
+    getTrialComboBonus() {
+        const abilities = this.getTrialBuffs();
+        return abilities.filter(a => a.type === 'combo_bonus').reduce((sum, a) => sum + a.value, 0);
+    },
+
+    getTrialGemScoreBonus(gemType) {
+        const estate = Storage.getEstate();
+        const activeSpirit = estate.activeSpirit || 'mango_fairy';
+        const trialData = this.SPIRIT_TRIAL_DATA[activeSpirit];
+        if (!trialData || trialData.preferredGem !== gemType) return 0;
+        const abilities = this.getTrialBuffs();
+        return abilities.filter(a => a.type === 'gem_score_bonus').reduce((sum, a) => sum + a.value, 0);
+    },
+
+    getTrialBossDamageBonus() {
+        const abilities = this.getTrialBuffs();
+        return abilities.filter(a => a.type === 'boss_damage').reduce((sum, a) => sum + a.value, 0);
+    },
+
+    getTrialReviveBonus() {
+        const abilities = this.getTrialBuffs();
+        return abilities.filter(a => a.type === 'revive_bonus').reduce((sum, a) => sum + a.value, 0);
+    },
+
+    hasTrialStartRainbow() {
+        const abilities = this.getTrialBuffs();
+        return abilities.some(a => a.type === 'start_rainbow');
+    },
+
+    hasTrialStartSpecial() {
+        const abilities = this.getTrialBuffs();
+        return abilities.some(a => a.type === 'start_special');
     }
 };

@@ -14,7 +14,8 @@ const GEM_TYPES = {
     undead:  { id:'undead',  emoji:'☠️', name:'亡灵',     color:'#6b7280', rarity:'common' },
     mango:   { id:'mango',   emoji:'🥭', name:'芒果',     color:'#fbbf24', rarity:'rare' },
     dragon:  { id:'dragon',  emoji:'🐉', name:'巨龙',     color:'#dc2626', rarity:'epic' },
-    phoenix: { id:'phoenix', emoji:'🔥', name:'凤凰',     color:'#f97316', rarity:'legendary' }
+    phoenix: { id:'phoenix', emoji:'🔥', name:'凤凰',     color:'#f97316', rarity:'legendary' },
+    skull:   { id:'skull',   emoji:'💀', name:'骷髅',     color:'#6b7280', rarity:'special' }
 };
 
 // 章节定义 - 10 chapters

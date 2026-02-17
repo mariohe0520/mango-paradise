@@ -516,6 +516,215 @@ const ACHIEVEMENTS = [
         category: 'special',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'collection', target: 'all' }
+    },
+
+    // ==========================================
+    // 🏋️ 精灵试炼成就
+    // ==========================================
+    {
+        id: 'spirit_trial_first',
+        name: '初次试炼',
+        description: '完成第一次精灵试炼',
+        icon: '🏋️',
+        category: 'spirit',
+        reward: { gold: 200, gems: 5 },
+        condition: { type: 'spirit_trial', target: 1 }
+    },
+    {
+        id: 'spirit_trial_10',
+        name: '试炼达人',
+        description: '完成 10 次精灵试炼',
+        icon: '💪',
+        category: 'spirit',
+        reward: { gold: 800, gems: 15 },
+        condition: { type: 'spirit_trial', target: 10 }
+    },
+    {
+        id: 'spirit_bond_30',
+        name: '信任之绊',
+        description: '任意精灵亲密度达到 30',
+        icon: '💙',
+        category: 'spirit',
+        reward: { gold: 500, gems: 10 },
+        condition: { type: 'spirit_affection', target: 30 }
+    },
+    {
+        id: 'spirit_bond_50',
+        name: '羁绊之力',
+        description: '任意精灵亲密度达到 50',
+        icon: '💜',
+        category: 'spirit',
+        reward: { gold: 1000, gems: 20 },
+        condition: { type: 'spirit_affection', target: 50 }
+    },
+    {
+        id: 'spirit_bond_100',
+        name: '灵魂共鸣',
+        description: '任意精灵亲密度达到 100',
+        icon: '❤️‍🔥',
+        category: 'spirit',
+        reward: { gold: 3000, gems: 50 },
+        condition: { type: 'spirit_affection', target: 100 }
+    },
+
+    // ==========================================
+    // 🌳 庄园成就
+    // ==========================================
+    {
+        id: 'plant_first_tree',
+        name: '绿色起点',
+        description: '种下第一棵树',
+        icon: '🌱',
+        category: 'estate',
+        reward: { gold: 200, gems: 5 },
+        condition: { type: 'tree_count', target: 1 }
+    },
+    {
+        id: 'plant_five_trees',
+        name: '园丁大师',
+        description: '种植 5 棵树',
+        icon: '🌳',
+        category: 'estate',
+        reward: { gold: 1000, gems: 15 },
+        condition: { type: 'tree_count', target: 5 }
+    },
+    {
+        id: 'plant_ancient',
+        name: '世界树守护者',
+        description: '种植远古之树',
+        icon: '🌲',
+        category: 'estate',
+        reward: { gold: 2000, gems: 30 },
+        condition: { type: 'tree_specific', target: 'ancient' }
+    },
+    {
+        id: 'buy_first_deco',
+        name: '装饰初体验',
+        description: '购买第一个庄园装饰',
+        icon: '🎨',
+        category: 'estate',
+        reward: { gold: 150 },
+        condition: { type: 'deco_count', target: 1 }
+    },
+    {
+        id: 'happiness_200',
+        name: '幸福庄园',
+        description: '庄园幸福度达到 200',
+        icon: '💖',
+        category: 'estate',
+        reward: { gold: 800, gems: 10 },
+        condition: { type: 'happiness', target: 200 }
+    },
+    {
+        id: 'happiness_1000',
+        name: '极乐净土',
+        description: '庄园幸福度达到 1000',
+        icon: '🏡',
+        category: 'estate',
+        reward: { gold: 5000, gems: 80 },
+        condition: { type: 'happiness', target: 1000 }
+    },
+    {
+        id: 'all_spirits',
+        name: '精灵之友',
+        description: '解锁全部 8 个精灵',
+        icon: '🧚',
+        category: 'estate',
+        reward: { gold: 3000, gems: 50 },
+        condition: { type: 'spirit_count', target: 8 }
+    },
+    {
+        id: 'estate_full_deco',
+        name: '庄园大亨',
+        description: '购买全部装饰',
+        icon: '🏰',
+        category: 'estate',
+        reward: { gold: 5000, gems: 100 },
+        condition: { type: 'deco_count', target: 12 }
+    },
+
+    // ==========================================
+    // 👹 Boss 成就
+    // ==========================================
+    {
+        id: 'beat_ch1_boss',
+        name: '森林守护者',
+        description: '击败第一章 Boss 树精长老',
+        icon: '🌳',
+        category: 'boss',
+        reward: { gold: 500, gems: 10 },
+        condition: { type: 'boss_defeat', target: 10 }
+    },
+    {
+        id: 'boss_slayer_3',
+        name: 'Boss杀手',
+        description: '击败 3 个 Boss',
+        icon: '⚔️',
+        category: 'boss',
+        reward: { gold: 1500, gems: 25 },
+        condition: { type: 'boss_count', target: 3 }
+    },
+    {
+        id: 'boss_slayer_all',
+        name: '终极征服者',
+        description: '击败全部 10 个 Boss',
+        icon: '👑',
+        category: 'boss',
+        reward: { gold: 10000, gems: 200 },
+        condition: { type: 'boss_count', target: 10 }
+    },
+    {
+        id: 'skull_survivor',
+        name: '骷髅克星',
+        description: '在有骷髅的棋盘上获胜',
+        icon: '💀',
+        category: 'boss',
+        reward: { gold: 500, gems: 10 },
+        condition: { type: 'skull_win', target: 1 }
+    },
+    {
+        id: 'rage_survivor',
+        name: '狂暴克星',
+        description: '在 Boss 狂暴后获胜',
+        icon: '🔥',
+        category: 'boss',
+        reward: { gold: 1000, gems: 20 },
+        condition: { type: 'rage_win', target: 1 }
+    },
+
+    // ==========================================
+    // 💰 财富成就
+    // ==========================================
+    {
+        id: 'gold_10000',
+        name: '万金之主',
+        description: '累计获得 10000 金币',
+        icon: '💰',
+        category: 'wealth',
+        reward: { gold: 500, gems: 10 },
+        condition: { type: 'total_gold', target: 10000 }
+    },
+    {
+        id: 'gold_100000',
+        name: '金币大亨',
+        description: '累计获得 100000 金币',
+        icon: '🏦',
+        category: 'wealth',
+        reward: { gold: 3000, gems: 50 },
+        condition: { type: 'total_gold', target: 100000 }
+    },
+
+    // ==========================================
+    // 🔥 连击专精
+    // ==========================================
+    {
+        id: 'combo_7',
+        name: '连击狂人',
+        description: '达成 7 连击',
+        icon: '🌟',
+        category: 'combo',
+        reward: { gold: 600, gems: 10 },
+        condition: { type: 'combo', target: 7 }
     }
 ];
 
@@ -690,6 +899,116 @@ class AchievementManager {
                         shouldUnlock = true;
                     }
                     break;
+
+                // Spirit trial achievements
+                case 'spirit_trial':
+                    if (type === 'spirit_trial') {
+                        const progress = (Storage.getAchievementProgress(achievement.id) || 0) + 1;
+                        Storage.setAchievementProgress(achievement.id, progress);
+                        shouldUnlock = progress >= condition.target;
+                    }
+                    break;
+
+                case 'spirit_affection':
+                    if (type === 'spirit_trial' || type === 'collection') {
+                        try {
+                            const maxAffection = Math.max(
+                                ...Object.keys(Estate.SPIRITS).map(id => Estate.getSpiritTrialAffection(id))
+                            );
+                            shouldUnlock = maxAffection >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                // Estate achievements
+                case 'tree_count':
+                    if (type === 'collection') {
+                        try {
+                            const estate = Storage.getEstate();
+                            const treeCount = Object.values(estate.trees || {}).filter(v => v === true).length;
+                            shouldUnlock = treeCount >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                case 'tree_specific':
+                    if (type === 'collection') {
+                        try {
+                            shouldUnlock = Estate.isTreePlanted(condition.target);
+                        } catch(e) {}
+                    }
+                    break;
+
+                case 'deco_count':
+                    if (type === 'collection') {
+                        try {
+                            const estate = Storage.getEstate();
+                            const decoCount = Object.values(estate.decorations || {}).filter(v => v === true).length;
+                            shouldUnlock = decoCount >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                case 'happiness':
+                    if (type === 'collection') {
+                        try {
+                            shouldUnlock = Estate.getHappiness() >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                case 'spirit_count':
+                    if (type === 'collection') {
+                        try {
+                            const estate = Storage.getEstate();
+                            // mango_fairy is free so always count it
+                            let count = 1;
+                            for (const id of Object.keys(Estate.SPIRITS)) {
+                                if (id !== 'mango_fairy' && estate.spirits?.[id]) count++;
+                            }
+                            shouldUnlock = count >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                // Boss achievements
+                case 'boss_defeat':
+                    if (type === 'win' && extra.bossLevel) {
+                        shouldUnlock = extra.bossLevel >= condition.target;
+                    }
+                    break;
+
+                case 'boss_count':
+                    if (type === 'win' && extra.bossLevel) {
+                        try {
+                            const bossLoot = Storage.data?.bossLoot || {};
+                            const bossCount = Object.values(bossLoot).filter(v => v === true).length;
+                            shouldUnlock = bossCount >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
+
+                case 'skull_win':
+                    if (type === 'win' && extra.hadSkulls) {
+                        shouldUnlock = true;
+                    }
+                    break;
+
+                case 'rage_win':
+                    if (type === 'win' && extra.bossRaged) {
+                        shouldUnlock = true;
+                    }
+                    break;
+
+                // Wealth achievements
+                case 'total_gold':
+                    if (type === 'score' || type === 'win') {
+                        try {
+                            const totalGold = Storage.data?.statistics?.totalGoldEarned || Storage.getGold();
+                            shouldUnlock = totalGold >= condition.target;
+                        } catch(e) {}
+                    }
+                    break;
             }
 
             if (shouldUnlock) {
@@ -776,6 +1095,47 @@ class AchievementManager {
                 break;
             case 'games':
                 current = Storage.getStatistics().totalGames;
+                break;
+            case 'spirit_trial':
+                current = Storage.getAchievementProgress(id) || 0;
+                break;
+            case 'spirit_affection':
+                try {
+                    current = Math.max(...Object.keys(Estate.SPIRITS).map(sid => Estate.getSpiritTrialAffection(sid)));
+                } catch(e) { current = 0; }
+                break;
+            case 'tree_count':
+                try {
+                    const est = Storage.getEstate();
+                    current = Object.values(est.trees || {}).filter(v => v === true).length;
+                } catch(e) { current = 0; }
+                break;
+            case 'deco_count':
+                try {
+                    const est2 = Storage.getEstate();
+                    current = Object.values(est2.decorations || {}).filter(v => v === true).length;
+                } catch(e) { current = 0; }
+                break;
+            case 'happiness':
+                try { current = Estate.getHappiness(); } catch(e) { current = 0; }
+                break;
+            case 'spirit_count':
+                try {
+                    const est3 = Storage.getEstate();
+                    current = 1; // mango_fairy free
+                    for (const sid of Object.keys(Estate.SPIRITS)) {
+                        if (sid !== 'mango_fairy' && est3.spirits?.[sid]) current++;
+                    }
+                } catch(e) { current = 0; }
+                break;
+            case 'boss_count':
+                try {
+                    const bl = Storage.data?.bossLoot || {};
+                    current = Object.values(bl).filter(v => v === true).length;
+                } catch(e) { current = 0; }
+                break;
+            case 'total_gold':
+                try { current = Storage.data?.statistics?.totalGoldEarned || Storage.getGold(); } catch(e) { current = 0; }
                 break;
             default:
                 current = Storage.getAchievementProgress(id) || 0;

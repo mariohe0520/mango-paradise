@@ -106,9 +106,18 @@ class Game {
                 this.movesLeft += extraMoves;
                 buffMessages.push(`🌙 月光树: +${extraMoves}步`);
             }
+            // Spirit Trial buffs: extra moves from affection abilities
+            const trialExtraMoves = Estate.getTrialExtraMoves();
+            if (trialExtraMoves > 0) {
+                this.movesLeft += trialExtraMoves;
+                buffMessages.push(`💕 精灵羁绊: +${trialExtraMoves}步`);
+            }
             if (this.scoreMultiplier > 1) buffMessages.push(`✨ 幸福度: 分数x${this.scoreMultiplier}`);
             if (Estate.hasBuff('rainbow_4')) buffMessages.push('🌈 彩虹树: 4消出彩虹');
             if (Estate.hasBuff('start_bomb')) buffMessages.push('🌟 金芒树: 开局炸弹');
+            // Trial charge boost
+            const trialCharge = Estate.getTrialChargeBoost();
+            if (trialCharge > 0) buffMessages.push(`💕 充能+${trialCharge}%`);
             // Show buff summary with dramatic entrance
             if (buffMessages.length > 0) {
                 setTimeout(() => {
@@ -184,6 +193,35 @@ class Game {
         } catch (e) {
             console.warn('[Game.init] blockers error:', e);
         }
+
+        // Place start rainbow from spirit trial ability
+        try {
+            if (Estate.hasTrialStartRainbow()) {
+                let attempts = 0;
+                while (attempts < 20) {
+                    const rx = Utils.randomInt(0, this.width - 1);
+                    const ry = Utils.randomInt(0, this.height - 1);
+                    if (this.board[ry][rx] && this.board[ry][rx].special === this.SPECIAL_TYPES.NONE) {
+                        this.board[ry][rx].special = this.SPECIAL_TYPES.RAINBOW;
+                        break;
+                    }
+                    attempts++;
+                }
+            }
+            if (Estate.hasTrialStartSpecial()) {
+                let attempts = 0;
+                while (attempts < 20) {
+                    const rx = Utils.randomInt(0, this.width - 1);
+                    const ry = Utils.randomInt(0, this.height - 1);
+                    if (this.board[ry][rx] && this.board[ry][rx].special === this.SPECIAL_TYPES.NONE) {
+                        const types = [this.SPECIAL_TYPES.HORIZONTAL, this.SPECIAL_TYPES.VERTICAL, this.SPECIAL_TYPES.BOMB];
+                        this.board[ry][rx].special = types[Math.floor(Math.random() * types.length)];
+                        break;
+                    }
+                    attempts++;
+                }
+            }
+        } catch(e) { console.warn('[Game.init] trial start buff error:', e); }
 
         // Place start bombs if buff active (scales with tree level)
         this._startBombPositions = [];
@@ -414,8 +452,14 @@ class Game {
         gemEl.className = `gem gem-${gem.type}`;
         gemEl.dataset.type = gem.type;
         gemEl.dataset.id = gem.id;
-        const gemData = GEM_TYPES[gem.type];
-        gemEl.textContent = gemData ? gemData.emoji : '❓';
+        // Skull gems (placed by boss) — special skull emoji
+        if (gem.type === 'skull') {
+            gemEl.textContent = '💀';
+            gemEl.classList.add('gem-skull');
+        } else {
+            const gemData = GEM_TYPES[gem.type];
+            gemEl.textContent = gemData ? gemData.emoji : '❓';
+        }
         if (gem.special !== this.SPECIAL_TYPES.NONE) {
             gemEl.classList.add('special', gem.special);
         }
@@ -903,13 +947,32 @@ class Game {
             }
         }
 
-        // Score
+        // Score — skulls are worth 0 points
         let score = 0;
-        switch(count) { case 3: score=this.SCORES.MATCH_3; break; case 4: score=this.SCORES.MATCH_4; break; case 5: score=this.SCORES.MATCH_5; break; default: score=this.SCORES.MATCH_6; }
-        score += this.SCORES.COMBO_BONUS * (this.combo - 1);
-        // 🔥 Combo multiplier: x1.5 at combo 3, x2 at 5, x3 at 7+
-        const comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
-        score = Math.floor(score * comboMultiplier);
+        const hasSkull = match.cells.some(c => c.gem.type === 'skull');
+        if (hasSkull) {
+            // Skull matches: minimal points (just clear them)
+            score = 10;
+        } else {
+            switch(count) { case 3: score=this.SCORES.MATCH_3; break; case 4: score=this.SCORES.MATCH_4; break; case 5: score=this.SCORES.MATCH_5; break; default: score=this.SCORES.MATCH_6; }
+            score += this.SCORES.COMBO_BONUS * (this.combo - 1);
+            // 🔥 Combo multiplier: x1.5 at combo 3, x2 at 5, x3 at 7+
+            const comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
+            score = Math.floor(score * comboMultiplier);
+
+            // 🏋️ Spirit Trial: 2x points for preferred gem type
+            try {
+                if (Estate.isInSpiritTrial()) {
+                    const preferredGem = Estate.getTrialPreferredGem();
+                    if (preferredGem && match.type === preferredGem) {
+                        score *= 2;
+                    }
+                }
+                // Spirit affection gem score bonus (from trial abilities)
+                const gemBonus = Estate.getTrialGemScoreBonus(match.type);
+                if (gemBonus > 0) score += gemBonus * count;
+            } catch(e) {}
+        }
         this.addScore(score);
 
         // Charge skill bar — with visual feedback
@@ -917,6 +980,11 @@ class Game {
         // Skill boost from Ancient Tree
         const skillBoost = Estate.getSkillBoostPercent();
         if (skillBoost > 0) chargeAmount = Math.ceil(chargeAmount * (1 + skillBoost / 100));
+        // Trial charge boost from spirit affection abilities
+        try {
+            const trialCharge = Estate.getTrialChargeBoost();
+            if (trialCharge > 0) chargeAmount = Math.ceil(chargeAmount * (1 + trialCharge / 100));
+        } catch(e) {}
         const prevCharge = this.skillCharge;
         this.skillCharge = Math.min(this.skillMax, this.skillCharge + chargeAmount);
         this.updateSkillBarUI();
@@ -1436,17 +1504,24 @@ class Game {
     // ==========================================
 
     addScore(points) {
-        const adjusted = Math.floor(points * this.scoreMultiplier);
+        let adjusted = Math.floor(points * this.scoreMultiplier);
+
+        // Spirit trial combo bonus
+        try {
+            const trialComboBonus = Estate.getTrialComboBonus();
+            if (trialComboBonus > 0 && this.combo > 1) {
+                adjusted = Math.floor(adjusted * (1 + trialComboBonus / 100));
+            }
+        } catch(e) {}
+
         this.score += adjusted;
 
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
             const r = boardEl.getBoundingClientRect();
-            // Show multiplier if active — bigger, bolder when buffed
             if (this.scoreMultiplier > 1) {
                 const text = `+${adjusted} ×${this.scoreMultiplier}`;
                 Particles.floatingText(r.left+r.width/2, r.top+r.height/2, text, '#ff8800');
-                // Every 500+ points with multiplier → big popup
                 if (adjusted >= 500) {
                     this.showScorePopup(`✨ ×${this.scoreMultiplier} → +${adjusted}`);
                     this.showBuffFlash('rgba(255,136,0,0.2)');
@@ -1789,6 +1864,17 @@ class Game {
     victory() {
         this.isGameOver = true;
         if (this.timerInterval) clearInterval(this.timerInterval);
+
+        // Spirit Trial: end with win
+        if (this.level.spiritTrial && Estate.isInSpiritTrial()) {
+            Estate.endSpiritTrial(true);
+            Audio.play('victory');
+            UI.showToast('🎉 精灵试炼胜利！', 'success');
+            setTimeout(() => UI.showScreen('estate-screen'), 1500);
+            setTimeout(() => UI.showEstate(), 1600);
+            return;
+        }
+
         const stars = this.calculateStars();
         const goldReward = Math.floor(this.score / 100) + stars * 50;
         Storage.completedLevel(this.level.id, stars, this.score);
@@ -1819,7 +1905,21 @@ class Game {
         }
         const gameTime = Math.floor((Date.now() - this.gameStartTime) / 1000);
         Storage.addPlayTime(gameTime);
-        Achievements.check('win', this.level.id, { noPowerup: this.powerupsUsed===0, time: gameTime });
+        // Check if board has skulls (for achievement)
+        let hadSkulls = false;
+        try {
+            for (let y = 0; y < this.height && !hadSkulls; y++)
+                for (let x = 0; x < this.width && !hadSkulls; x++)
+                    if (this.board[y][x] && this.board[y][x].type === 'skull') hadSkulls = true;
+        } catch(e) {}
+        const bossRaged = this.isBossLevel && Boss._rageMode;
+        Achievements.check('win', this.level.id, {
+            noPowerup: this.powerupsUsed===0,
+            time: gameTime,
+            bossLevel: this.isBossLevel ? this.level.id : null,
+            hadSkulls: hadSkulls,
+            bossRaged: bossRaged
+        });
         Achievements.check('level_complete', this.level.id);
         Achievements.check('score', this.score);
         Achievements.check('stars', Storage.getTotalStars());
@@ -1851,6 +1951,18 @@ class Game {
     }
 
     defeat() {
+        // Spirit Trial: end with loss
+        if (this.level.spiritTrial && Estate.isInSpiritTrial()) {
+            this.isGameOver = true;
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            Estate.endSpiritTrial(false);
+            Audio.play('defeat');
+            UI.showToast('💕 试炼结束，再接再厉！', 'info');
+            setTimeout(() => UI.showScreen('estate-screen'), 1500);
+            setTimeout(() => UI.showEstate(), 1600);
+            return;
+        }
+
         // 🔥 Phoenix Tree: chance to survive defeat
         if (Estate.hasBuff('second_chance') && !this._usedSecondChance) {
             const chance = Estate.getTreeBuffValue('phoenix') || 20;

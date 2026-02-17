@@ -2740,3 +2740,240 @@ input[type="range"]::-webkit-slider-thumb {
     60% { transform: translateX(-2px); }
     80% { transform: translateX(2px); }
 }
+
+/* ==========================================
+   v8: Spirit Trial, Boss Enhancements, Achievement Wall
+   ========================================== */
+
+/* ── Boss Rage Meter ── */
+.boss-rage-meter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    padding: 2px 8px;
+}
+.rage-label {
+    font-size: 0.7rem;
+}
+.rage-bar {
+    flex: 1;
+    height: 5px;
+    background: rgba(100, 100, 100, 0.4);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.rage-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #eab308, #f97316);
+    transition: width 0.3s ease;
+}
+.rage-text {
+    font-size: 0.6rem;
+    color: #f97316;
+    font-weight: 700;
+    min-width: 28px;
+    text-align: right;
+}
+
+/* Boss attack flash */
+@keyframes bossFlashRed {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Boss emoji bounce on attack */
+.boss-attack-bounce {
+    animation: bossAttackBounce 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
+}
+@keyframes bossAttackBounce {
+    0% { transform: scale(1) translateY(0); }
+    15% { transform: scale(1.4) translateY(-8px); }
+    30% { transform: scale(0.9) translateY(4px); }
+    45% { transform: scale(1.2) translateY(-4px); }
+    60% { transform: scale(0.95) translateY(2px); }
+    75% { transform: scale(1.05) translateY(-1px); }
+    100% { transform: scale(1) translateY(0); }
+}
+
+/* Boss bounce when hit by player */
+.boss-bounce-hit {
+    animation: bossBounceHit 0.6s ease !important;
+}
+@keyframes bossBounceHit {
+    0% { transform: scale(1); }
+    20% { transform: scale(0.7) rotate(-10deg); }
+    40% { transform: scale(1.15) rotate(5deg); }
+    60% { transform: scale(0.9) rotate(-3deg); }
+    80% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Boss HP bar shake */
+.hp-shake {
+    animation: hpShake 0.4s ease !important;
+}
+@keyframes hpShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+}
+
+/* ── Skull Gems ── */
+.gem-skull {
+    filter: grayscale(30%) brightness(0.8);
+    text-shadow: 0 0 6px rgba(100, 100, 100, 0.5);
+}
+
+/* ── Achievement Wall Grid ── */
+.achievement-category {
+    margin-bottom: 16px;
+}
+.achievement-cat-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--wow-gold);
+    margin: 0 0 8px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 209, 0, 0.2);
+}
+.achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+}
+.achievement-badge {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+.achievement-badge.unlocked {
+    border-color: var(--wow-gold);
+    background: linear-gradient(145deg, rgba(255, 209, 0, 0.08), rgba(45, 27, 78, 0.9));
+    box-shadow: 0 0 8px rgba(255, 209, 0, 0.15);
+}
+.achievement-badge.locked {
+    opacity: 0.5;
+    border-color: rgba(100, 100, 100, 0.3);
+}
+.achievement-badge.locked .badge-icon {
+    filter: grayscale(100%);
+}
+.badge-icon {
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+}
+.badge-icon.badge-glow {
+    animation: badgeGlow 2s infinite alternate;
+}
+@keyframes badgeGlow {
+    0% { filter: drop-shadow(0 0 2px rgba(255, 209, 0, 0.3)); }
+    100% { filter: drop-shadow(0 0 8px rgba(255, 209, 0, 0.6)); }
+}
+.badge-name {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+.badge-progress-bar {
+    height: 3px;
+    background: rgba(100, 100, 100, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 4px 0 2px;
+}
+.badge-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+.badge-progress-text {
+    font-size: 0.55rem;
+    color: var(--text-secondary);
+}
+.badge-reward {
+    font-size: 0.55rem;
+    color: var(--wow-gold);
+    margin-top: 2px;
+}
+
+/* ── Achievement Popup Toast (enhanced with gold border + sparkle) ── */
+.achievement-popup {
+    position: fixed;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    transition: top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+}
+.achievement-popup.show {
+    top: 20px;
+}
+.achievement-popup .achievement-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #1a0a2e, #2d1b4e);
+    border: 2px solid var(--wow-gold);
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(255, 209, 0, 0.3), 0 0 40px rgba(255, 209, 0, 0.1), inset 0 0 15px rgba(255, 209, 0, 0.05);
+    animation: achievementSparkle 0.6s ease;
+}
+@keyframes achievementSparkle {
+    0% { transform: scale(0.5); opacity: 0; filter: brightness(2); }
+    50% { transform: scale(1.1); filter: brightness(1.5); }
+    100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+}
+.achievement-popup .achievement-icon {
+    font-size: 2rem;
+    animation: achievementIconSpin 0.8s ease;
+}
+@keyframes achievementIconSpin {
+    0% { transform: rotateY(0deg) scale(0); }
+    50% { transform: rotateY(180deg) scale(1.2); }
+    100% { transform: rotateY(360deg) scale(1); }
+}
+.achievement-popup .achievement-label {
+    font-size: 0.65rem;
+    color: var(--wow-gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.achievement-popup .achievement-name {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 900;
+}
+
+/* ── Spirit Trial Card Enhancements ── */
+.spirit-trial-btn {
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.spirit-trial-btn:hover {
+    background: rgba(168, 85, 247, 0.3) !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+.spirit-trial-btn:active {
+    transform: scale(0.95);
+}
+
+/* Spirit card affection styling */
+.spirit-card .spirit-affection-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 6px;
+}

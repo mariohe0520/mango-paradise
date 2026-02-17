@@ -87,12 +87,18 @@ const Boss = {
         }
     },
 
+    // Skull gem type — worth 0 points, placed by boss attacks
+    SKULL_TYPE: 'skull',
+
     currentBoss: null,
     bossHP: 0,
     bossMaxHP: 0,
     movesSinceAttack: 0,
     currentPhase: 0,
     phaseAnnounced: {},
+    rageMeter: 0,
+    rageMax: 100,
+    _skullAttackInterval: 3, // every 3 player moves, boss places skulls
 
     isBossLevel(levelId) { return !!this.BOSSES[levelId]; },
 
@@ -106,7 +112,9 @@ const Boss = {
         this.currentPhase = 0;
         this.phaseAnnounced = { 0: true };
         this._rageMode = false;
+        this.rageMeter = 0;
         this.updateUI();
+        this.updateRageMeterUI();
         return true;
     },
 
@@ -144,20 +152,38 @@ const Boss = {
         if (!this.currentBoss) return 'none';
         // Apply weakness multiplier
         if (spiritId) dmg = Math.floor(dmg * this.getDamageMultiplier(spiritId));
+        // Apply trial boss damage bonus
+        try {
+            const trialBonus = Estate.getTrialBossDamageBonus();
+            if (trialBonus > 0) dmg = Math.floor(dmg * (1 + trialBonus / 100));
+        } catch(e) {}
         this.bossHP = Math.max(0, this.bossHP - dmg);
         // Check phase transition
         const newPhase = this.checkPhaseTransition();
         if (newPhase && newPhase.announce) {
             UI.showToast(`⚠️ ${newPhase.announce}`, 'error');
-            // Phase transition: big shake + flash
             const bossIcon = document.getElementById('boss-icon');
             if (bossIcon) bossIcon.textContent = newPhase.emoji;
         }
         this.updateUI();
 
-        // Shake boss on hit
+        // Shake boss on hit + bounce animation
         const bossIcon = document.getElementById('boss-icon');
-        if (bossIcon) { bossIcon.classList.remove('boss-hit'); void bossIcon.offsetWidth; bossIcon.classList.add('boss-hit'); }
+        if (bossIcon) {
+            bossIcon.classList.remove('boss-hit', 'boss-bounce-hit');
+            void bossIcon.offsetWidth;
+            bossIcon.classList.add('boss-hit', 'boss-bounce-hit');
+            setTimeout(() => bossIcon.classList.remove('boss-bounce-hit'), 600);
+        }
+
+        // HP bar shake when hit
+        const hpBar = document.getElementById('boss-hp-fill');
+        if (hpBar) {
+            hpBar.classList.remove('hp-shake');
+            void hpBar.offsetWidth;
+            hpBar.classList.add('hp-shake');
+            setTimeout(() => hpBar.classList.remove('hp-shake'), 400);
+        }
 
         // 🔥 Floating damage number
         const bar = document.getElementById('boss-bar');
@@ -165,7 +191,6 @@ const Boss = {
             const popup = document.createElement('div');
             popup.className = 'boss-damage-popup';
             popup.textContent = `-${Utils.formatNumber(Math.round(dmg))}`;
-            // Bigger text for bigger damage
             const scale = Math.min(1 + dmg / 5000, 2.5);
             popup.style.fontSize = `${scale}rem`;
             popup.style.color = dmg > 3000 ? '#ff3333' : dmg > 1000 ? '#ff8800' : '#ffcc00';
@@ -181,19 +206,126 @@ const Boss = {
             if (bossBar) bossBar.classList.add('rage-active');
         }
 
-        if (this.bossHP <= 0) this._rageMode = false;
+        if (this.bossHP <= 0) { this._rageMode = false; this.rageMeter = 0; }
         return this.bossHP <= 0 ? 'defeated' : 'alive';
+    },
+
+    // Place skull gems on the board (skulls worth 0 points)
+    placeSkullGems(game, count) {
+        const placed = [];
+        for (let i = 0; i < count; i++) {
+            let attempts = 0;
+            while (attempts++ < 30) {
+                const x = Utils.randomInt(0, game.width - 1);
+                const y = Utils.randomInt(0, game.height - 1);
+                if (game.board[y][x] && game.board[y][x].type !== this.SKULL_TYPE
+                    && game.board[y][x].special === game.SPECIAL_TYPES.NONE) {
+                    game.board[y][x] = {
+                        type: this.SKULL_TYPE,
+                        special: game.SPECIAL_TYPES.NONE,
+                        x, y,
+                        id: Utils.generateId()
+                    };
+                    placed.push({ x, y });
+                    break;
+                }
+            }
+        }
+        return placed;
+    },
+
+    // Boss attack animation: screen flash red + boss emoji bounce
+    playAttackAnimation() {
+        // Screen flash red
+        const flash = document.createElement('div');
+        flash.className = 'boss-attack-flash';
+        flash.style.cssText = 'position:fixed;inset:0;background:rgba(239,68,68,0.35);z-index:800;pointer-events:none;animation:bossFlashRed 0.5s ease forwards;';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 600);
+
+        // Boss emoji bounce
+        const bossIcon = document.getElementById('boss-icon');
+        if (bossIcon) {
+            bossIcon.classList.remove('boss-attack-bounce');
+            void bossIcon.offsetWidth;
+            bossIcon.classList.add('boss-attack-bounce');
+            setTimeout(() => bossIcon.classList.remove('boss-attack-bounce'), 800);
+        }
+    },
+
+    // Boss Ultimate: triggered at 100% rage — converts 5 gems to skulls
+    bossUltimate(game) {
+        if (!this.currentBoss || !game) return [];
+        this.rageMeter = 0;
+        this.updateRageMeterUI();
+
+        // Big dramatic flash
+        const flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;inset:0;background:rgba(139,0,0,0.5);z-index:800;pointer-events:none;animation:bossFlashRed 0.8s ease forwards;';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 900);
+
+        const phase = this.getCurrentPhase();
+        UI.showToast(`💀 ${phase?.emoji || '👹'} 终极技能！骷髅侵蚀！`, 'error');
+
+        // Place 5 skulls
+        const skulls = this.placeSkullGems(game, 5);
+        game.render();
+        return skulls.map(s => ({ type: 'skull_ultimate', ...s }));
+    },
+
+    // Update rage meter UI
+    updateRageMeterUI() {
+        const fill = document.getElementById('boss-rage-fill');
+        const text = document.getElementById('boss-rage-text');
+        if (fill) {
+            const pct = (this.rageMeter / this.rageMax) * 100;
+            fill.style.width = `${pct}%`;
+            // Color escalation
+            if (pct >= 80) fill.style.background = 'linear-gradient(90deg, #dc2626, #ff0000)';
+            else if (pct >= 50) fill.style.background = 'linear-gradient(90deg, #f97316, #ef4444)';
+            else fill.style.background = 'linear-gradient(90deg, #eab308, #f97316)';
+        }
+        if (text) text.textContent = `${Math.floor(this.rageMeter)}%`;
     },
 
     counterattack(game) {
         if (!this.currentBoss) return [];
         this.movesSinceAttack++;
+
+        // Fill rage meter each turn (15 per turn, faster in rage mode)
+        const rageGain = this._rageMode ? 25 : 15;
+        this.rageMeter = Math.min(this.rageMax, this.rageMeter + rageGain);
+        this.updateRageMeterUI();
+
+        // Check for ultimate at 100% rage
+        if (this.rageMeter >= this.rageMax) {
+            this.playAttackAnimation();
+            return this.bossUltimate(game);
+        }
+
         const phase = this.getCurrentPhase();
         const interval = phase?.interval || 2;
         if (this.movesSinceAttack < interval) return [];
         this.movesSinceAttack = 0;
 
+        // Play attack animation
+        this.playAttackAnimation();
+
         const attacks = [];
+
+        // Skull attack: every _skullAttackInterval (3) counterattacks, place 2 skull gems
+        if (!this._skullCounter) this._skullCounter = 0;
+        this._skullCounter++;
+        if (this._skullCounter >= this._skullAttackInterval) {
+            this._skullCounter = 0;
+            const skullCount = this._rageMode ? 3 : 2;
+            const skulls = this.placeSkullGems(game, skullCount);
+            skulls.forEach(s => attacks.push({ type: 'skull', ...s }));
+            if (skulls.length > 0) {
+                UI.showToast(`💀 Boss放置了${skulls.length}个骷髅！`, 'error');
+            }
+        }
         // Pick from CURRENT PHASE's attacks (phase-specific!)
         const bossAttacks = phase?.attacks || ['ice'];
         const numAttacks = this._rageMode ? 2 : 1;
@@ -312,14 +444,20 @@ const Boss = {
         const pct = (this.bossHP / this.bossMaxHP) * 100;
         if (bar) {
             bar.style.width = `${pct}%`;
-            if (pct > 50) bar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
-            else if (pct > 25) bar.style.background = 'linear-gradient(90deg, #eab308, #facc15)';
-            else bar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
+            bar.style.transition = 'width 0.4s ease, background 0.3s';
+            if (pct > 50) bar.style.background = 'linear-gradient(90deg, #22c55e, #4ade80, #86efac)';
+            else if (pct > 25) bar.style.background = 'linear-gradient(90deg, #dc2626, #eab308, #facc15)';
+            else bar.style.background = 'linear-gradient(90deg, #7f1d1d, #ef4444, #f87171)';
+            // Add glow effect at low HP
+            if (pct <= 25) bar.style.boxShadow = '0 0 8px rgba(239,68,68,0.6)';
+            else bar.style.boxShadow = 'none';
         }
         if (txt) txt.textContent = `${Utils.formatNumber(Math.ceil(this.bossHP))} / ${Utils.formatNumber(this.bossMaxHP)}`;
         if (nm) nm.textContent = this.currentBoss.name;
         const phase = this.getCurrentPhase();
         if (icon) icon.textContent = phase?.emoji || this.currentBoss.phases?.[0]?.emoji || '👹';
+        // Update rage meter
+        this.updateRageMeterUI();
     },
 
     // 🏆 Boss Loot — unique rewards per boss
@@ -369,5 +507,7 @@ const Boss = {
         this.phaseAnnounced = {};
         this._rageMode = false;
         this._saidFear = false;
+        this.rageMeter = 0;
+        this._skullCounter = 0;
     }
 };
