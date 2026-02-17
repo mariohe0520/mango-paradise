@@ -26,10 +26,10 @@ const CHAPTERS = [
     { id:4,  name:'诅咒之地',   description:'被黑暗力量笼罩的神秘区域...',       icon:'🌑', levels:[31,40],  unlockLevel:30, background:'dark' },
     { id:5,  name:'燃烧平原',   description:'熔岩与火焰的试炼之地...',           icon:'🌋', levels:[41,50],  unlockLevel:40, background:'fire' },
     { id:6,  name:'诺森德',     description:'冰封王座的极寒挑战...',             icon:'❄️', levels:[51,60],  unlockLevel:50, background:'ice' },
-    { id:7,  name:'翡翠梦境',   description:'世界之树守护的梦幻领域...',          icon:'🌿', levels:[61,70],  unlockLevel:60, background:'dream' },
-    { id:8,  name:'虚空风暴',   description:'次元裂缝中的混沌之域...',            icon:'🌀', levels:[71,80],  unlockLevel:70, background:'void' },
-    { id:9,  name:'时光之穴',   description:'时间在这里不再是线性的...',           icon:'⏳', levels:[81,90],  unlockLevel:80, background:'time' },
-    { id:10, name:'永恒之战',   description:'与燃烧军团的最终决战！',             icon:'⚔️', levels:[91,100], unlockLevel:90, background:'final' }
+    { id:7,  name:'翡翠森林',   description:'连锁反应在翡翠丛林中回荡...',         icon:'🌿', levels:[61,70],  unlockLevel:60, background:'emerald' },
+    { id:8,  name:'水晶洞穴',   description:'迷雾笼罩的水晶洞穴，视野受限...',    icon:'💎', levels:[71,80],  unlockLevel:70, background:'crystal' },
+    { id:9,  name:'星空之境',   description:'重力在星光下不再恒定...',             icon:'🌌', levels:[81,90],  unlockLevel:80, background:'starlight' },
+    { id:10, name:'芒果天堂',   description:'终极挑战——所有机制的融合！',          icon:'🥭', levels:[91,100], unlockLevel:90, background:'paradise' }
 ];
 
 // 目标类型
@@ -147,53 +147,57 @@ L(58, { moves:34, gems:['knight','dwarf','undead','mango','dragon','phoenix'], o
 L(59, { width:9, height:9, moves:36, gems:['dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:70,gem:'phoenix',icon:'🔥'},{type:'combo',target:20,icon:'🔥'},{type:'special',target:3,specialType:'rainbow',icon:'🌈'}], stars:[30000,42000,56000] }),
 L(60, { width:9, height:9, moves:42, gems:['knight','dwarf','undead','mango','dragon','phoenix'], boss:true, objectives:[{type:'score',target:30000,icon:'⭐'},{type:'clear',target:40,gem:'phoenix',icon:'🔥'},{type:'special',target:4,specialType:'rainbow',icon:'🌈'},{type:'combo',target:15,icon:'🔥'}], stars:[35000,50000,70000] }),
 
-// =========== Ch7: 翡翠梦境 (61-70) ===========
-L(61, { moves:32, gems:['elf','mage','mango','dragon','phoenix','murloc'], objectives:[{type:'clear',target:20,gem:'mango',icon:'🥭'},{type:'clear',target:15,gem:'phoenix',icon:'🔥'}], stars:[22000,33000,44000] }),
-L(62, { moves:30, gems:['elf','mage','mango','dragon','phoenix','murloc'], objectives:[{type:'special',target:8,specialType:'any',icon:'✨'}], stars:[20000,30000,40000] }),
-L(63, { moves:35, gems:['elf','mage','mango','dragon','phoenix','murloc'], timed:true, timeLimit:60, objectives:[{type:'score',target:25000,icon:'⭐'}], stars:[25000,37000,50000] }),
-L(64, { width:9, height:8, moves:33, gems:['elf','mage','mango','dragon','phoenix'], objectives:[{type:'clear',target:40,gem:'elf',icon:'🧝♀️'},{type:'combo',target:12,icon:'🔥'}], stars:[24000,35000,47000] }),
-L(65, { moves:38, gems:['elf','mage','mango','dragon','phoenix','murloc'], objectives:[{type:'score',target:28000,icon:'⭐'},{type:'special',target:2,specialType:'rainbow',icon:'🌈'}], stars:[28000,40000,55000] }),
-L(66, { moves:30, gems:['mage','mango','dragon','phoenix','murloc'], objectives:[{type:'clear',target:50,gem:'dragon',icon:'🐉'},{type:'clear',target:35,gem:'murloc',icon:'🐟'}], stars:[26000,38000,52000] }),
-L(67, { moves:38, gems:['elf','mage','mango','dragon','phoenix','murloc'], objectives:[{type:'combo',target:18,icon:'🔥'},{type:'special',target:10,specialType:'any',icon:'✨'}], stars:[30000,42000,58000] }),
-L(68, { width:9, height:9, moves:40, gems:['elf','mage','mango','dragon','phoenix','murloc'], objectives:[{type:'score',target:35000,icon:'⭐'}], stars:[35000,50000,65000] }),
-L(69, { moves:35, gems:['elf','mango','dragon','phoenix','murloc'], objectives:[{type:'clear',target:60,gem:'phoenix',icon:'🔥'},{type:'special',target:5,specialType:'bomb',icon:'💣'}], stars:[32000,45000,60000] }),
-L(70, { moves:42, gems:['elf','mage','mango','dragon','phoenix','murloc'], boss:true, objectives:[{type:'score',target:35000,icon:'⭐'}], stars:[38000,55000,72000] }),
+// =========== Ch7: 翡翠森林 (61-70) — Chain reactions theme ===========
+// Each level emphasizes cascading chain combos; 2-3 objectives per level
+L(61, { moves:24, gems:['elf','mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:4,icon:'🔥',label:'连锁×4'},{type:'clear',target:20,gem:'elf',icon:'🧝♀️'}], stars:[20000,30000,40000] }),
+L(62, { moves:26, gems:['elf','mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:5,icon:'🔥',label:'连锁×5'},{type:'score',target:18000,icon:'⭐'}], stars:[21000,31000,42000] }),
+L(63, { moves:26, gems:['elf','mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:6,icon:'🔥',label:'连锁×6'},{type:'clear',target:25,gem:'mango',icon:'🥭'},{type:'special',target:2,specialType:'line',icon:'⚡'}], stars:[22000,33000,44000] }),
+L(64, { moves:28, gems:['elf','mage','mango','dragon','phoenix'], special:{chainBonus:true}, objectives:[{type:'combo',target:7,icon:'🔥',label:'连锁×7'},{type:'clear',target:30,gem:'dragon',icon:'🐉'}], stars:[24000,35000,47000] }),
+L(65, { moves:28, gems:['elf','mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:8,icon:'🔥',label:'连锁×8'},{type:'special',target:3,specialType:'bomb',icon:'💣'},{type:'score',target:22000,icon:'⭐'}], stars:[25000,37000,50000] }),
+L(66, { moves:30, gems:['mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:8,icon:'🔥',label:'连锁×8'},{type:'clear',target:35,gem:'phoenix',icon:'🔥'}], stars:[27000,39000,52000] }),
+L(67, { moves:30, gems:['elf','mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:9,icon:'🔥',label:'连锁×9'},{type:'special',target:2,specialType:'rainbow',icon:'🌈'},{type:'clear',target:30,gem:'murloc',icon:'🐟'}], stars:[28000,41000,55000] }),
+L(68, { width:9, height:9, moves:32, gems:['elf','mage','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:10,icon:'🔥',label:'连锁×10'},{type:'score',target:28000,icon:'⭐'}], stars:[30000,43000,58000] }),
+L(69, { moves:34, gems:['elf','mango','dragon','phoenix','murloc'], special:{chainBonus:true}, objectives:[{type:'combo',target:11,icon:'🔥',label:'连锁×11'},{type:'special',target:4,specialType:'bomb',icon:'💣'},{type:'clear',target:40,gem:'mage',icon:'🧙♂️'}], stars:[32000,46000,62000] }),
+L(70, { moves:36, gems:['elf','mage','mango','dragon','phoenix','murloc'], boss:true, special:{chainBonus:true}, objectives:[{type:'combo',target:12,icon:'🔥',label:'连锁×12'},{type:'special',target:3,specialType:'rainbow',icon:'🌈'},{type:'score',target:32000,icon:'⭐'},{type:'clear',target:35,gem:'elf',icon:'🧝♀️',label:'清除森林'}], stars:[35000,50000,68000] }),
 
-// =========== Ch8: 虚空风暴 (71-80) ===========
-L(71, { moves:32, gems:['orc','knight','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:25,gem:'undead',icon:'💀'},{type:'clear',target:25,gem:'dragon',icon:'🐉'}], stars:[28000,40000,55000] }),
-L(72, { moves:35, gems:['orc','knight','undead','mango','dragon','phoenix'], timed:true, timeLimit:55, objectives:[{type:'score',target:30000,icon:'⭐'}], stars:[30000,43000,58000] }),
-L(73, { width:8, height:9, moves:38, gems:['orc','knight','undead','mango','dragon','phoenix'], objectives:[{type:'special',target:12,specialType:'any',icon:'✨'},{type:'combo',target:14,icon:'🔥'}], stars:[32000,46000,62000] }),
-L(74, { moves:33, gems:['knight','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:55,gem:'mango',icon:'🥭'}], stars:[30000,42000,58000] }),
-L(75, { moves:40, gems:['orc','knight','undead','mango','dragon','phoenix'], objectives:[{type:'score',target:38000,icon:'⭐'},{type:'special',target:3,specialType:'rainbow',icon:'🌈'}], stars:[38000,54000,72000] }),
-L(76, { moves:35, gems:['orc','knight','undead','mango','dragon'], objectives:[{type:'clear',target:60,gem:'orc',icon:'👹'},{type:'clear',target:40,gem:'knight',icon:'⚔️'}], stars:[34000,48000,65000] }),
-L(77, { width:9, height:9, moves:40, gems:['orc','knight','undead','mango','dragon','phoenix'], objectives:[{type:'combo',target:22,icon:'🔥'}], stars:[36000,50000,68000] }),
-L(78, { moves:35, gems:['knight','undead','mango','dragon','phoenix'], timed:true, timeLimit:50, objectives:[{type:'score',target:35000,icon:'⭐'}], stars:[35000,50000,66000] }),
-L(79, { moves:40, gems:['orc','knight','undead','mango','dragon','phoenix'], objectives:[{type:'special',target:8,specialType:'bomb',icon:'💣'},{type:'special',target:4,specialType:'rainbow',icon:'🌈'}], stars:[38000,52000,70000] }),
-L(80, { width:9, height:9, moves:45, gems:['orc','knight','undead','mango','dragon','phoenix'], boss:true, objectives:[{type:'score',target:40000,icon:'⭐'}], stars:[42000,60000,80000] }),
+// =========== Ch8: 水晶洞穴 (71-80) — Fog / limited visibility theme ===========
+// Fog tiles hide gems; adjacent matches reveal them. fogCount = number of fog-covered cells.
+L(71, { moves:22, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:8}, objectives:[{type:'clear',target:20,gem:'undead',icon:'💀'},{type:'score',target:25000,icon:'⭐'}], stars:[28000,40000,54000] }),
+L(72, { moves:24, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:10}, objectives:[{type:'combo',target:6,icon:'🔥'},{type:'clear',target:25,gem:'mango',icon:'🥭'}], stars:[30000,42000,56000] }),
+L(73, { moves:24, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:12}, objectives:[{type:'special',target:3,specialType:'any',icon:'✨'},{type:'clear',target:30,gem:'orc',icon:'👹'},{type:'score',target:28000,icon:'⭐'}], stars:[32000,45000,60000] }),
+L(74, { moves:26, gems:['knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:14}, objectives:[{type:'combo',target:7,icon:'🔥'},{type:'clear',target:35,gem:'knight',icon:'⚔️'}], stars:[33000,47000,63000] }),
+L(75, { moves:26, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:16}, objectives:[{type:'special',target:4,specialType:'bomb',icon:'💣'},{type:'score',target:32000,icon:'⭐'},{type:'combo',target:5,icon:'🔥'}], stars:[35000,50000,66000] }),
+L(76, { moves:28, gems:['orc','knight','undead','mango','dragon'], special:{fog:true,fogCount:18}, objectives:[{type:'clear',target:40,gem:'dragon',icon:'🐉'},{type:'combo',target:8,icon:'🔥'}], stars:[37000,52000,70000] }),
+L(77, { moves:30, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:20}, objectives:[{type:'special',target:3,specialType:'rainbow',icon:'🌈'},{type:'clear',target:35,gem:'phoenix',icon:'🔥'}], stars:[38000,54000,72000] }),
+L(78, { width:9, height:8, moves:30, gems:['knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:22}, objectives:[{type:'score',target:36000,icon:'⭐'},{type:'combo',target:9,icon:'🔥'},{type:'special',target:5,specialType:'any',icon:'✨'}], stars:[40000,56000,75000] }),
+L(79, { moves:32, gems:['orc','knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:24}, objectives:[{type:'clear',target:50,gem:'mango',icon:'🥭'},{type:'special',target:4,specialType:'line',icon:'⚡'},{type:'combo',target:8,icon:'🔥'}], stars:[42000,59000,78000] }),
+L(80, { width:9, height:9, moves:34, gems:['orc','knight','undead','mango','dragon','phoenix'], boss:true, special:{fog:true,fogCount:30}, objectives:[{type:'clear',target:30,gem:'skull',icon:'🌫️',label:'清除全部迷雾'},{type:'special',target:6,specialType:'any',icon:'✨'},{type:'combo',target:10,icon:'🔥'},{type:'score',target:38000,icon:'⭐'}], stars:[45000,63000,85000] }),
 
-// =========== Ch9: 时光之穴 (81-90) ===========
-L(81, { moves:33, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'clear',target:30,gem:'mage',icon:'🧙♂️'},{type:'clear',target:30,gem:'elf',icon:'🧝♀️'}], stars:[32000,46000,62000] }),
-L(82, { moves:38, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'score',target:40000,icon:'⭐'}], stars:[40000,56000,75000] }),
-L(83, { moves:35, gems:['mage','dwarf','mango','dragon','phoenix'], timed:true, timeLimit:50, objectives:[{type:'score',target:38000,icon:'⭐'}], stars:[38000,54000,72000] }),
-L(84, { width:9, height:9, moves:40, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'special',target:15,specialType:'any',icon:'✨'}], stars:[42000,58000,78000] }),
-L(85, { moves:35, gems:['dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'combo',target:25,icon:'🔥'},{type:'clear',target:50,gem:'dragon',icon:'🐉'}], stars:[40000,56000,75000] }),
-L(86, { moves:38, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'clear',target:60,gem:'phoenix',icon:'🔥'},{type:'clear',target:60,gem:'mango',icon:'🥭'}], stars:[44000,62000,82000] }),
-L(87, { width:8, height:10, moves:42, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'score',target:48000,icon:'⭐'},{type:'special',target:6,specialType:'rainbow',icon:'🌈'}], stars:[48000,66000,88000] }),
-L(88, { moves:38, gems:['dwarf','mango','dragon','phoenix','elf'], timed:true, timeLimit:45, objectives:[{type:'score',target:42000,icon:'⭐'}], stars:[42000,60000,80000] }),
-L(89, { moves:42, gems:['mage','dwarf','mango','dragon','phoenix','elf'], objectives:[{type:'combo',target:28,icon:'🔥'},{type:'special',target:10,specialType:'line',icon:'⚡',label:'连4消生成'}], stars:[46000,64000,85000] }),
-L(90, { width:9, height:9, moves:48, gems:['mage','dwarf','mango','dragon','phoenix','elf'], boss:true, objectives:[{type:'score',target:45000,icon:'⭐'}], stars:[50000,70000,95000] }),
+// =========== Ch9: 星空之境 (81-90) — Gravity shift theme ===========
+// Gems periodically fall sideways instead of downward. gravityShift = true enables the mechanic.
+L(81, { moves:20, gems:['mage','dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'combo',target:8,icon:'🔥'},{type:'clear',target:25,gem:'mage',icon:'🧙♂️'}], stars:[35000,50000,66000] }),
+L(82, { moves:22, gems:['mage','dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'score',target:35000,icon:'⭐'},{type:'special',target:4,specialType:'any',icon:'✨'}], stars:[37000,52000,70000] }),
+L(83, { moves:22, gems:['mage','dwarf','mango','dragon','phoenix'], special:{gravityShift:true}, objectives:[{type:'clear',target:30,gem:'dwarf',icon:'⛏️'},{type:'combo',target:9,icon:'🔥'},{type:'special',target:2,specialType:'bomb',icon:'💣'}], stars:[38000,54000,72000] }),
+L(84, { moves:24, gems:['mage','dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'clear',target:35,gem:'mango',icon:'🥭'},{type:'score',target:38000,icon:'⭐'}], stars:[40000,56000,75000] }),
+L(85, { moves:24, gems:['dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'special',target:5,specialType:'line',icon:'⚡'},{type:'combo',target:10,icon:'🔥'},{type:'clear',target:30,gem:'elf',icon:'🧝♀️'}], stars:[42000,59000,78000] }),
+L(86, { moves:26, gems:['mage','dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'clear',target:40,gem:'dragon',icon:'🐉'},{type:'special',target:3,specialType:'rainbow',icon:'🌈'}], stars:[44000,62000,82000] }),
+L(87, { width:9, height:9, moves:28, gems:['mage','dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'score',target:42000,icon:'⭐'},{type:'combo',target:12,icon:'🔥'},{type:'clear',target:35,gem:'phoenix',icon:'🔥'}], stars:[46000,64000,85000] }),
+L(88, { moves:28, gems:['dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'special',target:6,specialType:'bomb',icon:'💣'},{type:'clear',target:45,gem:'mango',icon:'🥭'}], stars:[48000,67000,88000] }),
+L(89, { moves:30, gems:['mage','dwarf','mango','dragon','phoenix','elf'], special:{gravityShift:true}, objectives:[{type:'combo',target:14,icon:'🔥'},{type:'special',target:4,specialType:'rainbow',icon:'🌈'},{type:'score',target:45000,icon:'⭐'}], stars:[50000,70000,92000] }),
+L(90, { width:9, height:9, moves:32, gems:['mage','dwarf','mango','dragon','phoenix','elf'], boss:true, timed:true, timeLimit:90, special:{gravityShift:true}, objectives:[{type:'score',target:48000,icon:'⭐'},{type:'combo',target:15,icon:'🔥'},{type:'special',target:5,specialType:'rainbow',icon:'🌈'},{type:'clear',target:50,gem:'dragon',icon:'🐉'}], stars:[52000,73000,98000] }),
 
-// =========== Ch10: 永恒之战 (91-100) ===========
-L(91,  { moves:35, gems:['knight','dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:35,gem:'phoenix',icon:'🔥'},{type:'clear',target:35,gem:'dragon',icon:'🐉'}], stars:[40000,56000,75000] }),
-L(92,  { moves:38, gems:['knight','dwarf','undead','mango','dragon','phoenix'], timed:true, timeLimit:45, objectives:[{type:'score',target:42000,icon:'⭐'}], stars:[42000,60000,80000] }),
-L(93,  { width:9, height:8, moves:38, gems:['knight','dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'special',target:18,specialType:'any',icon:'✨'},{type:'combo',target:20,icon:'🔥'}], stars:[45000,63000,84000] }),
-L(94,  { moves:35, gems:['dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:70,gem:'mango',icon:'🥭'}], stars:[42000,60000,80000] }),
-L(95,  { moves:40, gems:['knight','dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'score',target:50000,icon:'⭐'},{type:'special',target:6,specialType:'rainbow',icon:'🌈'}], stars:[50000,70000,95000] }),
-L(96,  { width:9, height:9, moves:42, gems:['knight','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:80,gem:'dragon',icon:'🐉'},{type:'clear',target:60,gem:'phoenix',icon:'🔥'}], stars:[48000,66000,88000] }),
-L(97,  { moves:40, gems:['knight','dwarf','undead','mango','dragon','phoenix'], timed:true, timeLimit:40, objectives:[{type:'score',target:48000,icon:'⭐'}], stars:[50000,70000,92000] }),
-L(98,  { moves:45, gems:['knight','dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'combo',target:30,icon:'🔥'},{type:'special',target:8,specialType:'bomb',icon:'💣'},{type:'special',target:6,specialType:'rainbow',icon:'🌈'}], stars:[52000,72000,96000] }),
-L(99,  { width:9, height:9, moves:48, gems:['dwarf','undead','mango','dragon','phoenix'], objectives:[{type:'clear',target:80,gem:'phoenix',icon:'🔥'},{type:'score',target:55000,icon:'⭐'}], stars:[55000,76000,100000] }),
-L(100, { width:9, height:9, moves:55, gems:['knight','dwarf','undead','mango','dragon','phoenix'], boss:true, objectives:[{type:'score',target:55000,icon:'⭐'}], stars:[60000,85000,120000] }),
+// =========== Ch10: 芒果天堂 (91-100) — Ultimate challenge, all mechanics combined ===========
+// Fog + gravity shifts + chain reactions. The hardest chapter in the game.
+L(91,  { moves:18, gems:['knight','dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:6,gravityShift:true,chainBonus:true}, objectives:[{type:'combo',target:10,icon:'🔥'},{type:'clear',target:25,gem:'mango',icon:'🥭'}], stars:[42000,60000,80000] }),
+L(92,  { moves:20, gems:['knight','dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:8,gravityShift:true,chainBonus:true}, objectives:[{type:'score',target:42000,icon:'⭐'},{type:'special',target:5,specialType:'any',icon:'✨'}], stars:[44000,62000,82000] }),
+L(93,  { moves:20, gems:['knight','dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:10,chainBonus:true}, objectives:[{type:'combo',target:12,icon:'🔥'},{type:'clear',target:30,gem:'knight',icon:'🛡️'},{type:'special',target:3,specialType:'bomb',icon:'💣'}], stars:[46000,65000,86000] }),
+L(94,  { moves:22, gems:['dwarf','undead','mango','dragon','phoenix'], special:{gravityShift:true,chainBonus:true}, objectives:[{type:'clear',target:40,gem:'undead',icon:'☠️'},{type:'special',target:4,specialType:'rainbow',icon:'🌈'}], stars:[48000,67000,90000] }),
+L(95,  { moves:22, gems:['knight','dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:12,gravityShift:true,chainBonus:true}, objectives:[{type:'score',target:48000,icon:'⭐'},{type:'combo',target:14,icon:'🔥'},{type:'clear',target:35,gem:'dwarf',icon:'⛏️'}], stars:[50000,70000,94000] }),
+L(96,  { width:9, height:9, moves:24, gems:['knight','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:14,gravityShift:true,chainBonus:true}, objectives:[{type:'special',target:6,specialType:'bomb',icon:'💣'},{type:'clear',target:45,gem:'dragon',icon:'🐉'}], stars:[52000,73000,97000] }),
+L(97,  { moves:26, gems:['knight','dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:16,gravityShift:true,chainBonus:true}, timed:true, timeLimit:60, objectives:[{type:'score',target:50000,icon:'⭐'},{type:'combo',target:15,icon:'🔥'}], stars:[55000,77000,100000] }),
+L(98,  { moves:28, gems:['knight','dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:18,gravityShift:true,chainBonus:true}, objectives:[{type:'special',target:5,specialType:'rainbow',icon:'🌈'},{type:'clear',target:50,gem:'phoenix',icon:'🔥'},{type:'combo',target:16,icon:'🔥'}], stars:[58000,80000,106000] }),
+L(99,  { width:9, height:9, moves:28, gems:['dwarf','undead','mango','dragon','phoenix'], special:{fog:true,fogCount:20,gravityShift:true,chainBonus:true}, timed:true, timeLimit:75, objectives:[{type:'score',target:55000,icon:'⭐'},{type:'combo',target:18,icon:'🔥'},{type:'special',target:6,specialType:'any',icon:'✨'}], stars:[60000,84000,112000] }),
+L(100, { width:9, height:9, moves:30, gems:['knight','dwarf','undead','mango','dragon','phoenix'], boss:true, timed:true, timeLimit:120, special:{fog:true,fogCount:25,gravityShift:true,chainBonus:true}, objectives:[{type:'score',target:60000,icon:'⭐'},{type:'combo',target:20,icon:'🔥',label:'终极连锁'},{type:'special',target:6,specialType:'rainbow',icon:'🌈'},{type:'clear',target:60,gem:'mango',icon:'🥭',label:'芒果天堂'}], stars:[65000,90000,125000] }),
 ];
 
 // ====================================
