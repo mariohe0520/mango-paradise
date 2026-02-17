@@ -72,6 +72,9 @@ class App {
             // 步骤5c：初始化统计系统
             if (typeof Stats !== 'undefined') Stats.startSession();
             
+            // 步骤5d：初始化硬核系统 (Combo Theory, Challenge Tower, etc.)
+            if (typeof ChallengeTower !== 'undefined') ChallengeTower.checkMonthlyReset();
+            
             // 步骤6：应用保存的设置
             this.updateProgress(95, '应用设置...');
             this.applySettings();
@@ -372,6 +375,10 @@ if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
         Collection,
         UI,
         Tutorial,
+        ChallengeTower: typeof ChallengeTower !== 'undefined' ? ChallengeTower : null,
+        ComboTheory: typeof ComboTheory !== 'undefined' ? ComboTheory : null,
+        HardcoreMode: typeof HardcoreMode !== 'undefined' ? HardcoreMode : null,
+        SpiritLoadout: typeof SpiritLoadout !== 'undefined' ? SpiritLoadout : null,
         
         // 便捷方法
         addGold: (amount) => { Storage.addGold(amount); UI.updateMenuDisplay(); },

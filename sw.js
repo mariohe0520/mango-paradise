@@ -1,13 +1,31 @@
 // Service Worker for Mango Paradise — offline support
-const CACHE_NAME = 'mango-paradise-v3';
+const CACHE_NAME = 'mango-paradise-v4';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
-  './js/utils.js', './js/audio.js', './js/storage.js', './js/particles.js',
-  './js/levels.js', './js/achievements.js', './js/collection.js', './js/estate.js',
-  './js/boss.js', './js/story.js', './js/daily.js', './js/game.js',
-  './js/ui.js', './js/tutorial.js', './js/main.js'
+  './css/animations.css',
+  './css/responsive.css',
+  './css/premium.css',
+  './js/utils.js',
+  './js/audio.js',
+  './js/storage.js',
+  './js/particles.js',
+  './js/levelgen.js',
+  './js/levels.js',
+  './js/achievements.js',
+  './js/collection.js',
+  './js/estate.js',
+  './js/boss.js',
+  './js/story.js',
+  './js/daily.js',
+  './js/seasons.js',
+  './js/stats.js',
+  './js/hardcore.js',
+  './js/game.js',
+  './js/ui.js',
+  './js/tutorial.js',
+  './js/main.js'
 ];
 
 self.addEventListener('install', e => {

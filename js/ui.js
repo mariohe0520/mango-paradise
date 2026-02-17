@@ -129,6 +129,17 @@ const UI = {
             });
         }
 
+        // Challenge Tower button
+        document.getElementById('btn-tower')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showChallengeTower();
+        });
+
+        document.getElementById('btn-back-tower')?.addEventListener('click', () => {
+            Audio.play('click');
+            this.showScreen('main-menu');
+        });
+
         document.getElementById('btn-settings')?.addEventListener('click', () => {
             Audio.play('click');
             this.showSettings();
@@ -234,6 +245,18 @@ const UI = {
             const level = game.level;
             if (level.daily || level.weekly || level.revenge) {
                 this.showScreen('main-menu');
+                return;
+            }
+            // Challenge Tower: advance to next floor
+            if (level.tower && typeof ChallengeTower !== 'undefined') {
+                const nextFloor = (level.towerFloor || 1) + 1;
+                if (nextFloor <= ChallengeTower.TOTAL_FLOORS) {
+                    const nextLevel = ChallengeTower.getFloor(nextFloor);
+                    this.startSpecialLevel(nextLevel);
+                } else {
+                    this.showToast('🎉 恭喜通关挑战塔全部50层！', 'success');
+                    this.showScreen('main-menu');
+                }
                 return;
             }
             if (level.endless && typeof EndlessMode !== 'undefined') {
@@ -457,6 +480,18 @@ const UI = {
                 const season = Seasons.getCurrentSeason();
                 const subEl = document.getElementById('seasonal-subtitle');
                 if (subEl) subEl.textContent = `${season.emoji} ${season.nameShort} · 剩${season.daysRemaining}天`;
+            }
+        } catch(e) {}
+
+        // Challenge Tower subtitle update
+        try {
+            if (typeof ChallengeTower !== 'undefined') {
+                const towerBtn = document.getElementById('btn-tower');
+                if (towerBtn) {
+                    const sub = towerBtn.querySelector('.btn-subtitle');
+                    const progress = ChallengeTower.getProgress();
+                    if (sub) sub.textContent = `第${progress.currentFloor}层 · 最高${progress.bestFloor}层`;
+                }
             }
         } catch(e) {}
 
@@ -1578,6 +1613,119 @@ const UI = {
     },
 
     // ==========================================
+    // 挑战塔界面
+    // ==========================================
+    showChallengeTower() {
+        if (typeof ChallengeTower === 'undefined') {
+            this.showToast('挑战塔系统加载中...', 'info');
+            return;
+        }
+
+        ChallengeTower.checkMonthlyReset();
+        const progress = ChallengeTower.getProgress();
+        const container = document.getElementById('tower-content');
+        const floorDisplay = document.getElementById('tower-floor-display');
+        if (floorDisplay) floorDisplay.textContent = `第${progress.currentFloor}层 / ${ChallengeTower.TOTAL_FLOORS}层`;
+        if (!container) return;
+
+        // Build floor list (show all floors, unlocked up to currentFloor)
+        let floorsHtml = '';
+
+        // Summary card
+        floorsHtml += `
+            <div style="background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(236,72,153,0.2));border-radius:14px;padding:14px;margin-bottom:14px;border:1px solid rgba(168,85,247,0.3);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">最高层数</div>
+                        <div style="font-size:1.5rem;font-weight:900;color:#a855f7;">🗼 ${progress.bestFloor}</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">累计分数</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:var(--wow-gold);">${Utils.formatNumber(progress.totalScore)}</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:0.75rem;color:var(--text-secondary);">进度</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:#22c55e;">${Math.round(progress.bestFloor / ChallengeTower.TOTAL_FLOORS * 100)}%</div>
+                    </div>
+                </div>
+                <div style="margin-top:8px;background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;">
+                    <div style="background:linear-gradient(90deg,#a855f7,#ec4899);height:100%;width:${progress.bestFloor / ChallengeTower.TOTAL_FLOORS * 100}%;border-radius:6px;transition:width 0.3s;"></div>
+                </div>
+            </div>
+        `;
+
+        // Floor grid (descending: latest at top)
+        for (let f = ChallengeTower.TOTAL_FLOORS; f >= 1; f--) {
+            const completed = progress.completedFloors[f];
+            const isUnlocked = f <= progress.currentFloor;
+            const isCurrent = f === progress.currentFloor;
+            const isBoss = f % 10 === 0 || f === 50;
+            const floor = ChallengeTower.getFloor(f);
+            const constraint = floor.constraints?.[0];
+
+            let statusIcon = '🔒';
+            let bg = 'rgba(100,100,100,0.1)';
+            let border = 'rgba(100,100,100,0.2)';
+            let stars = '';
+
+            if (completed) {
+                statusIcon = '✅';
+                bg = 'rgba(34,197,94,0.1)';
+                border = 'rgba(34,197,94,0.3)';
+                const s = completed.stars || 0;
+                stars = '⭐'.repeat(s) + '☆'.repeat(Math.max(0, 3 - s));
+            } else if (isCurrent) {
+                statusIcon = '▶️';
+                bg = 'rgba(168,85,247,0.15)';
+                border = 'rgba(168,85,247,0.4)';
+            } else if (isUnlocked) {
+                statusIcon = '🔓';
+            }
+
+            if (isBoss) {
+                border = f === 50 ? 'rgba(239,68,68,0.5)' : 'rgba(245,158,11,0.4)';
+                if (!completed) bg = f === 50 ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)';
+            }
+
+            const constraintLabel = constraint ? `${constraint.icon || ''} ${constraint.name || ''}` : '';
+
+            floorsHtml += `
+                <div class="tower-floor-card" data-floor="${f}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;background:${bg};border:1px solid ${border};border-radius:10px;cursor:${isUnlocked ? 'pointer' : 'default'};opacity:${isUnlocked ? '1' : '0.45'};transition:transform 0.15s,box-shadow 0.15s;${isCurrent ? 'box-shadow:0 0 12px rgba(168,85,247,0.3);' : ''}">
+                    <div style="font-size:1.2rem;min-width:28px;text-align:center;">${statusIcon}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700;font-size:0.9rem;">
+                            ${isBoss ? (f === 50 ? '☠️ ' : '👿 ') : ''}第${f}层
+                            ${isBoss ? '<span style="color:#ef4444;font-size:0.75rem;margin-left:4px;">BOSS</span>' : ''}
+                        </div>
+                        <div style="font-size:0.7rem;color:var(--text-secondary);">
+                            ${constraintLabel}
+                            ${floor.timed ? ' ⏱️限时' : ''}
+                            · ${floor.moves}步 · ${floor.objectives.map(o => `${o.icon}${Utils.formatNumber(o.target)}`).join(' ')}
+                        </div>
+                        ${stars ? `<div style="font-size:0.7rem;letter-spacing:1px;">${stars}</div>` : ''}
+                    </div>
+                    ${completed ? `<div style="font-size:0.7rem;color:var(--wow-gold);font-weight:700;">${Utils.formatNumber(completed.score)}</div>` : ''}
+                </div>
+            `;
+        }
+
+        container.innerHTML = floorsHtml;
+
+        // Click handlers for unlocked floors
+        container.querySelectorAll('.tower-floor-card').forEach(card => {
+            const f = parseInt(card.dataset.floor);
+            if (f > progress.currentFloor) return;
+            card.addEventListener('click', () => {
+                Audio.play('click');
+                const floorLevel = ChallengeTower.getFloor(f);
+                this.startSpecialLevel(floorLevel);
+            });
+        });
+
+        this.showScreen('tower-screen');
+    },
+
+    // ==========================================
     // 统计数据界面
     // ==========================================
     showStats() {
@@ -1908,6 +2056,9 @@ const UI = {
                 const lvl = game.level;
                 if (lvl.daily || lvl.weekly || lvl.revenge) {
                     nextBtn.textContent = '返回菜单';
+                } else if (lvl.tower) {
+                    const nf = (lvl.towerFloor || 1) + 1;
+                    nextBtn.innerHTML = nf <= 50 ? `第${nf}层 ➡️` : '🎉 通关！';
                 } else if (lvl.endless) {
                     nextBtn.textContent = `下一波 (Wave ${(lvl.wave || 1) + 1}) ➡️`;
                 } else {

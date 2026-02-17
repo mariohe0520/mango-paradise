@@ -110,6 +110,11 @@
                     <span class="btn-text">无尽模式</span>
                     <span class="btn-subtitle">经典 · 限时 · 生存</span>
                 </button>
+                <button class="menu-btn highlight" id="btn-tower" data-sound="click">
+                    <span class="btn-icon">🗼</span>
+                    <span class="btn-text">挑战塔</span>
+                    <span class="btn-subtitle">50层 · 特殊规则 · 终极Boss</span>
+                </button>
                 <button class="menu-btn" id="btn-stats" data-sound="click">
                     <span class="btn-icon">📊</span>
                     <span class="btn-text">统计数据</span>
@@ -442,6 +447,20 @@
         </div>
     </div>
 
+    <!-- 挑战塔界面 -->
+    <div id="tower-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-tower">←</button>
+            <h2>🗼 挑战塔</h2>
+            <div class="tower-progress-header">
+                <span id="tower-floor-display">第1层</span>
+            </div>
+        </div>
+        <div class="tower-content" id="tower-content" style="padding:12px;overflow-y:auto;max-height:calc(100vh - 60px);">
+            <!-- Tower floors will be rendered by JS -->
+        </div>
+    </div>
+
     <!-- 设置界面 -->
     <div id="settings-screen" class="screen">
         <div class="screen-header">
@@ -610,6 +629,7 @@
     <script src="js/daily.js"></script>
     <script src="js/seasons.js"></script>
     <script src="js/stats.js"></script>
+    <script src="js/hardcore.js"></script>
     <script src="js/game.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/tutorial.js"></script>

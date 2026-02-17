@@ -286,6 +286,13 @@ class Game {
             if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
         }
 
+        // ── Hardcore Mode Init ──
+        try {
+            if (typeof HardcoreMode !== 'undefined') {
+                HardcoreMode.onGameInit(this);
+            }
+        } catch (e) { console.warn('[Game.init] HardcoreMode init error:', e); }
+
         this.render();
         this.updateUI();
         this.startHintTimer();
@@ -774,6 +781,9 @@ class Game {
                 if (!this.level.timed) this.movesLeft--;
                 Audio.play('swap'); Utils.vibrate(30);
 
+                // ── Hardcore: onMove hook ──
+                try { if (typeof HardcoreMode !== 'undefined') HardcoreMode.onMove(this); } catch(e) {}
+
                 if (this.hasSpecialSwap(x1, y1, x2, y2)) await this.processSpecialSwap(x1, y1, x2, y2);
                 await this.processMatches();
 
@@ -1042,6 +1052,9 @@ class Game {
             this.combo++;
             if (this.combo > this.maxCombo) { this.maxCombo = this.combo; Storage.updateMaxCombo(this.maxCombo); }
 
+            // ── Hardcore: onCombo hook ──
+            try { if (typeof HardcoreMode !== 'undefined') HardcoreMode.onCombo(this.combo, this); } catch(e) {}
+
             // Update combo objectives: track max combo depth reached this level
             this.objectives.forEach((obj, i) => {
                 if (obj.type === OBJECTIVE_TYPES.COMBO) {
@@ -1094,6 +1107,9 @@ class Game {
             await this.fillGems();
             this.updateUI();
         }
+
+        // ── Hardcore: onMatchesComplete hook ──
+        try { if (typeof HardcoreMode !== 'undefined') HardcoreMode.onMatchesComplete(this); } catch(e) {}
 
         this.combo = 0;
         if (!this.hasValidMoves()) await this.shuffleBoard();
@@ -1157,7 +1173,14 @@ class Game {
             switch(count) { case 3: score=this.SCORES.MATCH_3; break; case 4: score=this.SCORES.MATCH_4; break; case 5: score=this.SCORES.MATCH_5; break; default: score=this.SCORES.MATCH_6; }
             score += this.SCORES.COMBO_BONUS * (this.combo - 1);
             // 🔥 Combo multiplier: x1.5 at combo 3, x2 at 5, x3 at 7+
-            const comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
+            let comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
+            // Hardcore combo theory: exponential chain multiplier overlays
+            try {
+                if (typeof HardcoreMode !== 'undefined') {
+                    const hardcoreMult = HardcoreMode.getComboMultiplier(this.combo);
+                    if (hardcoreMult > comboMultiplier) comboMultiplier = hardcoreMult;
+                }
+            } catch(e) {}
             score = Math.floor(score * comboMultiplier);
 
             // ⛓️ Chain Bonus (Ch7+): multiply by cascade depth on cascades
@@ -1179,6 +1202,9 @@ class Game {
             } catch(e) {}
         }
         this.addScore(score);
+
+        // ── Hardcore: onMatchProcessed hook (shape detection, etc.) ──
+        try { if (typeof HardcoreMode !== 'undefined') HardcoreMode.onMatchProcessed(match, this); } catch(e) {}
 
         // Charge skill bar — with visual feedback
         let chargeAmount = count >= 5 ? 25 : count >= 4 ? 15 : 8;
@@ -2273,6 +2299,25 @@ class Game {
         Utils.vibrate([30, 20, 50, 20, 80, 30, 100]);
         setTimeout(() => Particles.confetti(), 400);
         if (stars >= 3) setTimeout(() => Particles.confetti(), 800);
+
+        // ── Hardcore: Board Reading Score display ──
+        try {
+            if (typeof HardcoreMode !== 'undefined') {
+                const reading = HardcoreMode.getBoardReadingScore(this);
+                if (reading && reading.grade) {
+                    setTimeout(() => {
+                        UI.showToast(`${reading.label} · 策略评级: ${reading.grade} (${reading.score}分)`, 'success');
+                    }, 1500);
+                }
+            }
+        } catch(e) {}
+
+        // ── Challenge Tower: record floor completion ──
+        try {
+            if (this.level.tower && typeof ChallengeTower !== 'undefined') {
+                ChallengeTower.completeFloor(this.level.towerFloor, this.score, stars);
+            }
+        } catch(e) {}
     }
 
     defeat() {
