@@ -130,6 +130,8 @@ class Game {
             this.isBossLevel = Boss.isBossLevel(levelId);
             if (this.isBossLevel) {
                 Boss.init(levelId);
+                // Boss entrance cinematic
+                setTimeout(() => this.showBossEntrance(levelId), 500);
             }
         } catch (e) {
             console.warn('[Game.init] Boss init error (fallback to non-boss):', e);
@@ -151,11 +153,11 @@ class Game {
         // Apply blockers (frozen/locked cells) based on level config
         try {
             const levelId = this.level.id || 0;
-            // Auto-generate blockers for later levels (adds challenge variety)
-            if (levelId >= 31 && levelId <= 100) {
-                const difficulty = Math.floor((levelId - 31) / 10); // 0-6
-                // Frozen cells: 2-6 based on difficulty
-                const frozenCount = Math.min(2 + difficulty, 6);
+            // Auto-generate blockers for mid-game+ (adds challenge variety)
+            if (levelId >= 21 && levelId <= 100) {
+                const difficulty = levelId >= 31 ? Math.floor((levelId - 31) / 10) + 1 : 0;
+                // Frozen cells: 1-6 based on difficulty (starts gentle at 21)
+                const frozenCount = levelId >= 31 ? Math.min(2 + difficulty, 6) : Math.min(1 + Math.floor((levelId-21)/5), 2);
                 for (let i = 0; i < frozenCount; i++) {
                     const fx = Utils.randomInt(0, this.width-1);
                     const fy = Utils.randomInt(0, this.height-1);
@@ -1702,6 +1704,32 @@ class Game {
                 default: return '';
             }
         }).join('');
+    }
+
+    // Boss entrance cinematic
+    showBossEntrance(levelId) {
+        const bd = Boss.BOSSES[levelId];
+        if (!bd) return;
+        const phase = bd.phases[0];
+        const overlay = document.createElement('div');
+        overlay.className = 'boss-entrance-overlay';
+        overlay.innerHTML = `
+            <div class="boss-entrance-content">
+                <div class="boss-entrance-emoji">${phase.emoji}</div>
+                <div class="boss-entrance-name">${bd.name}</div>
+                <div class="boss-entrance-desc">${bd.desc}</div>
+                <div class="boss-entrance-taunt">"${phase.taunt}"</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        Audio.play('boss_appear');
+        this.screenShake(5, 400);
+        Utils.vibrate([50, 30, 80, 30, 120]);
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.5s';
+            setTimeout(() => overlay.remove(), 600);
+        }, 2500);
     }
 
     // Flash screen when buff triggers (score multiplier, rainbow, etc.)

@@ -79,6 +79,9 @@ class App {
             this.hideLoading();
             UI.showScreen('main-menu');
             
+            // 每日登录奖励
+            this.checkDailyLogin();
+            
             // 添加背景粒子
             Particles.backgroundParticles('.floating-elements', 15);
             
@@ -206,6 +209,90 @@ class App {
             loadingText.textContent = message;
             loadingText.style.color = '#ef4444';
         }
+    }
+
+    // 每日登录奖励系统
+    checkDailyLogin() {
+        const key = 'mango_daily_login';
+        const data = JSON.parse(localStorage.getItem(key) || '{}');
+        const today = new Date().toDateString();
+        
+        if (data.lastLogin === today) return; // Already claimed
+        
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        let streak = (data.lastLogin === yesterday) ? (data.streak || 0) + 1 : 1;
+        if (streak > 28) streak = 1; // Reset after 28 days
+        
+        // Rewards scale with streak
+        const rewards = this.getDailyReward(streak);
+        
+        // Claim
+        Storage.addGold(rewards.gold);
+        if (rewards.gems) Storage.addGems(rewards.gems);
+        
+        localStorage.setItem(key, JSON.stringify({
+            lastLogin: today,
+            streak: streak,
+            totalDays: (data.totalDays || 0) + 1
+        }));
+        
+        // Show popup
+        setTimeout(() => this.showDailyLoginPopup(streak, rewards), 800);
+    }
+    
+    getDailyReward(day) {
+        // 7-day reward cycle, increasing rewards
+        const cycle = ((day - 1) % 7) + 1;
+        const multiplier = Math.floor((day - 1) / 7) + 1; // Week multiplier
+        switch(cycle) {
+            case 1: return { gold: 100 * multiplier, gems: 0, label: '💰 金币' };
+            case 2: return { gold: 150 * multiplier, gems: 0, label: '💰 金币' };
+            case 3: return { gold: 200 * multiplier, gems: 1, label: '💎 宝石+金币' };
+            case 4: return { gold: 250 * multiplier, gems: 0, label: '💰 金币' };
+            case 5: return { gold: 300 * multiplier, gems: 1, label: '💎 宝石+金币' };
+            case 6: return { gold: 400 * multiplier, gems: 2, label: '💎💎 双倍宝石' };
+            case 7: return { gold: 500 * multiplier, gems: 3, label: '🎁 超级大礼' };
+            default: return { gold: 100, gems: 0, label: '💰 金币' };
+        }
+    }
+    
+    showDailyLoginPopup(streak, rewards) {
+        const existing = document.getElementById('daily-login-popup');
+        if (existing) existing.remove();
+        
+        const days = [];
+        for (let d = 1; d <= 7; d++) {
+            const cycle = ((streak - 1) % 7) + 1;
+            const isCurrent = d === cycle;
+            const isPast = d < cycle;
+            const r = this.getDailyReward(d);
+            days.push(`<div class="dl-day ${isPast ? 'dl-claimed' : ''} ${isCurrent ? 'dl-today' : ''}">
+                <div class="dl-day-num">Day ${d}</div>
+                <div class="dl-day-reward">${d===7?'🎁':d%3===0?'💎':'💰'}</div>
+                <div class="dl-day-amount">${r.gems ? r.gems+'💎+' : ''}${r.gold}金</div>
+                ${isCurrent ? '<div class="dl-check">✓</div>' : isPast ? '<div class="dl-check dim">✓</div>' : ''}
+            </div>`);
+        }
+        
+        const popup = document.createElement('div');
+        popup.id = 'daily-login-popup';
+        popup.innerHTML = `
+            <div class="dl-overlay" onclick="document.getElementById('daily-login-popup').remove()">
+                <div class="dl-card" onclick="event.stopPropagation()">
+                    <div class="dl-title">🔥 连续登录第 ${streak} 天</div>
+                    <div class="dl-grid">${days.join('')}</div>
+                    <div class="dl-reward-text">
+                        今日奖励: ${rewards.label}<br>
+                        <b>+${rewards.gold} 金币${rewards.gems ? ` +${rewards.gems} 宝石` : ''}</b>
+                    </div>
+                    <button class="dl-btn" onclick="document.getElementById('daily-login-popup').remove()">领取！</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(popup);
+        
+        // Auto-close after 8 seconds
+        setTimeout(() => { const el = document.getElementById('daily-login-popup'); if(el) el.remove(); }, 8000);
     }
 }
 

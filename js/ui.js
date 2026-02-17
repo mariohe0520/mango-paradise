@@ -398,6 +398,25 @@ const UI = {
             dailyBadge.style.display = Storage.canCheckin() ? 'flex' : 'none';
         }
 
+        // Power stats — show active buffs and progression summary
+        const powerEl = document.getElementById('power-stats');
+        if (powerEl) {
+            try {
+                const buffs = Estate.getActiveBuffs();
+                const totalStars = Storage.getTotalStars();
+                const maxLevel = Storage.getMaxUnlockedLevel();
+                const spirit = Estate.getCurrentSpirit();
+                
+                let html = '<div class="power-bar">';
+                html += `<span class="power-item">⭐${totalStars}</span>`;
+                if (buffs.length > 0) html += `<span class="power-item power-buff">🌳${buffs.length}Buff</span>`;
+                if (spirit) html += `<span class="power-item">${spirit.emoji||'🧚'}${spirit.name||''}</span>`;
+                if (Estate.getScoreMultiplier() > 1) html += `<span class="power-item power-buff">×${Estate.getScoreMultiplier()}</span>`;
+                html += '</div>';
+                powerEl.innerHTML = html;
+            } catch(e) { powerEl.innerHTML = ''; }
+        }
+
         // 离线奖励
         this.checkOfflineReward();
     },
