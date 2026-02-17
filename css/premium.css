@@ -1,0 +1,371 @@
+/* ==========================================
+   PREMIUM VISUAL OVERHAUL — AAA Mobile Feel
+   ~300 lines of pure visual upgrade
+   ========================================== */
+
+/* ── 1. Color Palette: deep navy/teal + warm gold ── */
+:root {
+    --bg-dark: #080c18;
+    --bg-primary: #0c1424;
+    --bg-secondary: #131e35;
+    --bg-card: rgba(16, 28, 52, 0.92);
+    --bg-overlay: rgba(4, 8, 18, 0.88);
+    --text-secondary: #8fa4c4;
+    --text-muted: #4a6080;
+    --cell-light: rgba(100, 180, 255, 0.08);
+    --cell-dark: rgba(60, 140, 220, 0.05);
+    --cell-highlight: rgba(255, 200, 60, 0.18);
+    --cell-selected: rgba(255, 215, 0, 0.35);
+    --board-bg: linear-gradient(160deg, #0a1628 0%, #0f1f3a 40%, #0a1628 100%);
+    --border-primary: 1.5px solid rgba(100, 180, 255, 0.18);
+    --shadow-glow: 0 0 24px rgba(255, 195, 50, 0.45);
+    --gold-grad: linear-gradient(135deg, #ffd700 0%, #ffaa00 40%, #ffe066 100%);
+}
+
+body {
+    background: var(--bg-dark);
+}
+
+/* ── 2. Typography: hierarchy + gold score ── */
+h1, h2, h3 { letter-spacing: 0.06em; }
+
+.logo-text,
+.menu-logo h1 {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(255, 180, 0, 0.35));
+}
+
+.stat-value,
+.level-number {
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.combo-count {
+    background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 18px rgba(255, 180, 0, 0.7));
+}
+
+.combo-text {
+    color: rgba(255, 215, 0, 0.7);
+    text-shadow: 0 0 12px rgba(255, 195, 50, 0.5);
+}
+
+/* ── 3. Board: textured dark + cell depth ── */
+.board-frame {
+    background: linear-gradient(145deg, rgba(20, 40, 80, 0.6), rgba(8, 16, 35, 0.9));
+    border: 2px solid rgba(100, 180, 255, 0.25);
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(60, 130, 220, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.game-board {
+    background: rgba(0, 5, 15, 0.5);
+}
+
+.cell {
+    border-radius: 8px;
+    border: 1px solid rgba(80, 140, 220, 0.08);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+    transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cell:nth-child(odd) {
+    border-color: rgba(80, 140, 220, 0.05);
+}
+
+.cell.selected {
+    background: var(--cell-selected);
+    box-shadow:
+        inset 0 0 12px rgba(255, 215, 0, 0.4),
+        0 0 8px rgba(255, 215, 0, 0.25);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+/* ── 4. Gem visuals: radial gradient + glow + shadow per type ── */
+.gem {
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+    transition: transform 0.15s cubic-bezier(.4,0,.2,1), filter 0.15s ease;
+}
+
+.gem-murloc  { background: radial-gradient(circle at 35% 30%, #4ade8088, #22c55e22 70%); box-shadow: inset 0 0 14px rgba(34,197,94,0.35), 0 0 8px rgba(34,197,94,0.2); }
+.gem-orc     { background: radial-gradient(circle at 35% 30%, #f8717188, #dc262622 70%); box-shadow: inset 0 0 14px rgba(220,38,38,0.35), 0 0 8px rgba(220,38,38,0.2); }
+.gem-elf     { background: radial-gradient(circle at 35% 30%, #c084fc88, #a855f722 70%); box-shadow: inset 0 0 14px rgba(168,85,247,0.35), 0 0 8px rgba(168,85,247,0.2); }
+.gem-mage    { background: radial-gradient(circle at 35% 30%, #60a5fa88, #3b82f622 70%); box-shadow: inset 0 0 14px rgba(59,130,246,0.35), 0 0 8px rgba(59,130,246,0.2); }
+.gem-knight  { background: radial-gradient(circle at 35% 30%, #f8717188, #ef444422 70%); box-shadow: inset 0 0 14px rgba(239,68,68,0.35), 0 0 8px rgba(239,68,68,0.2); }
+.gem-dwarf   { background: radial-gradient(circle at 35% 30%, #fb923c88, #f9731622 70%); box-shadow: inset 0 0 14px rgba(249,115,22,0.35), 0 0 8px rgba(249,115,22,0.2); }
+.gem-undead  { background: radial-gradient(circle at 35% 30%, #94a3b888, #6b728022 70%); box-shadow: inset 0 0 14px rgba(107,114,128,0.35), 0 0 8px rgba(107,114,128,0.15); }
+.gem-mango   { background: radial-gradient(circle at 35% 30%, #fde04788, #fbbf2422 70%); box-shadow: inset 0 0 14px rgba(251,191,36,0.4), 0 0 8px rgba(251,191,36,0.25); }
+.gem-dragon  { background: radial-gradient(circle at 35% 30%, #f8717188, #dc262622 70%); box-shadow: inset 0 0 14px rgba(220,38,38,0.4), 0 0 8px rgba(220,38,38,0.2); }
+.gem-phoenix { background: radial-gradient(circle at 35% 30%, #fb923c88, #f9731622 70%); box-shadow: inset 0 0 14px rgba(249,115,22,0.4), 0 0 8px rgba(249,115,22,0.2); }
+
+/* Gem match burst particles via pseudo-elements */
+.gem.matching::before,
+.gem.matching::after {
+    content: '✦';
+    position: absolute;
+    font-size: 0.6em;
+    color: rgba(255, 215, 0, 0.9);
+    pointer-events: none;
+    animation: gem-burst-particle 0.4s ease-out forwards;
+}
+.gem.matching::before { --bx: -18px; --by: -20px; }
+.gem.matching::after  { --bx: 18px;  --by: -16px; }
+
+@keyframes gem-burst-particle {
+    0%   { opacity: 1; transform: translate(0, 0) scale(0.5); }
+    100% { opacity: 0; transform: translate(var(--bx), var(--by)) scale(1.4); }
+}
+
+/* ── 5. UI Cards: multi-layer shadow + frosted glass modals ── */
+.player-info,
+.currency,
+.game-stats .stat,
+.objective,
+.setting-group,
+.estate-section,
+.achievement-item {
+    background: rgba(14, 24, 48, 0.85);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        0 0 1px rgba(100, 180, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    border-color: rgba(80, 150, 255, 0.15);
+}
+
+.modal-content {
+    background: rgba(12, 20, 40, 0.92);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1.5px solid rgba(100, 180, 255, 0.2);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(60, 130, 220, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.victory-content {
+    border-color: rgba(255, 200, 50, 0.5);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(255, 200, 50, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ── 6. Buttons: gradient + press + gold accent ── */
+.menu-btn {
+    background: linear-gradient(145deg, rgba(18, 32, 60, 0.9), rgba(10, 18, 38, 0.95));
+    border: 1.5px solid rgba(80, 150, 255, 0.15);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.menu-btn:active {
+    transform: scale(0.95) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.menu-btn.primary {
+    background: linear-gradient(145deg, #c87800, #9a5500);
+    border-color: rgba(255, 200, 50, 0.5);
+    box-shadow:
+        0 4px 16px rgba(200, 120, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.menu-btn.highlight {
+    border-color: rgba(255, 180, 50, 0.3);
+    background: linear-gradient(145deg, rgba(40, 30, 10, 0.9), rgba(20, 15, 5, 0.95));
+}
+
+.modal-btn {
+    transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+.modal-btn:active {
+    transform: scale(0.95) !important;
+}
+
+.modal-btn.primary {
+    background: linear-gradient(145deg, #c87800, #9a5500);
+    border-color: rgba(255, 200, 50, 0.5);
+    box-shadow: 0 3px 12px rgba(200, 120, 0, 0.3);
+}
+
+.powerup-btn {
+    background: rgba(14, 24, 48, 0.85);
+    border-color: rgba(80, 150, 255, 0.15);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.powerup-btn:active:not(:disabled) {
+    transform: scale(0.9) !important;
+}
+
+/* ── 7. Screens & backgrounds ── */
+#loading-screen {
+    background: radial-gradient(ellipse at 50% 40%, #131e35 0%, #0c1424 40%, #080c18 100%);
+}
+
+.menu-background {
+    background:
+        radial-gradient(ellipse at 30% 20%, rgba(60, 130, 220, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(255, 180, 50, 0.07) 0%, transparent 50%),
+        linear-gradient(180deg, #0c1424, #080c18);
+}
+
+#level-select {
+    background:
+        radial-gradient(ellipse at top right, rgba(60, 130, 220, 0.08) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+.screen-header {
+    background: rgba(12, 20, 36, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom-color: rgba(80, 150, 255, 0.12);
+}
+
+/* ── 8. Victory stars bounce-in ── */
+.victory-stars .star {
+    transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.victory-stars .star.earned {
+    animation: premium-star-bounce 0.7s cubic-bezier(.34,1.56,.64,1);
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.6));
+}
+
+@keyframes premium-star-bounce {
+    0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+    50%  { transform: scale(1.4) rotate(8deg); opacity: 1; }
+    70%  { transform: scale(0.85) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* ── 9. Confetti enhancement ── */
+.confetti-piece {
+    border-radius: 2px;
+    box-shadow: 0 0 4px currentColor;
+}
+
+/* ── 10. Screen transitions ── */
+.screen {
+    animation: premium-screen-in 0.35s ease-out;
+}
+
+@keyframes premium-screen-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 11. Loading bar premium ── */
+.loading-bar {
+    background: rgba(20, 35, 60, 0.8);
+    border-color: rgba(100, 180, 255, 0.2);
+}
+
+.loading-progress {
+    background: linear-gradient(90deg, #c87800, #ffd700, #c87800);
+    box-shadow: 0 0 10px rgba(255, 195, 50, 0.4);
+}
+
+/* ── 12. Level select button polish ── */
+.level-btn {
+    background: rgba(14, 24, 48, 0.85);
+    border-color: rgba(80, 150, 255, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.level-btn.current {
+    background: linear-gradient(145deg, #c87800, #9a5500);
+    border-color: rgba(255, 200, 50, 0.5);
+    box-shadow: 0 0 20px rgba(255, 195, 50, 0.3);
+}
+
+.level-btn.completed {
+    background: linear-gradient(145deg, rgba(16, 60, 40, 0.7), rgba(10, 40, 28, 0.6));
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+/* ── 13. Board corners gold accent ── */
+.board-corner { border-color: rgba(255, 200, 50, 0.35); }
+
+/* ── 14. Scrollbar premium ── */
+::-webkit-scrollbar-thumb {
+    background: rgba(60, 110, 180, 0.3);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(80, 140, 220, 0.5);
+}
+
+/* ── 15. Toast premium ── */
+.toast {
+    background: rgba(12, 20, 40, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(80, 150, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ── 16. Tab buttons premium ── */
+.tab-btn {
+    background: rgba(14, 24, 48, 0.8);
+    border-color: rgba(80, 150, 255, 0.12);
+}
+
+.tab-btn.active {
+    background: linear-gradient(145deg, #c87800, #9a5500);
+    border-color: rgba(255, 200, 50, 0.5);
+}
+
+/* ── 17. Chapter tab premium ── */
+.chapter-tab {
+    background: rgba(14, 24, 48, 0.8);
+    border-color: rgba(80, 150, 255, 0.12);
+}
+
+.chapter-tab.active {
+    background: linear-gradient(145deg, #c87800, #9a5500);
+    border-color: rgba(255, 200, 50, 0.5);
+}
+
+/* ── 18. Achievement popup premium ── */
+.achievement-popup .achievement-content {
+    background: linear-gradient(145deg, rgba(12, 20, 40, 0.95), rgba(20, 32, 55, 0.95));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* ── 19. Combo display golden glow ── */
+.combo-display {
+    text-shadow: 0 0 30px rgba(255, 195, 50, 0.6), 0 0 60px rgba(255, 150, 0, 0.3);
+}
+
+/* ── 20. Defeat screen tint ── */
+.defeat-content {
+    border-color: rgba(220, 38, 38, 0.4);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(220, 38, 38, 0.08);
+}
+
+/* ── 21. Daily login card premium ── */
+.dl-card {
+    background: linear-gradient(145deg, rgba(12, 20, 40, 0.97), rgba(16, 28, 50, 0.97));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
