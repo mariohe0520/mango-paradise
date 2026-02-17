@@ -110,25 +110,25 @@ class Game {
             if (Estate.hasBuff('extra_moves')) {
                 const extraMoves = Estate.getExtraMoves() || 2;
                 this.movesLeft += extraMoves;
-                buffMessages.push(`🌙 月光树: +${extraMoves}步`);
+                buffMessages.push(`☽ 月光树: +${extraMoves}步`);
             }
             // Spirit Trial buffs: extra moves from affection abilities
             const trialExtraMoves = Estate.getTrialExtraMoves();
             if (trialExtraMoves > 0) {
                 this.movesLeft += trialExtraMoves;
-                buffMessages.push(`💕 精灵羁绊: +${trialExtraMoves}步`);
+                buffMessages.push(`♥ 精灵羁绊: +${trialExtraMoves}步`);
             }
-            if (this.scoreMultiplier > 1) buffMessages.push(`✨ 幸福度: 分数x${this.scoreMultiplier}`);
-            if (Estate.hasBuff('rainbow_4')) buffMessages.push('🌈 彩虹树: 4消出彩虹');
-            if (Estate.hasBuff('start_bomb')) buffMessages.push('🌟 金芒树: 开局炸弹');
+            if (this.scoreMultiplier > 1) buffMessages.push(`✦ 幸福度: 分数x${this.scoreMultiplier}`);
+            if (Estate.hasBuff('rainbow_4')) buffMessages.push('◇ 彩虹树: 4消出彩虹');
+            if (Estate.hasBuff('start_bomb')) buffMessages.push('✦ 金芒树: 开局炸弹');
             // Trial charge boost
             const trialCharge = Estate.getTrialChargeBoost();
-            if (trialCharge > 0) buffMessages.push(`💕 充能+${trialCharge}%`);
+            if (trialCharge > 0) buffMessages.push(`♥ 充能+${trialCharge}%`);
             // Show buff summary with dramatic entrance
             if (buffMessages.length > 0) {
                 setTimeout(() => {
                     this.showBuffFlash('rgba(255,215,0,0.2)');
-                    UI.showToast('⚡ ' + buffMessages.join(' | '), 'success');
+                    UI.showToast('↯ ' + buffMessages.join(' | '), 'success');
                 }, 800);
             }
         } catch (e) {
@@ -436,7 +436,7 @@ class Game {
             if (boardEl) {
                 const r = boardEl.getBoundingClientRect();
                 Particles.floatingText(r.left + r.width / 2, r.top + r.height / 2,
-                    `🌫️ -${revealed.size} fog!`, '#60a5fa');
+                    `≋ -${revealed.size} fog!`, '#60a5fa');
             }
         }
     }
@@ -866,13 +866,13 @@ class Game {
         this.screenShake(10, 400);
         Utils.vibrate([50, 30, 80, 30, 100]);
 
-        // 🌈+🌈 = clear entire board
+        // ◇+◇ = clear entire board
         if (s1 === ST.RAINBOW && s2 === ST.RAINBOW) {
             Particles.explosion(window.innerWidth/2, window.innerHeight/2, '#ffd700');
             await this.clearAllGems();
             this.addScore(5000);
         }
-        // 🌈+any special = all gems of that type become that special, then detonate
+        // ◇+any special = all gems of that type become that special, then detonate
         else if (s1 === ST.RAINBOW || s2 === ST.RAINBOW) {
             const other = s1 === ST.RAINBOW ? g2 : g1;
             const otherSpecial = s1 === ST.RAINBOW ? s2 : s1;
@@ -891,7 +891,7 @@ class Game {
                         await this.activateSpecial(x, y, otherSpecial);
             this.addScore(3000);
         }
-        // 💣+💣 = 5x5 mega explosion
+        // ✸+✸ = 5x5 mega explosion
         else if (s1 === ST.BOMB && s2 === ST.BOMB) {
             Particles.explosion(window.innerWidth/2, window.innerHeight/2, '#ef4444');
             for (let dy=-2; dy<=2; dy++) for (let dx=-2; dx<=2; dx++) {
@@ -911,7 +911,7 @@ class Game {
                 if (this.board[i][cx]) { this.updateObjective(this.board[i][cx].type); this.board[i][cx]=null; this.addScore(50); }
             this.addScore(1500);
         }
-        // 💣+Line = clear 3 rows or 3 columns
+        // ✸+Line = clear 3 rows or 3 columns
         else if ((s1 === ST.BOMB && isLine(s2)) || (s2 === ST.BOMB && isLine(s1))) {
             const lineType = isLine(s1) ? s1 : s2;
             if (lineType === ST.HORIZONTAL) {
@@ -1064,7 +1064,7 @@ class Game {
                 const boardEl = document.getElementById('game-board');
                 if (boardEl) {
                     const r = boardEl.getBoundingClientRect();
-                    const chainText = `⛓️ Chain x${cascadeDepth}!`;
+                    const chainText = `≡ Chain x${cascadeDepth}!`;
                     Particles.floatingText(
                         r.left + r.width / 2,
                         r.top + r.height * 0.3 - (cascadeDepth * 10),
@@ -1078,10 +1078,10 @@ class Game {
             if (this.combo > 1) {
                 this.showCombo();
                 Audio.playComboNote(this.combo);
-                // 🔥 Escalating vibration pattern
+                // ☆ Escalating vibration pattern
                 const vib = this.combo >= 6 ? [50,30,80,30,120,30,150] : this.combo >= 4 ? [40,20,60,20,80] : [30,15,50];
                 Utils.vibrate(vib);
-                // ⏱️ Slow-motion on big combos: cascade wait gets shorter = feels faster & more intense
+                // [限时] Slow-motion on big combos: cascade wait gets shorter = feels faster & more intense
                 if (this.combo >= 5) this._cascadeSpeed = 60;
                 else if (this.combo >= 3) this._cascadeSpeed = 90;
                 else this._cascadeSpeed = 120;
@@ -1126,7 +1126,7 @@ class Game {
                 specialPosition = match.cells[Math.floor(match.cells.length/2)];
                 Collection.checkUnlock('special_create', {specialType:'bomb'});
             } else if (hasRainbow4) {
-                // 🌈 彩虹树 buff: 4 in a row → RAINBOW instead of line!
+                // ◇ 彩虹树 buff: 4 in a row → RAINBOW instead of line!
                 specialType = this.SPECIAL_TYPES.RAINBOW;
                 specialPosition = match.cells[1];
                 Collection.checkUnlock('special_create', {specialType:'rainbow'});
@@ -1169,7 +1169,7 @@ class Game {
         } else {
             switch(count) { case 3: score=this.SCORES.MATCH_3; break; case 4: score=this.SCORES.MATCH_4; break; case 5: score=this.SCORES.MATCH_5; break; default: score=this.SCORES.MATCH_6; }
             score += this.SCORES.COMBO_BONUS * (this.combo - 1);
-            // 🔥 Combo multiplier: x1.5 at combo 3, x2 at 5, x3 at 7+
+            // ☆ Combo multiplier: x1.5 at combo 3, x2 at 5, x3 at 7+
             let comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
             // Hardcore combo theory: exponential chain multiplier overlays
             try {
@@ -1180,12 +1180,12 @@ class Game {
             } catch(e) {}
             score = Math.floor(score * comboMultiplier);
 
-            // ⛓️ Chain Bonus (Ch7+): multiply by cascade depth on cascades
+            // ≡ Chain Bonus (Ch7+): multiply by cascade depth on cascades
             if (this.chainBonusActive && this.chainDepth >= 2) {
                 score = Math.floor(score * this.chainDepth);
             }
 
-            // 🏋️ Spirit Trial: 2x points for preferred gem type
+            // ↯ Spirit Trial: 2x points for preferred gem type
             try {
                 if (Estate.isInSpiritTrial()) {
                     const preferredGem = Estate.getTrialPreferredGem();
@@ -1218,7 +1218,7 @@ class Game {
         this.updateSkillBarUI();
         // Notify when skill becomes ready
         if (prevCharge < this.skillMax && this.skillCharge >= this.skillMax) {
-            UI.showToast('⚡ 精灵大招已充满！点击释放！', 'success');
+            UI.showToast('↯ 精灵大招已充满！点击释放！', 'success');
             Utils.vibrate([30, 20, 50, 20, 80]);
         }
 
@@ -1266,7 +1266,7 @@ class Game {
             if (cellEl) cellEl.style.animation = 'cell-flash 0.15s ease';
         }
 
-        // 🌫️ Fog mechanic (Ch8+): reveal fog adjacent to matched cells
+        // ≋ Fog mechanic (Ch8+): reveal fog adjacent to matched cells
         if (this.fogCells.length > 0) {
             this.revealFogAdjacent(match.cells);
         }
@@ -1387,7 +1387,7 @@ class Game {
 
         Audio.play('explosion');
         this.screenShake(6, 300);
-        UI.showToast('⚠️ Boss 反击！', 'error');
+        UI.showToast('▲ Boss 反击！', 'error');
         await Utils.wait(300);
 
         // Apply attacks — support all 5 types
@@ -1412,8 +1412,8 @@ class Game {
             }
         }
         // Show attack-specific messages
-        if (attackMsgs.includes('shuffle')) UI.showToast('🌀 棋盘被打乱了！', 'error');
-        if (attackMsgs.includes('transform')) UI.showToast('🎭 宝石被变色了！', 'error');
+        if (attackMsgs.includes('shuffle')) UI.showToast('◎ 棋盘被打乱了！', 'error');
+        if (attackMsgs.includes('transform')) UI.showToast('◇ 宝石被变色了！', 'error');
         if (attackMsgs.includes('steal')) {
             const stolen = attacks.find(a => a.type === 'steal');
             UI.showToast(`⏳ 被偷走${stolen?.value || 1}步！`, 'error');
@@ -1629,7 +1629,7 @@ class Game {
                     const pick = otherSpirits[Math.floor(Math.random() * otherSpirits.length)];
                     const savedSpirit = Estate.getCurrentSpirit();
                     // Temporarily set spirit to trigger its skill
-                    UI.showToast(`🌀 混沌召唤: ${Estate.SPIRITS[pick]?.name || pick}！`, 'success');
+                    UI.showToast(`◎ 混沌召唤: ${Estate.SPIRITS[pick]?.name || pick}！`, 'success');
                     await Utils.wait(200);
                     // Execute inline (simplified: just call the key effects)
                     if (pick === 'mango_fairy') {
@@ -1831,7 +1831,7 @@ class Game {
                 const text = `+${adjusted} ×${this.scoreMultiplier}`;
                 Particles.floatingText(r.left+r.width/2, r.top+r.height/2, text, '#ff8800');
                 if (adjusted >= 500) {
-                    this.showScorePopup(`✨ ×${this.scoreMultiplier} → +${adjusted}`);
+                    this.showScorePopup(`✦ ×${this.scoreMultiplier} → +${adjusted}`);
                     this.showBuffFlash('rgba(255,136,0,0.2)');
                 }
             } else {
@@ -1894,10 +1894,10 @@ class Game {
             setTimeout(() => { display.style.display = 'none'; }, 1000);
         }
 
-        // 🔥 Screen shake — intensity scales with combo
+        // ☆ Screen shake — intensity scales with combo
         this.screenShake(Math.min(this.combo * 2, 12), 200 + this.combo * 50);
 
-        // 🎆 Particle burst at board center
+        // ✦ Particle burst at board center
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
             const r = boardEl.getBoundingClientRect();
@@ -1911,26 +1911,26 @@ class Game {
             }
         }
 
-        // 🔊 Vibration escalation
+        // ♪ Vibration escalation
         if (this.combo >= 2) Utils.vibrate(20 + this.combo * 15);
 
-        // 🧚 Spirit personality — spirits cheer you on
+        // 仙 Spirit personality — spirits cheer you on
         if (this.combo >= 4 && Math.random() < 0.4) {
             const spirit = Estate.getCurrentSpirit();
             const cheers = {
-                mango_fairy: ['芒果万岁～！🥭', '好棒好棒！继续！', '嘿嘿，看我的！'],
-                bee_spirit: ['嗡嗡！漂亮！🐝', '蜂群为你欢呼！', '甜蜜的连击！'],
-                rainbow_spirit: ['七彩光芒！🌈', '太美了这个连击！', '彩虹之力！'],
-                dragon_spirit: ['燃烧吧！🔥', '龙息都被你震到了！', '勇士！继续！'],
+                mango_fairy: ['芒果万岁～！芒', '好棒好棒！继续！', '嘿嘿，看我的！'],
+                bee_spirit: ['嗡嗡！漂亮！蜂', '蜂群为你欢呼！', '甜蜜的连击！'],
+                rainbow_spirit: ['七彩光芒！◇', '太美了这个连击！', '彩虹之力！'],
+                dragon_spirit: ['燃烧吧！☆', '龙息都被你震到了！', '勇士！继续！'],
                 phoenix_spirit: ['涅槃之力与你同在！', '凤凰为你展翅！', '灰烬中重生！'],
-                frost_spirit: ['冰霜认可你的力量。❄️', '绝对零度...的帅。', '冷静且致命。'],
+                frost_spirit: ['冰霜认可你的力量。※', '绝对零度...的帅。', '冷静且致命。'],
                 time_spirit: ['时间都为你停下了！⏳', '这一刻值得永恒！', '过去未来都是你的。'],
-                chaos_spirit: ['哈哈哈混沌万岁！🌀', '秩序是弱者的借口！', '让一切都乱起来吧！']
+                chaos_spirit: ['哈哈哈混沌万岁！◎', '秩序是弱者的借口！', '让一切都乱起来吧！']
             };
             const lines = cheers[spirit?.id] || cheers.mango_fairy;
             if (lines) {
                 const line = lines[Math.floor(Math.random() * lines.length)];
-                UI.showToast(`${spirit?.emoji || '🧚'} ${line}`, 'success');
+                UI.showToast(`${spirit?.emoji || '仙'} ${line}`, 'success');
             }
         }
     }
@@ -2067,24 +2067,24 @@ class Game {
         // Build mechanics tips for Ch7-10
         const mechanicTips = [];
         if (this.chainBonusActive) {
-            mechanicTips.push('<div style="font-size:1rem;margin:6px 0;">⛓️ <b>连锁加分</b>: 连锁越深分越高！x2, x3...</div>');
+            mechanicTips.push('<div style="font-size:1rem;margin:6px 0;">≡ <b>连锁加分</b>: 连锁越深分越高！x2, x3...</div>');
         }
         if (this.fogCells.length > 0) {
-            mechanicTips.push(`<div style="font-size:1rem;margin:6px 0;">🌫️ <b>迷雾</b>: ${this.fogCells.length}个格子被迷雾覆盖，在旁边消除可以清雾！</div>`);
+            mechanicTips.push(`<div style="font-size:1rem;margin:6px 0;">≋ <b>迷雾</b>: ${this.fogCells.length}个格子被迷雾覆盖，在旁边消除可以清雾！</div>`);
         }
         if (this.gravityShiftActive) {
-            mechanicTips.push('<div style="font-size:1rem;margin:6px 0;">⬅️ <b>重力偏移</b>: 宝石向左滑落而非向下！新宝石从右边出现。</div>');
+            mechanicTips.push('<div style="font-size:1rem;margin:6px 0;">← <b>重力偏移</b>: 宝石向左滑落而非向下！新宝石从右边出现。</div>');
         }
 
         const guides = {
-            line: { icon: '⚡', how: '4个排一排', desc: '🟢🟢🟢🟢 → ⚡线宝石' },
-            bomb: { icon: '💣', how: '拐个弯', desc: '🟢🟢🟢<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🟢<br>↑ 3个+拐1个就出💣' },
-            rainbow: { icon: '🌈', how: hasRainbow4 ? '4个排一排就行！' : '5个排一排', desc: hasRainbow4 ? '🌈 你有彩虹树！<br>🟢🟢🟢🟢 四个一排就出彩虹！' : '🟢🟢🟢🟢🟢 → 🌈彩虹' },
-            any: { icon: '✨', how: hasRainbow4 ? '4个一排=🌈 拐弯=💣' : '排4个或5个', desc: hasRainbow4 ? '你有彩虹树加成！4个=🌈 拐弯=💣' : '4个一排=⚡ 5个一排=🌈 拐弯=💣' }
+            line: { icon: '↯', how: '4个排一排', desc: '●●●● → ↯线宝石' },
+            bomb: { icon: '✸', how: '拐个弯', desc: '●●●<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;●<br>↑ 3个+拐1个就出✸' },
+            rainbow: { icon: '◇', how: hasRainbow4 ? '4个排一排就行！' : '5个排一排', desc: hasRainbow4 ? '◇ 你有彩虹树！<br>●●●● 四个一排就出彩虹！' : '●●●●● → ◇彩虹' },
+            any: { icon: '✦', how: hasRainbow4 ? '4个一排=◇ 拐弯=✸' : '排4个或5个', desc: hasRainbow4 ? '你有彩虹树加成！4个=◇ 拐弯=✸' : '4个一排=↯ 5个一排=◇ 拐弯=✸' }
         };
-        const comboGuide = { icon: '🔥', how: '连锁反应', desc: '消完之后掉下来的自动又消了=连击！' };
+        const comboGuide = { icon: '☆', how: '连锁反应', desc: '消完之后掉下来的自动又消了=连击！' };
         const tips = specials.map(s => {
-            if (s.type === 'combo') return `<div style="font-size:1rem;margin:6px 0;">🔥 触发${s.target}次连锁</div>`;
+            if (s.type === 'combo') return `<div style="font-size:1rem;margin:6px 0;">☆ 触发${s.target}次连锁</div>`;
             const g = guides[s.specialType] || guides.any;
             return `<div style="font-size:1rem;margin:6px 0;">${g.icon} ${g.how} → 做${s.target}个</div>`;
         });
@@ -2097,18 +2097,18 @@ class Game {
         guide.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;';
         const mechanicHtml = mechanicTips.length > 0 ?
             `<div style="margin-top:12px;padding:10px;background:rgba(34,211,238,0.15);border-radius:10px;border:1px solid rgba(34,211,238,0.3);">
-                <div style="font-size:0.75rem;color:#67e8f9;margin-bottom:4px;">🔮 本章新机制</div>
+                <div style="font-size:0.75rem;color:#67e8f9;margin-bottom:4px;">◆ 本章新机制</div>
                 ${mechanicTips.join('')}
             </div>` : '';
         guide.innerHTML = `<div style="background:#1e1b4b;border:2px solid #fbbf24;border-radius:16px;padding:20px;max-width:300px;text-align:center;">
-            <div style="font-size:1.2rem;font-weight:900;color:#fbbf24;margin-bottom:10px;">🎯 本关目标</div>
+            <div style="font-size:1.2rem;font-weight:900;color:#fbbf24;margin-bottom:10px;">◎ 本关目标</div>
             ${tips.join('')}
             ${mechanicHtml}
             <div style="margin-top:12px;padding:10px;background:rgba(139,92,246,0.2);border-radius:10px;">
-                <div style="font-size:0.75rem;color:#a5b4fc;margin-bottom:4px;">💡 怎么做？</div>
+                <div style="font-size:0.75rem;color:#a5b4fc;margin-bottom:4px;">※ 怎么做？</div>
                 ${descs.map(d => `<div style="font-size:0.85rem;color:#e0e7ff;">${d}</div>`).join('')}
             </div>
-            <div style="margin-top:14px;font-size:0.75rem;color:#94a3b8;">👆 点任意位置开始游戏</div>
+            <div style="margin-top:14px;font-size:0.75rem;color:#94a3b8;">↑ 点任意位置开始游戏</div>
         </div>`;
         guide.addEventListener('click', () => guide.remove());
         setTimeout(() => { if (guide.parentNode) guide.remove(); }, 6000);
@@ -2123,11 +2123,11 @@ class Game {
         container.style.display = 'flex';
         container.innerHTML = buffs.map(b => {
             switch(b) {
-                case 'start_bomb': return '<span class="buff-chip buff-bomb"><span class="buff-emoji">🌟</span><span class="buff-label">炸弹</span></span>';
-                case 'extra_moves': return `<span class="buff-chip buff-moves"><span class="buff-emoji">🌙</span><span class="buff-label">+${Estate.getExtraMoves()||2}步</span></span>`;
-                case 'rainbow_4': return '<span class="buff-chip buff-rainbow"><span class="buff-emoji">🌈</span><span class="buff-label">4消彩虹</span></span>';
-                case 'score_multiplier': return `<span class="buff-chip buff-score"><span class="buff-emoji">✨</span><span class="buff-label">x${this.scoreMultiplier}</span></span>`;
-                case 'gem_bonus': return '<span class="buff-chip buff-gem"><span class="buff-emoji">💎</span><span class="buff-label">宝石加成</span></span>';
+                case 'start_bomb': return '<span class="buff-chip buff-bomb"><span class="buff-emoji">✦</span><span class="buff-label">炸弹</span></span>';
+                case 'extra_moves': return `<span class="buff-chip buff-moves"><span class="buff-emoji">☽</span><span class="buff-label">+${Estate.getExtraMoves()||2}步</span></span>`;
+                case 'rainbow_4': return '<span class="buff-chip buff-rainbow"><span class="buff-emoji">◇</span><span class="buff-label">4消彩虹</span></span>';
+                case 'score_multiplier': return `<span class="buff-chip buff-score"><span class="buff-emoji">✦</span><span class="buff-label">x${this.scoreMultiplier}</span></span>`;
+                case 'gem_bonus': return '<span class="buff-chip buff-gem"><span class="buff-emoji">◆</span><span class="buff-label">宝石加成</span></span>';
                 default: return '';
             }
         }).join('');
@@ -2200,7 +2200,7 @@ class Game {
         if (this.level.spiritTrial && Estate.isInSpiritTrial()) {
             Estate.endSpiritTrial(true);
             Audio.play('victory');
-            UI.showToast('🎉 精灵试炼胜利！', 'success');
+            UI.showToast('♪ 精灵试炼胜利！', 'success');
             setTimeout(() => UI.showScreen('estate-screen'), 1500);
             setTimeout(() => UI.showEstate(), 1600);
             return;
@@ -2211,25 +2211,25 @@ class Game {
         Storage.completedLevel(this.level.id, stars, this.score);
         Storage.addScore(this.score);
         Storage.addGold(goldReward);
-        // 💎 Crystal Tree: bonus gems on victory
+        // ◆ Crystal Tree: bonus gems on victory
         if (Estate.hasBuff('gem_bonus')) {
             const gemBonus = Estate.getTreeBuffValue('crystal') || 1;
             const actualBonus = (stars === 3 && Estate.getTreeLevel('crystal') >= 4) ? gemBonus : Math.min(gemBonus, 3);
             if (actualBonus > 0) {
                 Storage.addGems(actualBonus);
-                UI.showToast(`💎 水晶树: +${actualBonus}宝石！`, 'success');
+                UI.showToast(`◆ 水晶树: +${actualBonus}宝石！`, 'success');
             }
         }
         Storage.addExp(this.score / 10);
         Storage.recordGame(true);
         Estate.addHappiness(10 + stars * 5);
-        // 💕 Spirit affinity: gain exp from battles
+        // ♥ Spirit affinity: gain exp from battles
         const activeSpirit = Estate.getCurrentSpirit();
         if (activeSpirit) {
             const affinityGain = 5 + stars * 3 + (this.isBossLevel ? 15 : 0);
             Estate.addSpiritAffinity(activeSpirit.id, affinityGain);
         }
-        // 🏅 Season points (legacy — new Seasons system handles this above)
+        // ◎ Season points (legacy — new Seasons system handles this above)
         if (typeof SeasonSystem !== 'undefined' && typeof Seasons === 'undefined') {
             const seasonPts = 10 + stars * 5 + (this.isBossLevel ? 20 : 0);
             SeasonSystem.addSeasonPoints(seasonPts);
@@ -2255,7 +2255,7 @@ class Game {
             const dcResult = DailyChallenge.recordAttempt(this.score, stars, true);
             if (dcResult.streakBonus > 0) {
                 Storage.addGold(dcResult.streakBonus);
-                UI.showToast(`🔥 连续${dcResult.streak}天！+${dcResult.streakBonus}金币`, 'success');
+                UI.showToast(`☆ 连续${dcResult.streak}天！+${dcResult.streakBonus}金币`, 'success');
             }
             Achievements.check('daily_complete', 1);
         }
@@ -2280,7 +2280,7 @@ class Game {
         Collection.checkUnlock('level_complete', {level: this.level.id});
         Audio.play('victory');
 
-        // 🏆 Boss loot — unique rewards + lore
+        // ♕ Boss loot — unique rewards + lore
         if (this.isBossLevel) {
             const loot = Boss.getLoot(this.level.id);
             if (loot && !loot.alreadyClaimed) {
@@ -2329,13 +2329,13 @@ class Game {
             if (this.timerInterval) clearInterval(this.timerInterval);
             Estate.endSpiritTrial(false);
             Audio.play('defeat');
-            UI.showToast('💕 试炼结束，再接再厉！', 'info');
+            UI.showToast('♥ 试炼结束，再接再厉！', 'info');
             setTimeout(() => UI.showScreen('estate-screen'), 1500);
             setTimeout(() => UI.showEstate(), 1600);
             return;
         }
 
-        // 🔥 Phoenix Tree: chance to survive defeat
+        // ☆ Phoenix Tree: chance to survive defeat
         if (Estate.hasBuff('second_chance') && !this._usedSecondChance) {
             const chance = Estate.getTreeBuffValue('phoenix') || 20;
             if (Math.random() * 100 < chance) {
@@ -2344,7 +2344,7 @@ class Game {
                 this.movesLeft += bonusMoves;
                 this.updateUI();
                 Audio.play('powerup');
-                UI.showToast(`🔥 凤凰树发动！+${bonusMoves}步！`, 'success');
+                UI.showToast(`☆ 凤凰树发动！+${bonusMoves}步！`, 'success');
                 Utils.vibrate([50, 30, 80, 30, 100]);
                 this.screenShake(6, 300);
                 return; // Don't defeat!
@@ -2381,7 +2381,7 @@ class Game {
             this.objectives.forEach((obj,i) => { totalProg += Math.min(this.objectiveProgress[i]/obj.target, 1); });
             totalProg /= this.objectives.length;
         }
-        // 🧠 "Almost!" psychology — tell them EXACTLY how close
+        // ※ "Almost!" psychology — tell them EXACTLY how close
         const pct = Math.floor(totalProg * 100);
         let nearMissInfo = '';
         if (pct >= 90) {
@@ -2491,7 +2491,7 @@ class Game {
         const move = this.findValidMove(); if (!move) return;
         this.hintCells = move;
         for (const {x,y} of move) { const c = this.getCell(x,y); if(c) c.classList.add('hint'); }
-        if (!auto) UI.showToast('💡 看这里！');
+        if (!auto) UI.showToast('※ 看这里！');
     }
     clearHint() { for (const {x,y} of this.hintCells) { const c = this.getCell(x,y); if(c) c.classList.remove('hint'); } this.hintCells = []; }
 

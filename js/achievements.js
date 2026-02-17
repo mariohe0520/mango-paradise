@@ -13,7 +13,7 @@ const ACHIEVEMENTS = [
         id: 'first_match',
         name: '初次尝试',
         description: '完成第一次消除',
-        icon: '🎯',
+        icon: '◎',
         category: 'basic',
         reward: { gold: 50 },
         condition: { type: 'matches', target: 1 }
@@ -22,7 +22,7 @@ const ACHIEVEMENTS = [
         id: 'first_win',
         name: '初战告捷',
         description: '首次通关',
-        icon: '🏆',
+        icon: '♕',
         category: 'basic',
         reward: { gold: 100, gems: 5 },
         condition: { type: 'wins', target: 1 }
@@ -31,7 +31,7 @@ const ACHIEVEMENTS = [
         id: 'first_star',
         name: '闪耀之星',
         description: '获得第一颗星星',
-        icon: '⭐',
+        icon: '★',
         category: 'basic',
         reward: { gold: 100 },
         condition: { type: 'stars', target: 1 }
@@ -40,7 +40,7 @@ const ACHIEVEMENTS = [
         id: 'tutorial_complete',
         name: '毕业典礼',
         description: '完成新手教程',
-        icon: '🎓',
+        icon: '■',
         category: 'basic',
         reward: { gold: 200, items: [{ id: 'hint', amount: 3 }] },
         condition: { type: 'tutorial', target: 1 }
@@ -53,7 +53,7 @@ const ACHIEVEMENTS = [
         id: 'match_100',
         name: '消消乐新手',
         description: '累计消除 100 次',
-        icon: '💫',
+        icon: '✧',
         category: 'match',
         reward: { gold: 200 },
         condition: { type: 'matches', target: 100 }
@@ -62,7 +62,7 @@ const ACHIEVEMENTS = [
         id: 'match_500',
         name: '消除达人',
         description: '累计消除 500 次',
-        icon: '✨',
+        icon: '✦',
         category: 'match',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'matches', target: 500 }
@@ -71,7 +71,7 @@ const ACHIEVEMENTS = [
         id: 'match_1000',
         name: '消除大师',
         description: '累计消除 1000 次',
-        icon: '🌟',
+        icon: '✦',
         category: 'match',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'matches', target: 1000 }
@@ -80,7 +80,7 @@ const ACHIEVEMENTS = [
         id: 'match_5000',
         name: '消除传说',
         description: '累计消除 5000 次',
-        icon: '💎',
+        icon: '◆',
         category: 'match',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'matches', target: 5000 }
@@ -93,7 +93,7 @@ const ACHIEVEMENTS = [
         id: 'combo_3',
         name: '小连击',
         description: '达成 3 连击',
-        icon: '🔥',
+        icon: '☆',
         category: 'combo',
         reward: { gold: 100 },
         condition: { type: 'combo', target: 3 }
@@ -102,7 +102,7 @@ const ACHIEVEMENTS = [
         id: 'combo_5',
         name: '连击高手',
         description: '达成 5 连击',
-        icon: '🔥',
+        icon: '☆',
         category: 'combo',
         reward: { gold: 300, gems: 5 },
         condition: { type: 'combo', target: 5 }
@@ -111,7 +111,7 @@ const ACHIEVEMENTS = [
         id: 'combo_10',
         name: '连击大师',
         description: '达成 10 连击',
-        icon: '💥',
+        icon: '✸',
         category: 'combo',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'combo', target: 10 }
@@ -120,7 +120,7 @@ const ACHIEVEMENTS = [
         id: 'combo_15',
         name: '连击传说',
         description: '达成 15 连击',
-        icon: '⚡',
+        icon: '↯',
         category: 'combo',
         reward: { gold: 1500, gems: 30 },
         condition: { type: 'combo', target: 15 }
@@ -129,7 +129,7 @@ const ACHIEVEMENTS = [
         id: 'combo_20',
         name: '连击之神',
         description: '达成 20 连击',
-        icon: '👑',
+        icon: '♕',
         category: 'combo',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'combo', target: 20 }
@@ -142,7 +142,7 @@ const ACHIEVEMENTS = [
         id: 'special_10',
         name: '特效初体验',
         description: '创建 10 个特殊宝石',
-        icon: '✨',
+        icon: '✦',
         category: 'special',
         reward: { gold: 200 },
         condition: { type: 'specials', target: 10 }
@@ -151,7 +151,7 @@ const ACHIEVEMENTS = [
         id: 'special_50',
         name: '特效收藏家',
         description: '创建 50 个特殊宝石',
-        icon: '💫',
+        icon: '✧',
         category: 'special',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'specials', target: 50 }
@@ -160,7 +160,7 @@ const ACHIEVEMENTS = [
         id: 'special_200',
         name: '特效大师',
         description: '创建 200 个特殊宝石',
-        icon: '🌈',
+        icon: '◇',
         category: 'special',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'specials', target: 200 }
@@ -169,7 +169,7 @@ const ACHIEVEMENTS = [
         id: 'rainbow_1',
         name: '彩虹初现',
         description: '首次创建彩虹宝石',
-        icon: '🌈',
+        icon: '◇',
         category: 'special',
         reward: { gold: 300, gems: 5 },
         condition: { type: 'rainbow', target: 1 }
@@ -178,7 +178,7 @@ const ACHIEVEMENTS = [
         id: 'rainbow_20',
         name: '彩虹大师',
         description: '创建 20 个彩虹宝石',
-        icon: '🌈',
+        icon: '◇',
         category: 'special',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'rainbow', target: 20 }
@@ -191,7 +191,7 @@ const ACHIEVEMENTS = [
         id: 'level_10',
         name: '森林探险家',
         description: '通关第 10 关',
-        icon: '🌲',
+        icon: '♠',
         category: 'level',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'level', target: 10 }
@@ -200,7 +200,7 @@ const ACHIEVEMENTS = [
         id: 'level_20',
         name: '荒野求生者',
         description: '通关第 20 关',
-        icon: '🏜️',
+        icon: '△',
         category: 'level',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'level', target: 20 }
@@ -209,7 +209,7 @@ const ACHIEVEMENTS = [
         id: 'level_30',
         name: '城市征服者',
         description: '通关第 30 关',
-        icon: '🏰',
+        icon: '♜',
         category: 'level',
         reward: { gold: 1500, gems: 30 },
         condition: { type: 'level', target: 30 }
@@ -218,7 +218,7 @@ const ACHIEVEMENTS = [
         id: 'level_40',
         name: '暗夜行者',
         description: '通关第 40 关',
-        icon: '🌑',
+        icon: '●',
         category: 'level',
         reward: { gold: 2000, gems: 40 },
         condition: { type: 'level', target: 40 }
@@ -227,7 +227,7 @@ const ACHIEVEMENTS = [
         id: 'level_50',
         name: '火焰勇士',
         description: '通关第 50 关',
-        icon: '🌋',
+        icon: '△',
         category: 'level',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'level', target: 50 }
@@ -236,7 +236,7 @@ const ACHIEVEMENTS = [
         id: 'level_60',
         name: '冰封王者',
         description: '通关第 60 关',
-        icon: '❄️',
+        icon: '※',
         category: 'level',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'level', target: 60 }
@@ -245,7 +245,7 @@ const ACHIEVEMENTS = [
         id: 'level_70',
         name: '梦境行者',
         description: '通关第 70 关',
-        icon: '🌿',
+        icon: '♧',
         category: 'level',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'level', target: 70 }
@@ -254,7 +254,7 @@ const ACHIEVEMENTS = [
         id: 'level_80',
         name: '虚空征服者',
         description: '通关第 80 关',
-        icon: '🌀',
+        icon: '◎',
         category: 'level',
         reward: { gold: 6000, gems: 100 },
         condition: { type: 'level', target: 80 }
@@ -272,7 +272,7 @@ const ACHIEVEMENTS = [
         id: 'level_100',
         name: '芒果守护者',
         description: '通关全部 100 关！',
-        icon: '🥭',
+        icon: '芒',
         category: 'level',
         reward: { gold: 10000, gems: 200 },
         condition: { type: 'level', target: 100 }
@@ -285,7 +285,7 @@ const ACHIEVEMENTS = [
         id: 'stars_30',
         name: '星光初现',
         description: '累计获得 30 颗星',
-        icon: '⭐',
+        icon: '★',
         category: 'stars',
         reward: { gold: 300 },
         condition: { type: 'total_stars', target: 30 }
@@ -294,7 +294,7 @@ const ACHIEVEMENTS = [
         id: 'stars_90',
         name: '星河璀璨',
         description: '累计获得 90 颗星',
-        icon: '🌟',
+        icon: '✦',
         category: 'stars',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'total_stars', target: 90 }
@@ -303,7 +303,7 @@ const ACHIEVEMENTS = [
         id: 'stars_150',
         name: '星辰大海',
         description: '累计获得 150 颗星',
-        icon: '✨',
+        icon: '✦',
         category: 'stars',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'total_stars', target: 150 }
@@ -312,7 +312,7 @@ const ACHIEVEMENTS = [
         id: 'perfect_10',
         name: '完美主义者',
         description: '10 个关卡获得 3 星',
-        icon: '💯',
+        icon: '★',
         category: 'stars',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'perfect', target: 10 }
@@ -321,7 +321,7 @@ const ACHIEVEMENTS = [
         id: 'perfect_30',
         name: '追求卓越',
         description: '30 个关卡获得 3 星',
-        icon: '🎖️',
+        icon: '◎',
         category: 'stars',
         reward: { gold: 1500, gems: 30 },
         condition: { type: 'perfect', target: 30 }
@@ -334,7 +334,7 @@ const ACHIEVEMENTS = [
         id: 'score_10k',
         name: '万分户',
         description: '单局得分超过 10000',
-        icon: '📊',
+        icon: '▤',
         category: 'score',
         reward: { gold: 300 },
         condition: { type: 'single_score', target: 10000 }
@@ -343,7 +343,7 @@ const ACHIEVEMENTS = [
         id: 'score_50k',
         name: '高分玩家',
         description: '单局得分超过 50000',
-        icon: '📈',
+        icon: '▤',
         category: 'score',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'single_score', target: 50000 }
@@ -352,7 +352,7 @@ const ACHIEVEMENTS = [
         id: 'score_100k',
         name: '分数大师',
         description: '单局得分超过 100000',
-        icon: '🎯',
+        icon: '◎',
         category: 'score',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'single_score', target: 100000 }
@@ -361,7 +361,7 @@ const ACHIEVEMENTS = [
         id: 'total_100k',
         name: '积分小能手',
         description: '累计得分 100000',
-        icon: '💰',
+        icon: '¤',
         category: 'score',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'total_score', target: 100000 }
@@ -370,7 +370,7 @@ const ACHIEVEMENTS = [
         id: 'total_1m',
         name: '百万富翁',
         description: '累计得分 1000000',
-        icon: '💎',
+        icon: '◆',
         category: 'score',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'total_score', target: 1000000 }
@@ -383,7 +383,7 @@ const ACHIEVEMENTS = [
         id: 'checkin_7',
         name: '持之以恒',
         description: '连续签到 7 天',
-        icon: '📅',
+        icon: '▤',
         category: 'daily',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'checkin_streak', target: 7 }
@@ -392,7 +392,7 @@ const ACHIEVEMENTS = [
         id: 'checkin_30',
         name: '月度达人',
         description: '连续签到 30 天',
-        icon: '🗓️',
+        icon: '▤',
         category: 'daily',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'checkin_streak', target: 30 }
@@ -401,7 +401,7 @@ const ACHIEVEMENTS = [
         id: 'checkin_total_50',
         name: '签到达人',
         description: '累计签到 50 次',
-        icon: '✅',
+        icon: '✓',
         category: 'daily',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'checkin_total', target: 50 }
@@ -414,7 +414,7 @@ const ACHIEVEMENTS = [
         id: 'collect_murloc_100',
         name: '鱼人之友',
         description: '消除 100 个鱼人',
-        icon: '🐟',
+        icon: '鱼',
         category: 'collect',
         reward: { gold: 300 },
         condition: { type: 'gem_collect', gem: 'murloc', target: 100 }
@@ -423,7 +423,7 @@ const ACHIEVEMENTS = [
         id: 'collect_mango_500',
         name: '芒果爱好者',
         description: '消除 500 个芒果',
-        icon: '🥭',
+        icon: '芒',
         category: 'collect',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'gem_collect', gem: 'mango', target: 500 }
@@ -432,7 +432,7 @@ const ACHIEVEMENTS = [
         id: 'collect_dragon_100',
         name: '驯龙高手',
         description: '消除 100 个巨龙',
-        icon: '🐉',
+        icon: '龙',
         category: 'collect',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'gem_collect', gem: 'dragon', target: 100 }
@@ -441,7 +441,7 @@ const ACHIEVEMENTS = [
         id: 'collect_phoenix_50',
         name: '凤凰涅槃',
         description: '消除 50 个凤凰',
-        icon: '🔥',
+        icon: '☆',
         category: 'collect',
         reward: { gold: 2000, gems: 35 },
         condition: { type: 'gem_collect', gem: 'phoenix', target: 50 }
@@ -454,7 +454,7 @@ const ACHIEVEMENTS = [
         id: 'games_50',
         name: '入门玩家',
         description: '游玩 50 局',
-        icon: '🎮',
+        icon: '♟',
         category: 'play',
         reward: { gold: 300 },
         condition: { type: 'games', target: 50 }
@@ -463,7 +463,7 @@ const ACHIEVEMENTS = [
         id: 'games_200',
         name: '资深玩家',
         description: '游玩 200 局',
-        icon: '🕹️',
+        icon: '♟',
         category: 'play',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'games', target: 200 }
@@ -472,7 +472,7 @@ const ACHIEVEMENTS = [
         id: 'games_500',
         name: '骨灰级玩家',
         description: '游玩 500 局',
-        icon: '👾',
+        icon: '★',
         category: 'play',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'games', target: 500 }
@@ -485,7 +485,7 @@ const ACHIEVEMENTS = [
         id: 'no_powerup_win',
         name: '纯粹实力',
         description: '不使用道具通关一关',
-        icon: '💪',
+        icon: '↯',
         category: 'special',
         reward: { gold: 300, gems: 5 },
         condition: { type: 'no_powerup', target: 1 }
@@ -494,7 +494,7 @@ const ACHIEVEMENTS = [
         id: 'speedrun',
         name: '闪电侠',
         description: '30 秒内完成一关',
-        icon: '⚡',
+        icon: '↯',
         category: 'special',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'speedrun', target: 30 }
@@ -503,7 +503,7 @@ const ACHIEVEMENTS = [
         id: 'collector',
         name: '收藏家',
         description: '解锁 10 个图鉴条目',
-        icon: '📖',
+        icon: '▤',
         category: 'special',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'collection', target: 10 }
@@ -512,20 +512,20 @@ const ACHIEVEMENTS = [
         id: 'full_collection',
         name: '全图鉴',
         description: '解锁全部图鉴',
-        icon: '📚',
+        icon: '▤',
         category: 'special',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'collection', target: 'all' }
     },
 
     // ==========================================
-    // 🏋️ 精灵试炼成就
+    // ↯ 精灵试炼成就
     // ==========================================
     {
         id: 'spirit_trial_first',
         name: '初次试炼',
         description: '完成第一次精灵试炼',
-        icon: '🏋️',
+        icon: '↯',
         category: 'spirit',
         reward: { gold: 200, gems: 5 },
         condition: { type: 'spirit_trial', target: 1 }
@@ -534,7 +534,7 @@ const ACHIEVEMENTS = [
         id: 'spirit_trial_10',
         name: '试炼达人',
         description: '完成 10 次精灵试炼',
-        icon: '💪',
+        icon: '↯',
         category: 'spirit',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'spirit_trial', target: 10 }
@@ -543,7 +543,7 @@ const ACHIEVEMENTS = [
         id: 'spirit_bond_30',
         name: '信任之绊',
         description: '任意精灵亲密度达到 30',
-        icon: '💙',
+        icon: '♥',
         category: 'spirit',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'spirit_affection', target: 30 }
@@ -552,7 +552,7 @@ const ACHIEVEMENTS = [
         id: 'spirit_bond_50',
         name: '羁绊之力',
         description: '任意精灵亲密度达到 50',
-        icon: '💜',
+        icon: '♥',
         category: 'spirit',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'spirit_affection', target: 50 }
@@ -561,20 +561,20 @@ const ACHIEVEMENTS = [
         id: 'spirit_bond_100',
         name: '灵魂共鸣',
         description: '任意精灵亲密度达到 100',
-        icon: '❤️‍🔥',
+        icon: '♥',
         category: 'spirit',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'spirit_affection', target: 100 }
     },
 
     // ==========================================
-    // 🌳 庄园成就
+    // ♠ 庄园成就
     // ==========================================
     {
         id: 'plant_first_tree',
         name: '绿色起点',
         description: '种下第一棵树',
-        icon: '🌱',
+        icon: '♧',
         category: 'estate',
         reward: { gold: 200, gems: 5 },
         condition: { type: 'tree_count', target: 1 }
@@ -583,7 +583,7 @@ const ACHIEVEMENTS = [
         id: 'plant_five_trees',
         name: '园丁大师',
         description: '种植 5 棵树',
-        icon: '🌳',
+        icon: '♠',
         category: 'estate',
         reward: { gold: 1000, gems: 15 },
         condition: { type: 'tree_count', target: 5 }
@@ -592,7 +592,7 @@ const ACHIEVEMENTS = [
         id: 'plant_ancient',
         name: '世界树守护者',
         description: '种植远古之树',
-        icon: '🌲',
+        icon: '♠',
         category: 'estate',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'tree_specific', target: 'ancient' }
@@ -601,7 +601,7 @@ const ACHIEVEMENTS = [
         id: 'buy_first_deco',
         name: '装饰初体验',
         description: '购买第一个庄园装饰',
-        icon: '🎨',
+        icon: '◇',
         category: 'estate',
         reward: { gold: 150 },
         condition: { type: 'deco_count', target: 1 }
@@ -610,7 +610,7 @@ const ACHIEVEMENTS = [
         id: 'happiness_200',
         name: '幸福庄园',
         description: '庄园幸福度达到 200',
-        icon: '💖',
+        icon: '♥',
         category: 'estate',
         reward: { gold: 800, gems: 10 },
         condition: { type: 'happiness', target: 200 }
@@ -619,7 +619,7 @@ const ACHIEVEMENTS = [
         id: 'happiness_1000',
         name: '极乐净土',
         description: '庄园幸福度达到 1000',
-        icon: '🏡',
+        icon: '♜',
         category: 'estate',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'happiness', target: 1000 }
@@ -628,7 +628,7 @@ const ACHIEVEMENTS = [
         id: 'all_spirits',
         name: '精灵之友',
         description: '解锁全部 8 个精灵',
-        icon: '🧚',
+        icon: '仙',
         category: 'estate',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'spirit_count', target: 8 }
@@ -637,20 +637,20 @@ const ACHIEVEMENTS = [
         id: 'estate_full_deco',
         name: '庄园大亨',
         description: '购买全部装饰',
-        icon: '🏰',
+        icon: '♜',
         category: 'estate',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'deco_count', target: 12 }
     },
 
     // ==========================================
-    // 👹 Boss 成就
+    // 鬼 Boss 成就
     // ==========================================
     {
         id: 'beat_ch1_boss',
         name: '森林守护者',
         description: '击败第一章 Boss 树精长老',
-        icon: '🌳',
+        icon: '♠',
         category: 'boss',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'boss_defeat', target: 10 }
@@ -659,7 +659,7 @@ const ACHIEVEMENTS = [
         id: 'boss_slayer_3',
         name: 'Boss杀手',
         description: '击败 3 个 Boss',
-        icon: '⚔️',
+        icon: '⚔',
         category: 'boss',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'boss_count', target: 3 }
@@ -668,7 +668,7 @@ const ACHIEVEMENTS = [
         id: 'boss_slayer_all',
         name: '终极征服者',
         description: '击败全部 10 个 Boss',
-        icon: '👑',
+        icon: '♕',
         category: 'boss',
         reward: { gold: 10000, gems: 200 },
         condition: { type: 'boss_count', target: 10 }
@@ -677,7 +677,7 @@ const ACHIEVEMENTS = [
         id: 'skull_survivor',
         name: '骷髅克星',
         description: '在有骷髅的棋盘上获胜',
-        icon: '💀',
+        icon: '☠',
         category: 'boss',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'skull_win', target: 1 }
@@ -686,20 +686,20 @@ const ACHIEVEMENTS = [
         id: 'rage_survivor',
         name: '狂暴克星',
         description: '在 Boss 狂暴后获胜',
-        icon: '🔥',
+        icon: '☆',
         category: 'boss',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'rage_win', target: 1 }
     },
 
     // ==========================================
-    // 💰 财富成就
+    // ¤ 财富成就
     // ==========================================
     {
         id: 'gold_10000',
         name: '万金之主',
         description: '累计获得 10000 金币',
-        icon: '💰',
+        icon: '¤',
         category: 'wealth',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'total_gold', target: 10000 }
@@ -708,33 +708,33 @@ const ACHIEVEMENTS = [
         id: 'gold_100000',
         name: '金币大亨',
         description: '累计获得 100000 金币',
-        icon: '🏦',
+        icon: '♜',
         category: 'wealth',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'total_gold', target: 100000 }
     },
 
     // ==========================================
-    // 🔥 连击专精
+    // ☆ 连击专精
     // ==========================================
     {
         id: 'combo_7',
         name: '连击狂人',
         description: '达成 7 连击',
-        icon: '🌟',
+        icon: '✦',
         category: 'combo',
         reward: { gold: 600, gems: 10 },
         condition: { type: 'combo', target: 7 }
     },
 
     // ==========================================
-    // 🌅 每日挑战成就
+    // ◎ 每日挑战成就
     // ==========================================
     {
         id: 'daily_first',
         name: '每日勇士',
         description: '完成第一次每日挑战',
-        icon: '🌅',
+        icon: '◎',
         category: 'daily_challenge',
         reward: { gold: 200, gems: 5 },
         condition: { type: 'daily_complete', target: 1 }
@@ -743,7 +743,7 @@ const ACHIEVEMENTS = [
         id: 'daily_10',
         name: '每日达人',
         description: '完成 10 次每日挑战',
-        icon: '📆',
+        icon: '▤',
         category: 'daily_challenge',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'daily_complete', target: 10 }
@@ -752,7 +752,7 @@ const ACHIEVEMENTS = [
         id: 'daily_50',
         name: '每日传说',
         description: '完成 50 次每日挑战',
-        icon: '🏅',
+        icon: '◎',
         category: 'daily_challenge',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'daily_complete', target: 50 }
@@ -761,7 +761,7 @@ const ACHIEVEMENTS = [
         id: 'daily_streak_7',
         name: '一周不停歇',
         description: '每日挑战连续 7 天',
-        icon: '🔥',
+        icon: '☆',
         category: 'daily_challenge',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'daily_streak', target: 7 }
@@ -770,20 +770,20 @@ const ACHIEVEMENTS = [
         id: 'daily_streak_30',
         name: '铁人三十天',
         description: '每日挑战连续 30 天',
-        icon: '💎',
+        icon: '◆',
         category: 'daily_challenge',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'daily_streak', target: 30 }
     },
 
     // ==========================================
-    // ♾️ 无尽模式成就
+    // ∞ 无尽模式成就
     // ==========================================
     {
         id: 'endless_first',
         name: '无尽探索者',
         description: '在无尽模式中存活 5 波',
-        icon: '♾️',
+        icon: '∞',
         category: 'endless',
         reward: { gold: 300, gems: 5 },
         condition: { type: 'endless_wave', target: 5 }
@@ -792,7 +792,7 @@ const ACHIEVEMENTS = [
         id: 'endless_10',
         name: '无尽勇者',
         description: '在无尽模式中存活 10 波',
-        icon: '🌊',
+        icon: '≈',
         category: 'endless',
         reward: { gold: 800, gems: 15 },
         condition: { type: 'endless_wave', target: 10 }
@@ -801,7 +801,7 @@ const ACHIEVEMENTS = [
         id: 'endless_25',
         name: '无尽大师',
         description: '在无尽模式中存活 25 波',
-        icon: '🏔️',
+        icon: '△',
         category: 'endless',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'endless_wave', target: 25 }
@@ -810,7 +810,7 @@ const ACHIEVEMENTS = [
         id: 'endless_50',
         name: '无尽传说',
         description: '在无尽模式中存活 50 波',
-        icon: '👑',
+        icon: '♕',
         category: 'endless',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'endless_wave', target: 50 }
@@ -819,7 +819,7 @@ const ACHIEVEMENTS = [
         id: 'endless_score_50k',
         name: '无尽得分王',
         description: '无尽模式累计得分 50000',
-        icon: '📊',
+        icon: '▤',
         category: 'endless',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'endless_score', target: 50000 }
@@ -828,7 +828,7 @@ const ACHIEVEMENTS = [
         id: 'endless_score_200k',
         name: '无尽积分传说',
         description: '无尽模式累计得分 200000',
-        icon: '🎯',
+        icon: '◎',
         category: 'endless',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'endless_score', target: 200000 }
@@ -837,7 +837,7 @@ const ACHIEVEMENTS = [
         id: 'survival_first',
         name: '生存新手',
         description: '生存模式存活 3 波',
-        icon: '🛡️',
+        icon: '⛊',
         category: 'endless',
         reward: { gold: 200, gems: 5 },
         condition: { type: 'survival_wave', target: 3 }
@@ -846,20 +846,20 @@ const ACHIEVEMENTS = [
         id: 'survival_10',
         name: '生存专家',
         description: '生存模式存活 10 波',
-        icon: '⚔️',
+        icon: '⚔',
         category: 'endless',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'survival_wave', target: 10 }
     },
 
     // ==========================================
-    // 🎄 季节活动成就
+    // ♣ 季节活动成就
     // ==========================================
     {
         id: 'season_first',
         name: '季节探索者',
         description: '完成第一个季节关卡',
-        icon: '🌸',
+        icon: '✿',
         category: 'seasonal',
         reward: { gold: 200, gems: 5 },
         condition: { type: 'seasonal_complete', target: 1 }
@@ -868,7 +868,7 @@ const ACHIEVEMENTS = [
         id: 'season_all_10',
         name: '季节征服者',
         description: '完成一个季节的全部 10 关',
-        icon: '🎄',
+        icon: '♣',
         category: 'seasonal',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'seasonal_complete', target: 10 }
@@ -877,7 +877,7 @@ const ACHIEVEMENTS = [
         id: 'season_boss',
         name: '季节Boss终结者',
         description: '击败季节Boss',
-        icon: '🎃',
+        icon: '◆',
         category: 'seasonal',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'seasonal_boss', target: 1 }
@@ -886,7 +886,7 @@ const ACHIEVEMENTS = [
         id: 'season_points_1000',
         name: '赛季积分达人',
         description: '单赛季积分达到 1000',
-        icon: '🏆',
+        icon: '♕',
         category: 'seasonal',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'season_points', target: 1000 }
@@ -895,20 +895,20 @@ const ACHIEVEMENTS = [
         id: 'season_points_5000',
         name: '赛季传说',
         description: '单赛季积分达到 5000',
-        icon: '🔥',
+        icon: '☆',
         category: 'seasonal',
         reward: { gold: 5000, gems: 100 },
         condition: { type: 'season_points', target: 5000 }
     },
 
     // ==========================================
-    // 🗺️ 无限冒险成就 (101+)
+    // ▤ 无限冒险成就 (101+)
     // ==========================================
     {
         id: 'procedural_first',
         name: '无限冒险家',
         description: '通关第 101 关 (程序化关卡)',
-        icon: '🗺️',
+        icon: '▤',
         category: 'procedural',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'level', target: 101 }
@@ -917,7 +917,7 @@ const ACHIEVEMENTS = [
         id: 'procedural_150',
         name: '深渊探索者',
         description: '通关第 150 关',
-        icon: '🌊',
+        icon: '≈',
         category: 'procedural',
         reward: { gold: 2000, gems: 30 },
         condition: { type: 'level', target: 150 }
@@ -926,7 +926,7 @@ const ACHIEVEMENTS = [
         id: 'procedural_200',
         name: '永恒战士',
         description: '通关第 200 关',
-        icon: '⚡',
+        icon: '↯',
         category: 'procedural',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'level', target: 200 }
@@ -935,7 +935,7 @@ const ACHIEVEMENTS = [
         id: 'procedural_300',
         name: '传说中的冒险者',
         description: '通关第 300 关',
-        icon: '🌟',
+        icon: '✦',
         category: 'procedural',
         reward: { gold: 10000, gems: 150 },
         condition: { type: 'level', target: 300 }
@@ -944,20 +944,20 @@ const ACHIEVEMENTS = [
         id: 'procedural_500',
         name: '芒果宇宙之神',
         description: '通关第 500 关',
-        icon: '🥭',
+        icon: '芒',
         category: 'procedural',
         reward: { gold: 20000, gems: 300 },
         condition: { type: 'level', target: 500 }
     },
 
     // ==========================================
-    // 🎨 收藏成就 (Cosmetics)
+    // ◇ 收藏成就 (Cosmetics)
     // ==========================================
     {
         id: 'achievement_points_100',
         name: '成就猎人',
         description: '解锁 25 个成就',
-        icon: '🏅',
+        icon: '◎',
         category: 'collection',
         reward: { gold: 1000, gems: 15 },
         condition: { type: 'achievement_count', target: 25 }
@@ -966,7 +966,7 @@ const ACHIEVEMENTS = [
         id: 'achievement_points_200',
         name: '成就大师',
         description: '解锁 50 个成就',
-        icon: '🎖️',
+        icon: '◎',
         category: 'collection',
         reward: { gold: 3000, gems: 40 },
         condition: { type: 'achievement_count', target: 50 }
@@ -975,7 +975,7 @@ const ACHIEVEMENTS = [
         id: 'achievement_points_all',
         name: '完美主义者·终极',
         description: '解锁全部成就',
-        icon: '👑',
+        icon: '♕',
         category: 'collection',
         reward: { gold: 10000, gems: 200 },
         condition: { type: 'achievement_count', target: 109 }
@@ -984,20 +984,20 @@ const ACHIEVEMENTS = [
         id: 'collect_all_common',
         name: '普通收藏家',
         description: '消除所有 7 种普通宝石各 100 次',
-        icon: '📦',
+        icon: '▤',
         category: 'collection',
         reward: { gold: 1000, gems: 15 },
         condition: { type: 'all_gems_100', target: 7 }
     },
 
     // ==========================================
-    // 🎯 技巧成就
+    // ◎ 技巧成就
     // ==========================================
     {
         id: 'perfect_chapter',
         name: '完美章节',
         description: '一个章节全部 3 星',
-        icon: '⭐',
+        icon: '★',
         category: 'skill',
         reward: { gold: 1500, gems: 25 },
         condition: { type: 'perfect_chapter', target: 1 }
@@ -1006,7 +1006,7 @@ const ACHIEVEMENTS = [
         id: 'no_moves_wasted',
         name: '零浪费',
         description: '恰好用完所有步数通关',
-        icon: '🎯',
+        icon: '◎',
         category: 'skill',
         reward: { gold: 500, gems: 10 },
         condition: { type: 'exact_moves', target: 1 }
@@ -1015,7 +1015,7 @@ const ACHIEVEMENTS = [
         id: 'score_200k',
         name: '二十万俱乐部',
         description: '单局得分超过 200000',
-        icon: '💎',
+        icon: '◆',
         category: 'skill',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'single_score', target: 200000 }
@@ -1024,7 +1024,7 @@ const ACHIEVEMENTS = [
         id: 'total_5m',
         name: '五百万传说',
         description: '累计得分 5000000',
-        icon: '🏆',
+        icon: '♕',
         category: 'skill',
         reward: { gold: 8000, gems: 120 },
         condition: { type: 'total_score', target: 5000000 }
@@ -1033,7 +1033,7 @@ const ACHIEVEMENTS = [
         id: 'match_10000',
         name: '万次消除',
         description: '累计消除 10000 次',
-        icon: '💫',
+        icon: '✧',
         category: 'skill',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'matches', target: 10000 }
@@ -1042,7 +1042,7 @@ const ACHIEVEMENTS = [
         id: 'combo_25',
         name: '超神连击',
         description: '达成 25 连击',
-        icon: '💥',
+        icon: '✸',
         category: 'skill',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'combo', target: 25 }
@@ -1051,7 +1051,7 @@ const ACHIEVEMENTS = [
         id: 'special_500',
         name: '特效工厂',
         description: '创建 500 个特殊宝石',
-        icon: '⚡',
+        icon: '↯',
         category: 'skill',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'specials', target: 500 }
@@ -1060,7 +1060,7 @@ const ACHIEVEMENTS = [
         id: 'rainbow_50',
         name: '彩虹大师·终极',
         description: '创建 50 个彩虹宝石',
-        icon: '🌈',
+        icon: '◇',
         category: 'skill',
         reward: { gold: 3000, gems: 50 },
         condition: { type: 'rainbow', target: 50 }
@@ -1069,7 +1069,7 @@ const ACHIEVEMENTS = [
         id: 'speedrun_15',
         name: '光速通关',
         description: '15 秒内完成一关',
-        icon: '⚡',
+        icon: '↯',
         category: 'skill',
         reward: { gold: 1000, gems: 20 },
         condition: { type: 'speedrun', target: 15 }
@@ -1078,7 +1078,7 @@ const ACHIEVEMENTS = [
         id: 'games_1000',
         name: '千场老将',
         description: '游玩 1000 局',
-        icon: '🎮',
+        icon: '♟',
         category: 'skill',
         reward: { gold: 5000, gems: 80 },
         condition: { type: 'games', target: 1000 }

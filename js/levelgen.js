@@ -140,7 +140,7 @@ const LevelGen = {
             objectives.push({
                 type: 'score',
                 target: Math.floor(difficulty.baseScore * 2.5),
-                icon: '⭐'
+                icon: '★'
             });
             usedTypes.add('score');
         }
@@ -175,7 +175,7 @@ const LevelGen = {
                     objectives.push({
                         type: 'score',
                         target: Math.floor(difficulty.baseScore * (0.8 + rng() * 0.6)),
-                        icon: '⭐'
+                        icon: '★'
                     });
                     break;
                 case 'clear': {
@@ -185,7 +185,7 @@ const LevelGen = {
                         type: 'clear',
                         target: Math.floor(15 + difficulty.tier * 3 + rng() * 15),
                         gem: gem,
-                        icon: gd ? gd.emoji : '❓'
+                        icon: gd ? gd.emoji : '?'
                     });
                     break;
                 }
@@ -193,7 +193,7 @@ const LevelGen = {
                     objectives.push({
                         type: 'combo',
                         target: Math.floor(3 + difficulty.tier * 0.5 + rng() * 3),
-                        icon: '🔥'
+                        icon: '☆'
                     });
                     break;
                 case 'special_any':
@@ -201,7 +201,7 @@ const LevelGen = {
                         type: 'special',
                         target: Math.floor(3 + difficulty.tier * 0.8 + rng() * 3),
                         specialType: 'any',
-                        icon: '✨'
+                        icon: '✦'
                     });
                     break;
                 case 'special_line':
@@ -209,7 +209,7 @@ const LevelGen = {
                         type: 'special',
                         target: Math.floor(2 + difficulty.tier * 0.5 + rng() * 2),
                         specialType: 'line',
-                        icon: '⚡',
+                        icon: '↯',
                         label: '连4消生成'
                     });
                     break;
@@ -218,7 +218,7 @@ const LevelGen = {
                         type: 'special',
                         target: Math.floor(2 + difficulty.tier * 0.4 + rng() * 2),
                         specialType: 'bomb',
-                        icon: '💣'
+                        icon: '✸'
                     });
                     break;
                 case 'special_rainbow':
@@ -226,7 +226,7 @@ const LevelGen = {
                         type: 'special',
                         target: Math.floor(1 + difficulty.tier * 0.3 + rng()),
                         specialType: 'rainbow',
-                        icon: '🌈'
+                        icon: '◇'
                     });
                     break;
             }
@@ -243,16 +243,16 @@ const LevelGen = {
 
         // Boss names pool — cycles through with increasing power
         const bossPool = [
-            { name: '虚空行者·回响', emoji: '🌀', desc: '虚空的残影再次凝聚...' },
-            { name: '焰魔·灰烬', emoji: '🔥', desc: '从灰烬中重生的火焰恶魔' },
-            { name: '冰霜巨人', emoji: '❄️', desc: '永冻之地的远古巨人' },
-            { name: '暗影织网者', emoji: '🕷️', desc: '编织黑暗之网的恐惧之主' },
-            { name: '雷霆泰坦', emoji: '⚡', desc: '掌控雷电的远古泰坦' },
-            { name: '翡翠噩梦', emoji: '💚', desc: '梦境深处的腐化之力' },
-            { name: '虚空领主', emoji: '🌑', desc: '虚空之中最强大的存在' },
-            { name: '时空裂隙', emoji: '🕐', desc: '时间本身的具现化' },
-            { name: '混沌元素', emoji: '🌪️', desc: '所有元素的混沌融合' },
-            { name: '永恒守望者', emoji: '👁️', desc: '宇宙的终极审判者' },
+            { name: '虚空行者·回响', emoji: '◎', desc: '虚空的残影再次凝聚...' },
+            { name: '焰魔·灰烬', emoji: '☆', desc: '从灰烬中重生的火焰恶魔' },
+            { name: '冰霜巨人', emoji: '※', desc: '永冻之地的远古巨人' },
+            { name: '暗影织网者', emoji: '✸', desc: '编织黑暗之网的恐惧之主' },
+            { name: '雷霆泰坦', emoji: '↯', desc: '掌控雷电的远古泰坦' },
+            { name: '翡翠噩梦', emoji: '♥', desc: '梦境深处的腐化之力' },
+            { name: '虚空领主', emoji: '●', desc: '虚空之中最强大的存在' },
+            { name: '时空裂隙', emoji: '◎', desc: '时间本身的具现化' },
+            { name: '混沌元素', emoji: '◎', desc: '所有元素的混沌融合' },
+            { name: '永恒守望者', emoji: '◎', desc: '宇宙的终极审判者' },
         ];
 
         const boss = bossPool[bossIndex % bossPool.length];
@@ -289,7 +289,7 @@ const LevelGen = {
         // High-tier bosses get a 3rd phase
         if (bossIndex >= 5) {
             phases.push({
-                emoji: '💀',
+                emoji: '☠',
                 hpPct: 0.15,
                 attacks: allAttacks,
                 interval: 1,
@@ -433,7 +433,7 @@ const LevelGen = {
         objectives.push({
             type: 'score',
             target: 5000 + Math.floor(rng() * 5000) + tier * 500,
-            icon: '⭐'
+            icon: '★'
         });
 
         // Second: clear or combo
@@ -444,13 +444,13 @@ const LevelGen = {
                 type: 'clear',
                 target: 15 + Math.floor(rng() * 20),
                 gem,
-                icon: gd ? gd.emoji : '❓'
+                icon: gd ? gd.emoji : '?'
             });
         } else {
             objectives.push({
                 type: 'combo',
                 target: 3 + Math.floor(rng() * 4),
-                icon: '🔥'
+                icon: '☆'
             });
         }
 
@@ -460,7 +460,7 @@ const LevelGen = {
                 type: 'special',
                 target: 2 + Math.floor(rng() * 4),
                 specialType: 'any',
-                icon: '✨'
+                icon: '✦'
             });
         }
 
@@ -506,7 +506,7 @@ const LevelGen = {
         // Each wave: score target increases, time stays constant (60s per wave)
         const scoreTarget = 2000 + wave * 1500;
         const objectives = [
-            { type: 'score', target: scoreTarget, icon: '⭐' }
+            { type: 'score', target: scoreTarget, icon: '★' }
         ];
 
         if (wave >= 3) {
@@ -516,7 +516,7 @@ const LevelGen = {
                 type: 'clear',
                 target: 10 + wave * 2,
                 gem,
-                icon: gd ? gd.emoji : '❓'
+                icon: gd ? gd.emoji : '?'
             });
         }
 
@@ -555,7 +555,7 @@ const LevelGen = {
         // Score target per wave
         const scoreTarget = 1500 + wave * 1000;
         const objectives = [
-            { type: 'score', target: scoreTarget, icon: '⭐' }
+            { type: 'score', target: scoreTarget, icon: '★' }
         ];
 
         // Moves decrease as waves progress — survival pressure

@@ -18,7 +18,7 @@ class StorageSystem {
             // 玩家信息
             player: {
                 name: '冒险者',
-                avatar: '🧙‍♂️',
+                avatar: '法',
                 level: 1,
                 exp: 0,
                 expToNext: 100,

@@ -1,5 +1,5 @@
 // Service Worker for Mango Paradise — offline support
-const CACHE_NAME = 'mango-paradise-v4';
+const CACHE_NAME = 'mango-paradise-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,8 @@ const ASSETS = [
   './css/animations.css',
   './css/responsive.css',
   './css/premium.css',
+  './css/polish.css',
+  './css/gems.css',
   './js/utils.js',
   './js/audio.js',
   './js/storage.js',

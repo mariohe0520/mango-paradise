@@ -40,14 +40,14 @@ const Tutorial = {
         {
             id: 'ft_welcome',
             target: '#game-board',
-            text: '欢迎来到芒果庄园！🥭<br>滑动宝石，连成3个即可消除！',
+            text: '欢迎来到芒果庄园！芒<br>滑动宝石，连成3个即可消除！',
             arrow: 'swipe',   // special animated swipe arrows
             screen: 'game-screen'
         },
         {
             id: 'ft_special',
             target: '#game-board',
-            text: '连成 <b>4个一排</b> 可以创造特殊宝石！💎<br>试试看！',
+            text: '连成 <b>4个一排</b> 可以创造特殊宝石！◆<br>试试看！',
             arrow: 'down',
             screen: 'game-screen',
             waitFor: 'auto'   // triggered after first match
@@ -55,14 +55,14 @@ const Tutorial = {
         {
             id: 'ft_gold',
             target: '.currency.gold',
-            text: '你赢得了金币！💰<br>前往 <b>芒果庄园</b> 种树发展你的农场吧！',
+            text: '你赢得了金币！¤<br>前往 <b>芒果庄园</b> 种树发展你的农场吧！',
             arrow: 'down',
             screen: 'main-menu'
         },
         {
             id: 'ft_plant',
             target: '#tree-grid',
-            text: '种下你的第一棵树 🌳<br>获得永久增益，开始被动收入！',
+            text: '种下你的第一棵树 ♠<br>获得永久增益，开始被动收入！',
             arrow: 'down',
             screen: 'estate-screen'
         }
@@ -71,22 +71,22 @@ const Tutorial = {
     // ─── Contextual hint definitions ───
     HINTS: {
         ctx_boss: {
-            text: 'Boss会反击！注意狂暴条 ⚠️<br>狂暴后Boss每回合双重攻击！',
+            text: 'Boss会反击！注意狂暴条 ▲<br>狂暴后Boss每回合双重攻击！',
             target: '#boss-bar',
             arrow: 'up'
         },
         ctx_spirit: {
-            text: '喂养精灵提升羁绊！🧚<br>羁绊越高 → buff越强！',
+            text: '喂养精灵提升羁绊！仙<br>羁绊越高 → buff越强！',
             target: '#spirit-grid',
             arrow: 'down'
         },
         ctx_no_moves: {
-            text: '步数用光了！😅<br>下次注意规划连击组合哦',
+            text: '步数用光了！~<br>下次注意规划连击组合哦',
             target: null,
             arrow: null
         },
         ctx_achievement: {
-            text: '成就解锁！🏆<br>去成就殿堂看看更多挑战吧！',
+            text: '成就解锁！♕<br>去成就殿堂看看更多挑战吧！',
             target: '#btn-achievements',
             arrow: 'down'
         }
@@ -247,17 +247,17 @@ const Tutorial = {
         overlay.innerHTML = `
             <div class="tut-spotlight-mask" id="tut-mask"></div>
             <div class="tut-tooltip" id="tut-tooltip">
-                <div class="tut-tooltip-character">🥭</div>
+                <div class="tut-tooltip-character">芒</div>
                 <div class="tut-tooltip-body" id="tut-tooltip-body"></div>
                 <div class="tut-tooltip-footer">
                     <button class="tut-btn-skip" id="tut-btn-skip">跳过</button>
-                    <button class="tut-btn-next" id="tut-btn-next">知道了 👆</button>
+                    <button class="tut-btn-next" id="tut-btn-next">知道了 ↑</button>
                 </div>
                 <div class="tut-tooltip-tail"></div>
             </div>
             <div class="tut-swipe-arrows" id="tut-swipe-arrows" style="display:none">
-                <div class="tut-swipe-arrow tut-swipe-right">👉</div>
-                <div class="tut-swipe-arrow tut-swipe-down">👇</div>
+                <div class="tut-swipe-arrow tut-swipe-right">→</div>
+                <div class="tut-swipe-arrow tut-swipe-down">↓</div>
             </div>
         `;
         document.body.appendChild(overlay);
@@ -461,7 +461,7 @@ const Tutorial = {
 
         // Hide skip, change button text
         overlay.querySelector('#tut-btn-skip').style.display = 'none';
-        overlay.querySelector('#tut-btn-next').textContent = '知道了 👌';
+        overlay.querySelector('#tut-btn-next').textContent = '知道了 ✓';
 
         // Swipe arrows off
         overlay.querySelector('#tut-swipe-arrows').style.display = 'none';

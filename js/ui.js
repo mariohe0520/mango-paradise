@@ -39,11 +39,11 @@ const UI = {
         document.getElementById('btn-daily-challenge')?.addEventListener('click', () => {
             Audio.play('click');
             if (!DailyChallenge.canPlay()) {
-                this.showToast(`今日 3 次已用完！最高分: ${Utils.formatNumber(DailyChallenge.getBestScore())} 🔥连续${DailyChallenge.getStreak()}天`, 'info');
+                this.showToast(`今日 3 次已用完！最高分: ${Utils.formatNumber(DailyChallenge.getBestScore())} ☆连续${DailyChallenge.getStreak()}天`, 'info');
                 return;
             }
             const attemptsLeft = DailyChallenge.getAttemptsLeft();
-            this.showToast(`每日挑战 (剩余${attemptsLeft}次) 🔥连续${DailyChallenge.getStreak()}天`, 'info');
+            this.showToast(`每日挑战 (剩余${attemptsLeft}次) ☆连续${DailyChallenge.getStreak()}天`, 'info');
             // Use LevelGen if available
             const level = typeof LevelGen !== 'undefined'
                 ? LevelGen.generateDailyChallenge()
@@ -254,7 +254,7 @@ const UI = {
                     const nextLevel = ChallengeTower.getFloor(nextFloor);
                     this.startSpecialLevel(nextLevel);
                 } else {
-                    this.showToast('🎉 恭喜通关挑战塔全部50层！', 'success');
+                    this.showToast('♪ 恭喜通关挑战塔全部50层！', 'success');
                     this.showScreen('main-menu');
                 }
                 return;
@@ -290,7 +290,7 @@ const UI = {
         document.getElementById('btn-continue-moves')?.addEventListener('click', () => {
             const cost = 50;
             if (Storage.getGems() < cost) {
-                this.showToast('💎不够啦！通关和成就可以获得💎', 'error');
+                this.showToast('◆不够啦！通关和成就可以获得◆', 'error');
                 return;
             }
             Audio.play('powerup');
@@ -299,7 +299,7 @@ const UI = {
             game.isGameOver = false;
             game.movesLeft += 5;
             game.updateUI();
-            this.showToast('💎 +5步！继续加油！', 'success');
+            this.showToast('◆ +5步！继续加油！', 'success');
             Utils.vibrate([30, 20, 60]);
         });
 
@@ -465,9 +465,9 @@ const UI = {
                 const spirit = Estate.getCurrentSpirit();
                 
                 let html = '<div class="power-bar">';
-                html += `<span class="power-item">⭐${totalStars}</span>`;
-                if (buffs.length > 0) html += `<span class="power-item power-buff">🌳${buffs.length}Buff</span>`;
-                if (spirit) html += `<span class="power-item">${spirit.emoji||'🧚'}${spirit.name||''}</span>`;
+                html += `<span class="power-item">★${totalStars}</span>`;
+                if (buffs.length > 0) html += `<span class="power-item power-buff">♠${buffs.length}Buff</span>`;
+                if (spirit) html += `<span class="power-item">${spirit.emoji||'仙'}${spirit.name||''}</span>`;
                 if (Estate.getScoreMultiplier() > 1) html += `<span class="power-item power-buff">×${Estate.getScoreMultiplier()}</span>`;
                 html += '</div>';
                 powerEl.innerHTML = html;
@@ -503,7 +503,7 @@ const UI = {
                 if (sub) {
                     const attemptsLeft = DailyChallenge.getAttemptsLeft();
                     const streak = DailyChallenge.getStreak();
-                    sub.textContent = `剩${attemptsLeft}次 · 🔥${streak}天连续`;
+                    sub.textContent = `剩${attemptsLeft}次 · ☆${streak}天连续`;
                 }
             }
         } catch(e) {}
@@ -658,10 +658,10 @@ const UI = {
         const msgEl = document.getElementById('defeat-message');
         if (msgEl) {
             if (nearMissInfo) {
-                // 🔥 Near-miss is the MOST addictive text — make it prominent
+                // ☆ Near-miss is the MOST addictive text — make it prominent
                 msgEl.innerHTML = `<span style="color:#ef4444;font-weight:900;font-size:1.1em;">${nearMissInfo}</span>`;
-            } else if (progressPercent >= 90) msgEl.textContent = '就差一点点！再来一次绝对能过！💪';
-            else if (progressPercent >= 70) msgEl.textContent = '已经很接近了！试试不同的策略？🤔';
+            } else if (progressPercent >= 90) msgEl.textContent = '就差一点点！再来一次绝对能过！↯';
+            else if (progressPercent >= 70) msgEl.textContent = '已经很接近了！试试不同的策略？?';
             else if (progressPercent >= 50) msgEl.textContent = '快到一半了，继续加油！';
             else msgEl.textContent = '每次失败都是经验，再来！';
         }
@@ -936,19 +936,19 @@ const UI = {
                 <h2>${challenge.themeName}</h2>
                 <p style="color:var(--text-secondary);margin-bottom:0.5rem;">${challenge.themeDesc}</p>
                 <div style="display:flex;gap:1rem;justify-content:center;margin:0.5rem 0;">
-                    <span>🎯 ${challenge.objectives.map(o => o.icon + o.target).join(' + ')}</span>
-                    <span>👣 ${challenge.moves}步</span>
-                    ${challenge.timed ? `<span>⏱️ ${challenge.timeLimit}s</span>` : ''}
+                    <span>◎ ${challenge.objectives.map(o => o.icon + o.target).join(' + ')}</span>
+                    <span>● ${challenge.moves}步</span>
+                    ${challenge.timed ? `<span>[限时] ${challenge.timeLimit}s</span>` : ''}
                 </div>
                 <div style="text-align:center;margin:0.5rem 0;">
-                    <p>🏅 你的最高分: <strong>${bestScore > 0 ? Utils.formatNumber(bestScore) : '未挑战'}</strong></p>
+                    <p>◎ 你的最高分: <strong>${bestScore > 0 ? Utils.formatNumber(bestScore) : '未挑战'}</strong></p>
                     <p style="font-size:0.8rem;color:var(--text-secondary);">本周已挑战 ${attempts} 次（无限制）</p>
                 </div>
-                <h3 style="margin:0.5rem 0 0.3rem;">🏆 排行榜</h3>
+                <h3 style="margin:0.5rem 0 0.3rem;">♕ 排行榜</h3>
                 <div style="font-size:0.85rem;">${lbHtml}</div>
                 <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
                     <button class="modal-btn" onclick="document.getElementById('weekly-modal').remove()">返回</button>
-                    <button class="modal-btn primary" id="btn-weekly-start">⚔️ 开始挑战</button>
+                    <button class="modal-btn primary" id="btn-weekly-start">⚔ 开始挑战</button>
                 </div>
             </div>
         `;
@@ -978,7 +978,7 @@ const UI = {
                     <div style="font-size:0.75rem;font-weight:700;color:${unlocked ? '#22c55e' : 'var(--text-secondary)'};">${t.points}分 — ${t.reward}</div>
                 </div>
                 ${unlocked && !claimed && i > 0 ? `<button class="season-claim-btn" data-tier="${i}" style="padding:4px 8px;background:var(--wow-gold);color:#000;border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;">领取</button>` : ''}
-                ${claimed ? '<span style="font-size:0.7rem;color:#22c55e;">✅</span>' : ''}
+                ${claimed ? '<span style="font-size:0.7rem;color:#22c55e;">✓</span>' : ''}
             </div>`;
         }).join('');
 
@@ -1000,7 +1000,7 @@ const UI = {
                 <div style="background:#333;border-radius:6px;height:8px;margin:4px 0;">
                     <div style="background:${season.color};height:100%;border-radius:6px;width:${Math.min(progressPct, 100)}%;transition:width 0.3s;"></div>
                 </div>
-                ${nextTier ? `<div style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextTier.points}分 (还差${nextTier.points - points})</div>` : '<div style="font-size:0.7rem;color:var(--wow-gold);">🏆 已达最高等级！</div>'}
+                ${nextTier ? `<div style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextTier.points}分 (还差${nextTier.points - points})</div>` : '<div style="font-size:0.7rem;color:var(--wow-gold);">♕ 已达最高等级！</div>'}
             </div>
             <div style="font-weight:700;margin-bottom:6px;">赛季通行证</div>
             ${tiersHtml}
@@ -1126,8 +1126,8 @@ const UI = {
         const hHint = document.getElementById('happiness-hint');
         if (hHint) {
             const mult = Estate.getScoreMultiplier();
-            if (happiness >= 1000) hHint.textContent = `🏆 幸福度MAX！分数永久${mult}倍！`;
-            else if (happiness >= 200) hHint.textContent = `✅ 分数${mult}倍！下一级: ${happiness >= 500 ? 1000 : 500}`;
+            if (happiness >= 1000) hHint.textContent = `♕ 幸福度MAX！分数永久${mult}倍！`;
+            else if (happiness >= 200) hHint.textContent = `✓ 分数${mult}倍！下一级: ${happiness >= 500 ? 1000 : 500}`;
             else hHint.textContent = `幸福度200后分数加成！(还差${200-happiness})`;
         }
 
@@ -1345,7 +1345,7 @@ const UI = {
                 }
             }
             const btnEl = document.getElementById('story-continue-btn');
-            if (btnEl) btnEl.textContent = this.storyQueue.length === 0 ? '开始战斗！ ⚔️' : '继续 ▶';
+            if (btnEl) btnEl.textContent = this.storyQueue.length === 0 ? '开始战斗！ ⚔' : '继续 ▶';
         } catch (e) {
             console.error('[UI.showNextStoryLine] error:', e);
             this.hideModal('story-dialog');
@@ -1359,7 +1359,7 @@ const UI = {
     },
 
     // 开始关卡（带故事对话支持）
-    // 🧚 Spirit picker for boss levels — strategy choice
+    // 仙 Spirit picker for boss levels — strategy choice
     showSpiritPicker(levelId, callback) {
         const boss = Boss.BOSSES[levelId];
         if (!boss) { callback(); return; }
@@ -1370,10 +1370,10 @@ const UI = {
         const weaknessSpirit = boss.weakness ? Estate.SPIRITS[boss.weakness] : null;
 
         let html = `<div style="text-align:center;padding:12px;">
-            <div style="font-size:2rem;">${boss.phases?.[0]?.emoji || '👹'}</div>
+            <div style="font-size:2rem;">${boss.phases?.[0]?.emoji || '鬼'}</div>
             <div style="font-weight:900;font-size:1.1rem;margin:4px 0;">${boss.name}</div>
             <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px;">${boss.desc}</div>
-            ${weaknessSpirit ? `<div style="font-size:0.75rem;color:#ef4444;margin-bottom:8px;">💡 弱点: ${weaknessSpirit.emoji} ${weaknessSpirit.name} (伤害x2)</div>` : ''}
+            ${weaknessSpirit ? `<div style="font-size:0.75rem;color:#ef4444;margin-bottom:8px;">※ 弱点: ${weaknessSpirit.emoji} ${weaknessSpirit.name} (伤害x2)</div>` : ''}
             <div style="font-weight:700;margin:8px 0;">选择出战精灵：</div>
             <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">`;
 
@@ -1382,7 +1382,7 @@ const UI = {
             const isActive = currentSpirit.id === s.id;
             const affLv = Estate.getSpiritAffinityLevel(s.id);
             const affName = Estate.AFFINITY_LEVELS[affLv]?.name || '';
-            const hearts = '💕'.repeat(Math.min(affLv, 4)) || '🤍';
+            const hearts = '♥'.repeat(Math.min(affLv, 4)) || '♡';
             html += `<button class="spirit-pick-btn" data-spirit="${s.id}" style="
                 padding:8px 10px;border-radius:10px;border:2px solid ${isWeak ? '#ef4444' : isActive ? 'var(--wow-gold)' : '#555'};
                 background:${isActive ? 'rgba(255,215,0,0.15)' : 'rgba(30,30,30,0.8)'};
@@ -1436,7 +1436,7 @@ const UI = {
                     if (introTexts.length > 0) {
                         const charEl = document.getElementById('story-character');
                         if (charEl) {
-                            charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.phases?.[0]?.emoji || '🥭') : '🥭';
+                            charEl.textContent = story.bossIntro ? (Boss.BOSSES[levelId]?.phases?.[0]?.emoji || '芒') : '芒';
                             charEl.classList.toggle('boss-intro', !!story.bossIntro);
                         }
                         this.showStoryDialog(introTexts, () => this.doStartLevel(levelId));
@@ -1526,7 +1526,7 @@ const UI = {
                 try { Tutorial.onBossEncounter(); } catch(e) {}
             }
 
-            // 🛡️ Board render fallback: verify board actually rendered
+            // ⛊ Board render fallback: verify board actually rendered
             requestAnimationFrame(() => {
                 try {
                     const boardEl = document.getElementById('game-board');
@@ -1549,20 +1549,20 @@ const UI = {
     },
 
     // 胜利界面（带故事对话支持）
-    // 🏆 Boss loot cinematic
+    // ♕ Boss loot cinematic
     showBossLoot(loot, levelId, callback) {
         const boss = Boss.BOSSES[levelId];
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:950;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.5s;';
         overlay.innerHTML = `<div style="text-align:center;max-width:340px;padding:20px;">
-            <div style="font-size:2.5rem;margin-bottom:8px;">🏆</div>
+            <div style="font-size:2.5rem;margin-bottom:8px;">♕</div>
             <div style="font-weight:900;font-size:1.3rem;color:var(--wow-gold);margin-bottom:4px;">${boss?.name || 'Boss'} 已被击败！</div>
             <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;white-space:pre-line;" id="boss-lore-text"></div>
             <div style="display:flex;gap:12px;justify-content:center;margin:12px 0;">
-                <div style="text-align:center;"><div style="font-size:1.5rem;">💰</div><div style="color:var(--wow-gold);font-weight:700;">${Utils.formatNumber(loot.gold)}</div></div>
-                <div style="text-align:center;"><div style="font-size:1.5rem;">💎</div><div style="color:#a855f7;font-weight:700;">${loot.gems}</div></div>
+                <div style="text-align:center;"><div style="font-size:1.5rem;">¤</div><div style="color:var(--wow-gold);font-weight:700;">${Utils.formatNumber(loot.gold)}</div></div>
+                <div style="text-align:center;"><div style="font-size:1.5rem;">◆</div><div style="color:#a855f7;font-weight:700;">${loot.gems}</div></div>
             </div>
-            ${loot.title ? `<div style="margin:8px 0;padding:6px 12px;background:rgba(255,215,0,0.15);border:1px solid var(--wow-gold);border-radius:8px;display:inline-block;"><span style="color:var(--wow-gold);font-weight:700;">🎖️ 称号: ${loot.title}</span></div>` : ''}
+            ${loot.title ? `<div style="margin:8px 0;padding:6px 12px;background:rgba(255,215,0,0.15);border:1px solid var(--wow-gold);border-radius:8px;display:inline-block;"><span style="color:var(--wow-gold);font-weight:700;">◎ 称号: ${loot.title}</span></div>` : ''}
             <br><button id="boss-loot-continue" style="margin-top:16px;padding:10px 32px;background:var(--wow-gold);color:#000;border:none;border-radius:10px;font-weight:900;font-size:1rem;cursor:pointer;">继续</button>
         </div>`;
         document.body.appendChild(overlay);
@@ -1594,20 +1594,20 @@ const UI = {
         overlay.className = 'modal active';
         overlay.innerHTML = `
             <div class="modal-content" style="max-width:340px;">
-                <h2>♾️ 无尽模式</h2>
+                <h2>∞ 无尽模式</h2>
                 <div style="display:flex;flex-direction:column;gap:8px;margin:12px 0;">
                     <button class="modal-btn primary" id="endless-zen" style="text-align:left;padding:12px;">
-                        <div style="font-size:1.1rem;font-weight:700;">🧘 禅意模式</div>
+                        <div style="font-size:1.1rem;font-weight:700;">◎ 禅意模式</div>
                         <div style="font-size:0.75rem;color:var(--text-secondary);">无时间压力，无尽关卡，难度缓慢提升</div>
                         <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.zen.wave} · ${Utils.formatNumber(scores.zen.score)}分</div>
                     </button>
                     <button class="modal-btn" id="endless-sprint" style="text-align:left;padding:12px;">
-                        <div style="font-size:1.1rem;font-weight:700;">⚡ 冲刺模式</div>
+                        <div style="font-size:1.1rem;font-weight:700;">↯ 冲刺模式</div>
                         <div style="font-size:0.75rem;color:var(--text-secondary);">3分钟限时！连续通关，分数倍率递增</div>
                         <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.sprint.wave} · ${Utils.formatNumber(scores.sprint.score)}分</div>
                     </button>
                     <button class="modal-btn" id="endless-survival" style="text-align:left;padding:12px;">
-                        <div style="font-size:1.1rem;font-weight:700;">🛡️ 生存模式</div>
+                        <div style="font-size:1.1rem;font-weight:700;">⛊ 生存模式</div>
                         <div style="font-size:0.75rem;color:var(--text-secondary);">棋盘每30秒缩小！越来越紧迫</div>
                         <div style="font-size:0.7rem;color:var(--wow-gold);">最高: Wave ${scores.survival.wave} · ${Utils.formatNumber(scores.survival.score)}分</div>
                     </button>
@@ -1659,7 +1659,7 @@ const UI = {
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <div>
                         <div style="font-size:0.75rem;color:var(--text-secondary);">最高层数</div>
-                        <div style="font-size:1.5rem;font-weight:900;color:#a855f7;">🗼 ${progress.bestFloor}</div>
+                        <div style="font-size:1.5rem;font-weight:900;color:#a855f7;">♜ ${progress.bestFloor}</div>
                     </div>
                     <div style="text-align:center;">
                         <div style="font-size:0.75rem;color:var(--text-secondary);">累计分数</div>
@@ -1685,23 +1685,23 @@ const UI = {
             const floor = ChallengeTower.getFloor(f);
             const constraint = floor.constraints?.[0];
 
-            let statusIcon = '🔒';
+            let statusIcon = '<span style="color:#888;">&#9632;</span>';
             let bg = 'rgba(100,100,100,0.1)';
             let border = 'rgba(100,100,100,0.2)';
             let stars = '';
 
             if (completed) {
-                statusIcon = '✅';
+                statusIcon = '<span style="color:#22c55e;">&#10003;</span>';
                 bg = 'rgba(34,197,94,0.1)';
                 border = 'rgba(34,197,94,0.3)';
                 const s = completed.stars || 0;
-                stars = '⭐'.repeat(s) + '☆'.repeat(Math.max(0, 3 - s));
+                stars = '<span style="color:#fbbf24;">&#9733;</span>'.repeat(s) + '<span style="color:#555;">&#9734;</span>'.repeat(Math.max(0, 3 - s));
             } else if (isCurrent) {
-                statusIcon = '▶️';
+                statusIcon = '<span style="color:#a855f7;">&#9654;</span>';
                 bg = 'rgba(168,85,247,0.15)';
                 border = 'rgba(168,85,247,0.4)';
             } else if (isUnlocked) {
-                statusIcon = '🔓';
+                statusIcon = '<span style="color:#aaa;">&#9633;</span>';
             }
 
             if (isBoss) {
@@ -1716,12 +1716,12 @@ const UI = {
                     <div style="font-size:1.2rem;min-width:28px;text-align:center;">${statusIcon}</div>
                     <div style="flex:1;">
                         <div style="font-weight:700;font-size:0.9rem;">
-                            ${isBoss ? (f === 50 ? '☠️ ' : '👿 ') : ''}第${f}层
+                            ${isBoss ? (f === 50 ? '<span style="color:#ef4444;">BOSS</span> ' : '<span style="color:#f59e0b;">BOSS</span> ') : ''}第${f}层
                             ${isBoss ? '<span style="color:#ef4444;font-size:0.75rem;margin-left:4px;">BOSS</span>' : ''}
                         </div>
                         <div style="font-size:0.7rem;color:var(--text-secondary);">
                             ${constraintLabel}
-                            ${floor.timed ? ' ⏱️限时' : ''}
+                            ${floor.timed ? ' [限时]' : ''}
                             · ${floor.moves}步 · ${floor.objectives.map(o => `${o.icon}${Utils.formatNumber(o.target)}`).join(' ')}
                         </div>
                         ${stars ? `<div style="font-size:0.7rem;letter-spacing:1px;">${stars}</div>` : ''}
@@ -1812,25 +1812,25 @@ const UI = {
 
         container.innerHTML = `
             <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
-                <h3 style="margin:0 0 8px;font-size:1rem;">📊 总览</h3>
+                <h3 style="margin:0 0 8px;font-size:1rem;">▤ 总览</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                     <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
-                        <div style="font-size:1.5rem;">🏆</div>
+                        <div style="font-size:1.5rem;">♕</div>
                         <div style="font-size:0.8rem;font-weight:700;">${Utils.formatNumber(totalScore)}</div>
                         <div style="font-size:0.6rem;color:var(--text-secondary);">总分数</div>
                     </div>
                     <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
-                        <div style="font-size:1.5rem;">⭐</div>
+                        <div style="font-size:1.5rem;">★</div>
                         <div style="font-size:0.8rem;font-weight:700;">${totalStars} / ${maxLevel * 3}</div>
                         <div style="font-size:0.6rem;color:var(--text-secondary);">星星</div>
                     </div>
                     <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
-                        <div style="font-size:1.5rem;">🎮</div>
+                        <div style="font-size:1.5rem;">♟</div>
                         <div style="font-size:0.8rem;font-weight:700;">${totalGames} (${totalWins}胜)</div>
                         <div style="font-size:0.6rem;color:var(--text-secondary);">总局数 (胜率${totalGames > 0 ? Math.round(totalWins / totalGames * 100) : 0}%)</div>
                     </div>
                     <div class="stat-card" style="background:rgba(100,100,100,0.15);padding:8px;border-radius:8px;text-align:center;">
-                        <div style="font-size:1.5rem;">🔥</div>
+                        <div style="font-size:1.5rem;">☆</div>
                         <div style="font-size:0.8rem;font-weight:700;">x${maxCombo}</div>
                         <div style="font-size:0.6rem;color:var(--text-secondary);">最高连击</div>
                     </div>
@@ -1844,36 +1844,36 @@ const UI = {
 
             ${gemBarsHtml ? `
             <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
-                <h3 style="margin:0 0 8px;font-size:1rem;">💎 宝石统计</h3>
+                <h3 style="margin:0 0 8px;font-size:1rem;">◆ 宝石统计</h3>
                 ${gemBarsHtml}
             </div>` : ''}
 
             ${chapterHtml ? `
             <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
-                <h3 style="margin:0 0 8px;font-size:1rem;">📖 章节胜率</h3>
+                <h3 style="margin:0 0 8px;font-size:1rem;">▤ 章节胜率</h3>
                 <div style="font-size:0.8rem;">${chapterHtml}</div>
             </div>` : ''}
 
             <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
-                <h3 style="margin:0 0 8px;font-size:1rem;">⚔️ 特殊模式</h3>
+                <h3 style="margin:0 0 8px;font-size:1rem;">⚔ 特殊模式</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.75rem;">
                     <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
-                        <div style="font-weight:700;">📆 每日挑战</div>
+                        <div style="font-weight:700;">▤ 每日挑战</div>
                         <div>完成: ${dailyStats.won || 0}/${dailyStats.played || 0}</div>
                         <div>最高连续: ${dailyStats.bestStreak || 0}天</div>
                     </div>
                     <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
-                        <div style="font-weight:700;">♾️ 无尽模式</div>
+                        <div style="font-weight:700;">∞ 无尽模式</div>
                         <div>限时最高: Wave ${endlessStats.timedHighWave || 0}</div>
                         <div>生存最高: Wave ${endlessStats.survivalHighWave || 0}</div>
                     </div>
                     <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
-                        <div style="font-weight:700;">👹 Boss战</div>
+                        <div style="font-weight:700;">鬼 Boss战</div>
                         <div>击败: ${bossStats.defeated || 0}/${bossStats.attempts || 0}</div>
                         <div>胜率: ${bossStats.winRate || 0}%</div>
                     </div>
                     <div style="padding:6px;background:rgba(100,100,100,0.15);border-radius:6px;">
-                        <div style="font-weight:700;">✨ 特殊宝石</div>
+                        <div style="font-weight:700;">✦ 特殊宝石</div>
                         <div>线: ${specialStats.line || 0} 炸弹: ${specialStats.bomb || 0}</div>
                         <div>彩虹: ${specialStats.rainbow || 0}</div>
                     </div>
@@ -1882,7 +1882,7 @@ const UI = {
 
             ${playTimeBars ? `
             <div class="stats-section" style="background:rgba(30,27,75,0.5);border-radius:12px;padding:12px;margin-bottom:10px;">
-                <h3 style="margin:0 0 8px;font-size:1rem;">⏱️ 游玩时间 (最近7天)</h3>
+                <h3 style="margin:0 0 8px;font-size:1rem;">[限时] 游玩时间 (最近7天)</h3>
                 <div style="display:flex;gap:2px;align-items:flex-end;">${playTimeBars}</div>
             </div>` : ''}
         `;
@@ -1920,7 +1920,7 @@ const UI = {
                     <div style="font-size:0.75rem;font-weight:700;color:${unlocked ? '#22c55e' : 'var(--text-secondary)'};">${t.points}分 — ${t.reward}</div>
                 </div>
                 ${unlocked && !claimed && i > 0 ? `<button class="season-claim-btn" data-tier="${i}" style="padding:4px 8px;background:var(--wow-gold);color:#000;border:none;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;">领取</button>` : ''}
-                ${claimed ? '<span style="font-size:0.7rem;color:#22c55e;">✅</span>' : ''}
+                ${claimed ? '<span style="font-size:0.7rem;color:#22c55e;">✓</span>' : ''}
             </div>`;
         }).join('');
 
@@ -1931,8 +1931,8 @@ const UI = {
             const stars = levelData?.stars || 0;
             const isBoss = i === 9;
             return `<button class="level-btn ${isCompleted ? 'completed' : ''}" data-seasonal-level="${i}" style="min-width:60px;position:relative;">
-                ${isBoss ? '👹' : i + 1}
-                ${isCompleted ? `<div style="font-size:0.6rem;">${'⭐'.repeat(stars)}</div>` : ''}
+                ${isBoss ? '鬼' : i + 1}
+                ${isCompleted ? `<div style="font-size:0.6rem;">${'★'.repeat(stars)}</div>` : ''}
             </button>`;
         }).join('');
 
@@ -1947,7 +1947,7 @@ const UI = {
                 <div style="font-size:2.5rem;">${season.emoji}</div>
                 <div style="font-weight:900;font-size:1.3rem;color:${season.color};">${season.name}</div>
                 <div style="font-size:0.8rem;color:var(--text-secondary);">${season.description}</div>
-                <div style="font-size:0.75rem;color:#f472b6;margin-top:4px;">🎁 赛季加成: ${season.bonus}</div>
+                <div style="font-size:0.75rem;color:#f472b6;margin-top:4px;">♪ 赛季加成: ${season.bonus}</div>
                 <div style="font-size:0.7rem;color:var(--text-secondary);">剩余 ${season.daysRemaining} 天</div>
             </div>
 
@@ -1956,18 +1956,18 @@ const UI = {
                 <div style="background:#333;border-radius:6px;height:8px;margin:4px 0;">
                     <div style="background:${season.color};height:100%;border-radius:6px;width:${progressPct}%;transition:width 0.3s;"></div>
                 </div>
-                ${nextTier ? `<div style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextTier.points}分 (还差${nextTier.points - points})</div>` : '<div style="font-size:0.7rem;color:var(--wow-gold);">🏆 已达最高等级！</div>'}
+                ${nextTier ? `<div style="font-size:0.7rem;color:var(--text-secondary);">下一级: ${nextTier.points}分 (还差${nextTier.points - points})</div>` : '<div style="font-size:0.7rem;color:var(--wow-gold);">♕ 已达最高等级！</div>'}
             </div>
 
             <div style="margin-bottom:12px;">
-                <h3 style="margin:0 0 8px;">🎯 季节关卡 (${completed}/10)</h3>
+                <h3 style="margin:0 0 8px;">◎ 季节关卡 (${completed}/10)</h3>
                 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
                     ${levelsHtml}
                 </div>
             </div>
 
             <div style="margin-bottom:12px;">
-                <h3 style="margin:0 0 8px;">🏅 赛季通行证</h3>
+                <h3 style="margin:0 0 8px;">◎ 赛季通行证</h3>
                 ${tiersHtml}
             </div>
         `;
@@ -2014,7 +2014,7 @@ const UI = {
                     nextStarMsg = `下一颗星需要 ${Utils.formatNumber(nextTarget)} 分`;
                 }
             } else {
-                nextStarMsg = '🏆 完美通关！';
+                nextStarMsg = '♕ 完美通关！';
             }
             const msgEl = document.getElementById('victory-next-star');
             if (msgEl) msgEl.textContent = nextStarMsg;
@@ -2027,20 +2027,20 @@ const UI = {
                     const contributions = [];
                     if (game.scoreMultiplier > 1) {
                         const bonus = score - Math.floor(score / game.scoreMultiplier);
-                        contributions.push(`✨ 分数加成: +${Utils.formatNumber(bonus)}分`);
+                        contributions.push(`✦ 分数加成: +${Utils.formatNumber(bonus)}分`);
                     }
-                    if (buffs.includes('extra_moves')) contributions.push(`🌙 额外步数: +${Estate.getExtraMoves()||2}步`);
-                    if (buffs.includes('rainbow_4')) contributions.push('🌈 4消彩虹: 更强消除');
-                    if (buffs.includes('start_bomb')) contributions.push('🌟 开局炸弹: 快速开局');
-                    if (buffs.includes('gem_bonus')) contributions.push('💎 通关宝石加成');
+                    if (buffs.includes('extra_moves')) contributions.push(`☽ 额外步数: +${Estate.getExtraMoves()||2}步`);
+                    if (buffs.includes('rainbow_4')) contributions.push('◇ 4消彩虹: 更强消除');
+                    if (buffs.includes('start_bomb')) contributions.push('✦ 开局炸弹: 快速开局');
+                    if (buffs.includes('gem_bonus')) contributions.push('◆ 通关宝石加成');
                     if (contributions.length > 0) {
-                        buffSummaryEl.innerHTML = '<div style="font-size:0.75rem;color:#fbbf24;margin-top:6px;padding:6px;background:rgba(251,191,36,0.1);border-radius:8px;border:1px solid rgba(251,191,36,0.2)"><b>🌳 庄园Buff贡献:</b><br>' + contributions.join('<br>') + '</div>';
+                        buffSummaryEl.innerHTML = '<div style="font-size:0.75rem;color:#fbbf24;margin-top:6px;padding:6px;background:rgba(251,191,36,0.1);border-radius:8px;border:1px solid rgba(251,191,36,0.2)"><b>♠ 庄园Buff贡献:</b><br>' + contributions.join('<br>') + '</div>';
                         buffSummaryEl.style.display = 'block';
                     } else {
                         buffSummaryEl.style.display = 'none';
                     }
                 } else {
-                    buffSummaryEl.innerHTML = '<div style="font-size:0.7rem;color:#999;margin-top:6px">💡 升级庄园获得Buff加成 →</div>';
+                    buffSummaryEl.innerHTML = '<div style="font-size:0.7rem;color:#999;margin-top:6px">※ 升级庄园获得Buff加成 →</div>';
                     buffSummaryEl.style.display = 'block';
                 }
             }
@@ -2065,7 +2065,7 @@ const UI = {
 
                         if (outroTexts.length > 0) {
                             const charEl = document.getElementById('story-character');
-                            if (charEl) charEl.textContent = '🥭';
+                            if (charEl) charEl.textContent = '芒';
                             this.showStoryDialog(outroTexts, () => {
                                 this.showModal('victory-screen');
                                 setTimeout(() => this.showPendingAchievements(), 2000);
@@ -2085,18 +2085,18 @@ const UI = {
                     nextBtn.textContent = '返回菜单';
                 } else if (lvl.tower) {
                     const nf = (lvl.towerFloor || 1) + 1;
-                    nextBtn.innerHTML = nf <= 50 ? `第${nf}层 ➡️` : '🎉 通关！';
+                    nextBtn.innerHTML = nf <= 50 ? `第${nf}层 →` : '♪ 通关！';
                 } else if (lvl.endless) {
-                    nextBtn.textContent = `下一波 (Wave ${(lvl.wave || 1) + 1}) ➡️`;
+                    nextBtn.textContent = `下一波 (Wave ${(lvl.wave || 1) + 1}) →`;
                 } else {
-                    nextBtn.innerHTML = '下一关 ➡️';
+                    nextBtn.innerHTML = '下一关 →';
                 }
             }
 
             // Estate nudge after level 3 if no trees planted yet
             if (game.level.id === 3 && !Estate.isTreePlanted('golden_mango') && Storage.getGold() >= 150) {
                 setTimeout(() => {
-                    this.showToast('💡 攒够金币了！去庄园种棵金芒树，开局自带炸弹！', 'info');
+                    this.showToast('※ 攒够金币了！去庄园种棵金芒树，开局自带炸弹！', 'info');
                 }, 3000);
             }
             setTimeout(() => this.showPendingAchievements(), 2000);

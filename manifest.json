@@ -10,7 +10,7 @@
   "theme_color": "#fbbf24",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🥭</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='mg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23fef3c7'/><stop offset='50%25' stop-color='%23f59e0b'/><stop offset='100%25' stop-color='%23d97706'/></linearGradient></defs><ellipse cx='50' cy='52' rx='38' ry='42' fill='url(%23mg)' stroke='%23b45309' stroke-width='2'/><path d='M50 10 Q55 0 60 5 Q58 12 50 10Z' fill='%2322c55e'/></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }

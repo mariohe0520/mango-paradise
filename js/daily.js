@@ -60,18 +60,18 @@ const DailyChallenge = {
         const objType = objTypes[Math.floor(rng() * objTypes.length)];
         switch (objType) {
             case 'score':
-                objectives.push({ type: 'score', target: 3000 + Math.floor(rng() * 5000), icon: '⭐' });
+                objectives.push({ type: 'score', target: 3000 + Math.floor(rng() * 5000), icon: '★' });
                 break;
             case 'clear':
                 const gemToClear = gems[Math.floor(rng() * gems.length)];
                 const gd = GEM_TYPES[gemToClear];
-                objectives.push({ type: 'clear', target: 15 + Math.floor(rng() * 25), gem: gemToClear, icon: gd?.emoji || '❓' });
+                objectives.push({ type: 'clear', target: 15 + Math.floor(rng() * 25), gem: gemToClear, icon: gd?.emoji || '?' });
                 break;
             case 'special':
-                objectives.push({ type: 'special', target: 3 + Math.floor(rng() * 5), specialType: 'any', icon: '✨' });
+                objectives.push({ type: 'special', target: 3 + Math.floor(rng() * 5), specialType: 'any', icon: '✦' });
                 break;
             case 'combo':
-                objectives.push({ type: 'combo', target: 3 + Math.floor(rng() * 5), icon: '🔥' });
+                objectives.push({ type: 'combo', target: 3 + Math.floor(rng() * 5), icon: '☆' });
                 break;
         }
 
@@ -215,7 +215,7 @@ const EndlessMode = {
             // Generous moves that slowly decrease
             const moves = Math.max(20, 35 - Math.floor(w / 4));
             const scoreTarget = 800 + w * 300;
-            const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
+            const objectives = [{ type: 'score', target: scoreTarget, icon: '★' }];
             // Slowly add mechanics
             const special = {};
             if (w >= 12) special.chainBonus = true;
@@ -240,8 +240,8 @@ const EndlessMode = {
             if (w >= 3) gems.push('mango');
             if (w >= 8) gems.push('dragon');
             const scoreTarget = 2000 + w * 1000;
-            const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
-            if (w >= 2) objectives.push({ type: 'combo', target: Math.min(2 + w, 7), icon: '🔥' });
+            const objectives = [{ type: 'score', target: scoreTarget, icon: '★' }];
+            if (w >= 2) objectives.push({ type: 'combo', target: Math.min(2 + w, 7), icon: '☆' });
             const special = {};
             if (w >= 4) special.chainBonus = true;
             if (w >= 6) { special.fog = true; special.fogCount = Math.min(w * 2, 14); }
@@ -269,7 +269,7 @@ const EndlessMode = {
             const boardH = Math.max(5, 9 - Math.floor(w / 3));
             const moves = Math.max(8, 20 - Math.floor(w * 1.5));
             const scoreTarget = 1500 + w * 800;
-            const objectives = [{ type: 'score', target: scoreTarget, icon: '⭐' }];
+            const objectives = [{ type: 'score', target: scoreTarget, icon: '★' }];
             const special = {};
             if (w >= 2) { special.fog = true; special.fogCount = Math.min(w * 2, 20); }
             if (w >= 4) special.chainBonus = true;
@@ -369,12 +369,12 @@ const WeeklyChallenge = {
 
         // Weekly themes rotate
         const themes = [
-            { name: '🔥 烈焰周赛', mod: 'timed', desc: '限时挑战！速度就是一切！' },
-            { name: '👹 Boss 挑战赛', mod: 'boss', desc: '击败超强Boss！' },
-            { name: '❄️ 冰封地狱', mod: 'frozen', desc: '全场冰冻，打破束缚！' },
-            { name: '🌈 彩虹大师', mod: 'special', desc: '创造尽可能多的特殊宝石！' },
-            { name: '🎯 精准打击', mod: 'limited', desc: '极少步数，每步都关键！' },
-            { name: '🏔️ 巨人棋盘', mod: 'big', desc: '超大棋盘，无处可逃！' },
+            { name: '☆ 烈焰周赛', mod: 'timed', desc: '限时挑战！速度就是一切！' },
+            { name: '鬼 Boss 挑战赛', mod: 'boss', desc: '击败超强Boss！' },
+            { name: '※ 冰封地狱', mod: 'frozen', desc: '全场冰冻，打破束缚！' },
+            { name: '◇ 彩虹大师', mod: 'special', desc: '创造尽可能多的特殊宝石！' },
+            { name: '◎ 精准打击', mod: 'limited', desc: '极少步数，每步都关键！' },
+            { name: '△ 巨人棋盘', mod: 'big', desc: '超大棋盘，无处可逃！' },
         ];
         const theme = themes[seed % themes.length];
 
@@ -400,15 +400,15 @@ const WeeklyChallenge = {
 
         // Objectives: always score + one themed objective
         const objectives = [
-            { type: 'score', target: 10000, icon: '⭐' }
+            { type: 'score', target: 10000, icon: '★' }
         ];
         if (theme.mod === 'special') {
-            objectives.push({ type: 'special', target: 10, specialType: 'any', icon: '✨' });
+            objectives.push({ type: 'special', target: 10, specialType: 'any', icon: '✦' });
         } else if (theme.mod === 'frozen') {
-            objectives.push({ type: 'clear', target: 40, gem: 'mango', icon: '🥭' });
+            objectives.push({ type: 'clear', target: 40, gem: 'mango', icon: '芒' });
         } else {
             const gem = gems[Math.floor(rng() * (gems.length - 1))]; // not mango
-            objectives.push({ type: 'clear', target: 25, gem, icon: GEM_TYPES[gem]?.emoji || '❓' });
+            objectives.push({ type: 'clear', target: 25, gem, icon: GEM_TYPES[gem]?.emoji || '?' });
         }
 
         return {
@@ -482,7 +482,7 @@ const WeeklyChallenge = {
         // Insert player's best score
         const myBest = this.getBestScore();
         if (myBest > 0) {
-            board.push({ rank: 0, name: '🥭 你', score: myBest, isPlayer: true });
+            board.push({ rank: 0, name: '芒 你', score: myBest, isPlayer: true });
             board.sort((a, b) => b.score - a.score);
             board.forEach((e, i) => e.rank = i + 1);
         }
@@ -491,7 +491,7 @@ const WeeklyChallenge = {
 };
 
 // ══════════════════════════════════════
-// 👹 Boss Revenge — beaten bosses return stronger
+// 鬼 Boss Revenge — beaten bosses return stronger
 // ══════════════════════════════════════
 const BossRevenge = {
     // Check if a revenge boss is available today
@@ -574,7 +574,7 @@ const BossRevenge = {
             moves: Math.max(25, 40 - revengeBoss.revengeCount * 2),
             timed: false, timeLimit: 0,
             gems,
-            objectives: [{ type: 'score', target: 10000 + revengeBoss.revengeCount * 5000, icon: '⭐' }],
+            objectives: [{ type: 'score', target: 10000 + revengeBoss.revengeCount * 5000, icon: '★' }],
             boss: true,
             stars: [10000, 20000, 35000],
             special: {},
@@ -585,22 +585,22 @@ const BossRevenge = {
 
 
 // ══════════════════════════════════════
-// 🏅 Season System — monthly themes + progression
+// ◎ Season System — monthly themes + progression
 // ══════════════════════════════════════
 const SeasonSystem = {
     THEMES: [
-        { name: '烈焰赛季', emoji: '🔥', color: '#ef4444', bonus: 'fire gems deal 2x damage', spiritBonus: 'dragon_spirit' },
-        { name: '冰霜赛季', emoji: '❄️', color: '#3b82f6', bonus: 'frozen cells auto-defrost after 3 turns', spiritBonus: 'frost_spirit' },
-        { name: '混沌赛季', emoji: '🌀', color: '#a855f7', bonus: 'random special gem every 5 matches', spiritBonus: 'chaos_spirit' },
-        { name: '丰收赛季', emoji: '🥭', color: '#f59e0b', bonus: 'gold rewards doubled', spiritBonus: 'mango_fairy' },
-        { name: '暗影赛季', emoji: '👿', color: '#6b7280', bonus: 'boss damage +50%', spiritBonus: 'phoenix_spirit' },
+        { name: '烈焰赛季', emoji: '☆', color: '#ef4444', bonus: 'fire gems deal 2x damage', spiritBonus: 'dragon_spirit' },
+        { name: '冰霜赛季', emoji: '※', color: '#3b82f6', bonus: 'frozen cells auto-defrost after 3 turns', spiritBonus: 'frost_spirit' },
+        { name: '混沌赛季', emoji: '◎', color: '#a855f7', bonus: 'random special gem every 5 matches', spiritBonus: 'chaos_spirit' },
+        { name: '丰收赛季', emoji: '芒', color: '#f59e0b', bonus: 'gold rewards doubled', spiritBonus: 'mango_fairy' },
+        { name: '暗影赛季', emoji: '◆', color: '#6b7280', bonus: 'boss damage +50%', spiritBonus: 'phoenix_spirit' },
         { name: '时光赛季', emoji: '⏳', color: '#eab308', bonus: '+3 moves every level', spiritBonus: 'time_spirit' },
-        { name: '彩虹赛季', emoji: '🌈', color: '#ec4899', bonus: 'rainbow gem spawn rate +25%', spiritBonus: 'rainbow_spirit' },
-        { name: '蜂群赛季', emoji: '🐝', color: '#fbbf24', bonus: 'combo multiplier +0.5x', spiritBonus: 'bee_spirit' },
-        { name: '翡翠赛季', emoji: '💚', color: '#22c55e', bonus: 'all tree buffs +20%', spiritBonus: null },
-        { name: '部落赛季', emoji: '🚩', color: '#dc2626', bonus: 'all spirit affinity gain x2', spiritBonus: null },
-        { name: '龙息赛季', emoji: '🐉', color: '#f97316', bonus: 'line gems deal 3x damage', spiritBonus: 'dragon_spirit' },
-        { name: '凤凰赛季', emoji: '🔥', color: '#fb923c', bonus: 'free revive once per level', spiritBonus: 'phoenix_spirit' }
+        { name: '彩虹赛季', emoji: '◇', color: '#ec4899', bonus: 'rainbow gem spawn rate +25%', spiritBonus: 'rainbow_spirit' },
+        { name: '蜂群赛季', emoji: '蜂', color: '#fbbf24', bonus: 'combo multiplier +0.5x', spiritBonus: 'bee_spirit' },
+        { name: '翡翠赛季', emoji: '♥', color: '#22c55e', bonus: 'all tree buffs +20%', spiritBonus: null },
+        { name: '部落赛季', emoji: '▶', color: '#dc2626', bonus: 'all spirit affinity gain x2', spiritBonus: null },
+        { name: '龙息赛季', emoji: '龙', color: '#f97316', bonus: 'line gems deal 3x damage', spiritBonus: 'dragon_spirit' },
+        { name: '凤凰赛季', emoji: '☆', color: '#fb923c', bonus: 'free revive once per level', spiritBonus: 'phoenix_spirit' }
     ],
 
     getCurrentSeason() {
@@ -620,13 +620,13 @@ const SeasonSystem = {
     },
 
     PASS_TIERS: [
-        { points: 0,    reward: '开始！', icon: '🎯' },
-        { points: 100,  reward: '500💰', icon: '💰', gold: 500 },
-        { points: 300,  reward: '10💎', icon: '💎', gems: 10 },
-        { points: 600,  reward: '专属装饰', icon: '🎨', decoration: true },
-        { points: 1000, reward: '20💎+赛季称号', icon: '🏅', gems: 20, title: true },
-        { points: 1500, reward: '50💎+赛季精灵皮肤', icon: '👑', gems: 50, skin: true },
-        { points: 2500, reward: '100💎+传说称号', icon: '🔥', gems: 100, legendTitle: true }
+        { points: 0,    reward: '开始！', icon: '◎' },
+        { points: 100,  reward: '500¤', icon: '¤', gold: 500 },
+        { points: 300,  reward: '10◆', icon: '◆', gems: 10 },
+        { points: 600,  reward: '专属装饰', icon: '◇', decoration: true },
+        { points: 1000, reward: '20◆+赛季称号', icon: '◎', gems: 20, title: true },
+        { points: 1500, reward: '50◆+赛季精灵皮肤', icon: '♕', gems: 50, skin: true },
+        { points: 2500, reward: '100◆+传说称号', icon: '☆', gems: 100, legendTitle: true }
     ],
 
     getSeasonPoints() {

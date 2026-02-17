@@ -608,7 +608,7 @@ class AudioSystem {
         if (!this.musicEnabled || !this.initialized || this.bgmNode) return;
 
         try {
-            // 🎵 Ambient chiptune melody — warm, relaxing, looping
+            // ♪ Ambient chiptune melody — warm, relaxing, looping
             const ctx = this.context;
             // Melody notes (C major pentatonic, dreamy feel)
             const melody = [

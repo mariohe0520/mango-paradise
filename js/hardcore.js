@@ -103,8 +103,8 @@ const ComboTheory = {
     },
 
     SHAPE_BONUSES: {
-        'T': { score: 500, label: 'T-SPIN! 🌀' },
-        'L': { score: 300, label: 'L-COMBO! 📐' },
+        'T': { score: 500, label: 'T-SPIN! ◎' },
+        'L': { score: 300, label: 'L-COMBO! △' },
     },
 
     // Setup Preview: find all potential cascade chains from a swap
@@ -181,10 +181,10 @@ const ComboTheory = {
 
     // Level tips for combo theory
     LEVEL_TIPS: {
-        chain: '⛓️ 这关奖励连锁消除 — 设置多层级联！',
-        shape: '🌀 尝试T形和L形消除获得额外奖金！',
-        perfect: '✨ 清空棋盘可获得完美清除奖金！',
-        setup: '🧠 选中宝石时会显示级联预览',
+        chain: '≡ 这关奖励连锁消除 — 设置多层级联！',
+        shape: '◎ 尝试T形和L形消除获得额外奖金！',
+        perfect: '✦ 清空棋盘可获得完美清除奖金！',
+        setup: '※ 选中宝石时会显示级联预览',
     },
 
     getLevelTip(level) {
@@ -208,10 +208,10 @@ const SkillMechanics = {
 
     POWER_THRESHOLDS: [50, 100, 150, 200],
     POWER_EFFECTS: [
-        { name: '小震荡', desc: '清除随机5个宝石', emoji: '💥' },
-        { name: '中震荡', desc: '清除随机一行', emoji: '⚡' },
-        { name: '大震荡', desc: '清除随机两行+一列', emoji: '🌪️' },
-        { name: '终极震荡', desc: '清除全屏50%宝石', emoji: '☄️' },
+        { name: '小震荡', desc: '清除随机5个宝石', emoji: '✸' },
+        { name: '中震荡', desc: '清除随机一行', emoji: '↯' },
+        { name: '大震荡', desc: '清除随机两行+一列', emoji: '◎' },
+        { name: '终极震荡', desc: '清除全屏50%宝石', emoji: '✸' },
     ],
 
     addPowerFromCombo(comboDepth) {
@@ -307,12 +307,12 @@ const SkillMechanics = {
         const finalScore = Math.round(baseScore * 0.4 + comboScore * 0.3 + saveScore * 0.3);
 
         let grade, label;
-        if (finalScore >= 95) { grade = 'S+'; label = '🧠 神级策略'; }
-        else if (finalScore >= 85) { grade = 'S'; label = '🎯 大师水平'; }
-        else if (finalScore >= 70) { grade = 'A'; label = '💡 高手操作'; }
-        else if (finalScore >= 55) { grade = 'B'; label = '👍 不错表现'; }
-        else if (finalScore >= 40) { grade = 'C'; label = '🤔 还有提升空间'; }
-        else { grade = 'D'; label = '💪 继续练习'; }
+        if (finalScore >= 95) { grade = 'S+'; label = '※ 神级策略'; }
+        else if (finalScore >= 85) { grade = 'S'; label = '◎ 大师水平'; }
+        else if (finalScore >= 70) { grade = 'A'; label = '※ 高手操作'; }
+        else if (finalScore >= 55) { grade = 'B'; label = '■ 不错表现'; }
+        else if (finalScore >= 40) { grade = 'C'; label = '? 还有提升空间'; }
+        else { grade = 'D'; label = '↯ 继续练习'; }
 
         return { score: finalScore, grade, label, scorePerMove: Math.round(scorePerMove), comboEfficiency: Math.round(comboEfficiency * 10) };
     },
@@ -352,7 +352,7 @@ const DifficultyTiers = {
             moveMult: 1.0, scoreMult: 1.0, starMult: 1.0, obstacleBonus: 0, timedBonus: 0 },
         hard: { id: 'hard', name: '困难', nameEn: 'Hard', icon: '🟡', color: '#eab308',
             moveMult: 0.7, scoreMult: 1.5, starMult: 1.3, obstacleBonus: 3, timedBonus: 0 },
-        insane: { id: 'insane', name: '疯狂', nameEn: 'Insane', icon: '🔴', color: '#ef4444',
+        insane: { id: 'insane', name: '疯狂', nameEn: 'Insane', icon: '●', color: '#ef4444',
             moveMult: 0.5, scoreMult: 2.5, starMult: 1.8, obstacleBonus: 6, timedBonus: 1, spawnObstacles: true },
     },
 
@@ -414,8 +414,8 @@ const DifficultyTiers = {
     // Rewards for completing harder difficulties
     getRewards(tier) {
         switch (tier) {
-            case 'hard': return { gold: 500, gems: 2, title: '💪 困难征服者' };
-            case 'insane': return { gold: 1500, gems: 5, title: '🔥 疯狂统治者' };
+            case 'hard': return { gold: 500, gems: 2, title: '↯ 困难征服者' };
+            case 'insane': return { gold: 1500, gems: 5, title: '☆ 疯狂统治者' };
             default: return { gold: 0, gems: 0, title: '' };
         }
     },
@@ -470,7 +470,7 @@ const SpiritLoadout = {
     // 5 battle spirits (different from Estate spirits — these are tactical loadout)
     BATTLE_SPIRITS: {
         fire: {
-            id: 'fire', name: '火灵', emoji: '🔥', color: '#ef4444',
+            id: 'fire', name: '火灵', emoji: '☆', color: '#ef4444',
             desc: '连锁时有概率自动清除一行',
             effect: 'auto_clear_row',
             triggerChance: 0.25,
@@ -481,7 +481,7 @@ const SpiritLoadout = {
             ]
         },
         water: {
-            id: 'water', name: '水灵', emoji: '💧', color: '#3b82f6',
+            id: 'water', name: '水灵', emoji: '≈', color: '#3b82f6',
             desc: '每5次连锁+2步',
             effect: 'extra_moves',
             comboThreshold: 5,
@@ -493,7 +493,7 @@ const SpiritLoadout = {
             ]
         },
         earth: {
-            id: 'earth', name: '地灵', emoji: '🪨', color: '#92400e',
+            id: 'earth', name: '地灵', emoji: '▣', color: '#92400e',
             desc: '障碍物HP-1',
             effect: 'reduce_obstacle_hp',
             upgrades: [
@@ -503,7 +503,7 @@ const SpiritLoadout = {
             ]
         },
         wind: {
-            id: 'wind', name: '风灵', emoji: '🌪️', color: '#06b6d4',
+            id: 'wind', name: '风灵', emoji: '◎', color: '#06b6d4',
             desc: '每步后宝石随机移位(混沌模式)',
             effect: 'shuffle_after_move',
             shuffleCount: 3,
@@ -514,7 +514,7 @@ const SpiritLoadout = {
             ]
         },
         lightning: {
-            id: 'lightning', name: '雷灵', emoji: '⚡', color: '#eab308',
+            id: 'lightning', name: '雷灵', emoji: '↯', color: '#eab308',
             desc: '每3步随机消除一个宝石',
             effect: 'random_destroy',
             interval: 3,
@@ -671,7 +671,7 @@ const SpiritLoadout = {
                                 }
                             }
                         }
-                        UI.showToast(`🔥 火灵清行！`, 'success');
+                        UI.showToast(`☆ 火灵清行！`, 'success');
                     }
                     break;
                 }
@@ -680,7 +680,7 @@ const SpiritLoadout = {
                     const moves = upgrade.moves || 2;
                     if (this._comboCounter % threshold === 0 && !game.level.timed) {
                         game.movesLeft += moves;
-                        UI.showToast(`💧 水灵: +${moves}步！`, 'success');
+                        UI.showToast(`≈ 水灵: +${moves}步！`, 'success');
                     }
                     break;
                 }
@@ -743,7 +743,7 @@ const ChallengeTower = {
 
         // ── Floor 1-5: basic constraints (no special gems, limited moves) ──
         if (floorNum <= 5) {
-            base.constraints.push({ name: '禁特殊', desc: '无法生成特殊宝石', icon: '🚫', type: 'no_specials' });
+            base.constraints.push({ name: '禁特殊', desc: '无法生成特殊宝石', icon: '✗', type: 'no_specials' });
             base.moves = Math.max(12, 22 - floorNum * 2); // 20, 18, 16, 14, 12
         }
         // ── Floor 6-10: harder (fog + gravity combo, restricted gem types) ──
@@ -751,12 +751,12 @@ const ChallengeTower = {
             base.special = { fog: true, fogCount: 6 + (floorNum - 6) * 2, gravityShift: true };
             // Restrict to 4 gem types
             base.gems = base.gems.slice(0, 4);
-            base.constraints.push({ name: '迷雾重力', desc: '迷雾+重力偏移', icon: '🌀' });
+            base.constraints.push({ name: '迷雾重力', desc: '迷雾+重力偏移', icon: '◎' });
         }
 
         // Scale objectives
         const scoreTarget = 3000 + floorNum * 500;
-        base.objectives.push({ type: 'score', target: scoreTarget, icon: '⭐' });
+        base.objectives.push({ type: 'score', target: scoreTarget, icon: '★' });
         base.stars = [scoreTarget, Math.floor(scoreTarget * 1.5), Math.floor(scoreTarget * 2.5)];
 
         // Apply floor-specific constraints (only for floors > 10 that aren't bosses)
@@ -779,7 +779,7 @@ const ChallengeTower = {
             base._bossHP = 3000 + bossIndex * 2000;
             // Attacks per turn scale: 1 at floor 5, 2+ at higher floors
             base._bossAttacksPerTurn = Math.min(1 + Math.floor(bossIndex / 3), 3);
-            base.objectives.push({ type: 'combo', target: Math.min(3 + bossIndex, 8), icon: '🔥' });
+            base.objectives.push({ type: 'combo', target: Math.min(3 + bossIndex, 8), icon: '☆' });
         }
 
         // Floor 50: Ultimate Boss
@@ -792,15 +792,15 @@ const ChallengeTower = {
             base._bossHP = 25000;
             base._bossAttacksPerTurn = 3;
             base.objectives = [
-                { type: 'score', target: 100000, icon: '⭐' },
-                { type: 'combo', target: 8, icon: '🔥' },
-                { type: 'special', target: 10, specialType: 'any', icon: '✨' },
+                { type: 'score', target: 100000, icon: '★' },
+                { type: 'combo', target: 8, icon: '☆' },
+                { type: 'special', target: 10, specialType: 'any', icon: '✦' },
             ];
             base.stars = [100000, 150000, 250000];
             base.special = { fog: true, fogCount: 15, gravityShift: true, chainBonus: true };
             base.timed = true;
             base.timeLimit = 180;
-            base.constraints.push({ name: '终极考验', desc: '全部机制激活', icon: '☠️' });
+            base.constraints.push({ name: '终极考验', desc: '全部机制激活', icon: '☠' });
         }
 
         // Create proper level config
@@ -814,18 +814,18 @@ const ChallengeTower = {
     },
 
     FLOOR_CONSTRAINTS: [
-        { name: '仅三消', desc: '只有3个一排才有效', icon: '3️⃣', type: 'only_3match' },
-        { name: '禁特殊', desc: '无法生成特殊宝石', icon: '🚫', type: 'no_specials' },
-        { name: '小棋盘', desc: '棋盘缩小为6x6', icon: '📦', type: 'small_board', modifiers: { width: 6, height: 6 } },
-        { name: '超小棋盘', desc: '棋盘缩小为5x5', icon: '📦', type: 'tiny_board', modifiers: { width: 5, height: 5 } },
-        { name: '迷雾重重', desc: '大量迷雾覆盖', icon: '🌫️', type: 'heavy_fog', modifiers: { special: { fog: true, fogCount: 20 } } },
-        { name: '重力异常', desc: '宝石向左滑落', icon: '⬅️', type: 'gravity', modifiers: { special: { gravityShift: true } } },
-        { name: '连锁大师', desc: '必须达成高连锁', icon: '⛓️', type: 'chain_master', extraObjectives: [{ type: 'combo', target: 8, icon: '🔥' }] },
-        { name: '限时冲刺', desc: '60秒时间限制', icon: '⏱️', type: 'timed_sprint', modifiers: { timed: true, timeLimit: 60 } },
-        { name: '冰封世界', desc: '大量冰冻格子', icon: '❄️', type: 'frozen_world' },
-        { name: '宝石收集', desc: '收集指定宝石', icon: '🎯', type: 'collect_gems' },
-        { name: '炸弹专家', desc: '只能用炸弹消除', icon: '💣', type: 'bomb_only' },
-        { name: '步数极限', desc: '只有8步', icon: '👣', type: 'minimal_moves', modifiers: { moves: 8 } },
+        { name: '仅三消', desc: '只有3个一排才有效', icon: '[3]', type: 'only_3match' },
+        { name: '禁特殊', desc: '无法生成特殊宝石', icon: '✗', type: 'no_specials' },
+        { name: '小棋盘', desc: '棋盘缩小为6x6', icon: '▤', type: 'small_board', modifiers: { width: 6, height: 6 } },
+        { name: '超小棋盘', desc: '棋盘缩小为5x5', icon: '▤', type: 'tiny_board', modifiers: { width: 5, height: 5 } },
+        { name: '迷雾重重', desc: '大量迷雾覆盖', icon: '≋', type: 'heavy_fog', modifiers: { special: { fog: true, fogCount: 20 } } },
+        { name: '重力异常', desc: '宝石向左滑落', icon: '←', type: 'gravity', modifiers: { special: { gravityShift: true } } },
+        { name: '连锁大师', desc: '必须达成高连锁', icon: '≡', type: 'chain_master', extraObjectives: [{ type: 'combo', target: 8, icon: '☆' }] },
+        { name: '限时冲刺', desc: '60秒时间限制', icon: '[限时]', type: 'timed_sprint', modifiers: { timed: true, timeLimit: 60 } },
+        { name: '冰封世界', desc: '大量冰冻格子', icon: '※', type: 'frozen_world' },
+        { name: '宝石收集', desc: '收集指定宝石', icon: '◎', type: 'collect_gems' },
+        { name: '炸弹专家', desc: '只能用炸弹消除', icon: '✸', type: 'bomb_only' },
+        { name: '步数极限', desc: '只有8步', icon: '●', type: 'minimal_moves', modifiers: { moves: 8 } },
     ],
 
     getFloorConstraint(floorNum) {
@@ -839,10 +839,10 @@ const ChallengeTower = {
         if (constraint.type === 'collect_gems') {
             const gemPool = ['murloc', 'orc', 'elf', 'mage', 'knight', 'dwarf'];
             const gem = gemPool[floorNum % gemPool.length];
-            constraint.extraObjectives = [{ type: 'clear', target: 15 + floorNum, gem, icon: GEM_TYPES[gem]?.emoji || '❓' }];
+            constraint.extraObjectives = [{ type: 'clear', target: 15 + floorNum, gem, icon: GEM_TYPES[gem]?.emoji || '?' }];
         }
         if (constraint.type === 'chain_master') {
-            constraint.extraObjectives = [{ type: 'combo', target: 3 + Math.floor(floorNum / 5), icon: '🔥' }];
+            constraint.extraObjectives = [{ type: 'combo', target: 3 + Math.floor(floorNum / 5), icon: '☆' }];
         }
 
         return constraint;
@@ -931,7 +931,7 @@ const HardcoreMode = {
         // Check perfect clear
         if (ComboTheory.checkPerfectClear(game.board, game.width, game.height)) {
             game.addScore(ComboTheory.PERFECT_CLEAR_BONUS);
-            UI.showToast('✨ PERFECT CLEAR! +50000!', 'success');
+            UI.showToast('✦ PERFECT CLEAR! +50000!', 'success');
             game.screenShake(15, 500);
             Utils.vibrate([100, 50, 100, 50, 200]);
         }

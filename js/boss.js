@@ -11,61 +11,61 @@ const Boss = {
         10: {
             name: '树精长老', desc: '艾尔文森林的古老守护者', weakness: 'phoenix_spirit',
             phases: [
-                { emoji: '🌳', hpPct: 1.0, attacks: ['ice'], interval: 3, taunt: '树木会记住你的傲慢！' },
-                { emoji: '🌲', hpPct: 0.4, attacks: ['ice','transform'], interval: 2, taunt: '吾根深不可拔！', announce: '树精长老进入根系形态！' }
+                { emoji: '♠', hpPct: 1.0, attacks: ['ice'], interval: 3, taunt: '树木会记住你的傲慢！' },
+                { emoji: '♠', hpPct: 0.4, attacks: ['ice','transform'], interval: 2, taunt: '吾根深不可拔！', announce: '树精长老进入根系形态！' }
             ], hp: 5000
         },
         20: {
             name: '沙漠蝎王', desc: '西部荒野的霸主', weakness: 'frost_spirit',
             phases: [
-                { emoji: '🦂', hpPct: 1.0, attacks: ['lock'], interval: 3, taunt: '我的毒液会让你动弹不得！' },
-                { emoji: '🦂', hpPct: 0.3, attacks: ['lock','steal'], interval: 2, taunt: '毒性全开！', announce: '蝎王狂暴了！尾刺开始发光！' }
+                { emoji: '蝎', hpPct: 1.0, attacks: ['lock'], interval: 3, taunt: '我的毒液会让你动弹不得！' },
+                { emoji: '蝎', hpPct: 0.3, attacks: ['lock','steal'], interval: 2, taunt: '毒性全开！', announce: '蝎王狂暴了！尾刺开始发光！' }
             ], hp: 8000
         },
         30: {
             name: '暴风巨龙', desc: '暴风城上空的阴影', weakness: 'dragon_spirit',
             phases: [
-                { emoji: '🐲', hpPct: 1.0, attacks: ['ice','shuffle'], interval: 2, taunt: '暴风洗礼，凡人颤抖吧！' },
-                { emoji: '🐲', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '让暴风更猛烈些吧！', announce: '暴风巨龙展开双翼，风暴升级！' },
-                { emoji: '🌪️', hpPct: 0.2, attacks: ['shuffle','shuffle','steal'], interval: 1, taunt: '我就是暴风本身！', announce: '巨龙化为风暴之体！' }
+                { emoji: '龙', hpPct: 1.0, attacks: ['ice','shuffle'], interval: 2, taunt: '暴风洗礼，凡人颤抖吧！' },
+                { emoji: '龙', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '让暴风更猛烈些吧！', announce: '暴风巨龙展开双翼，风暴升级！' },
+                { emoji: '◎', hpPct: 0.2, attacks: ['shuffle','shuffle','steal'], interval: 1, taunt: '我就是暴风本身！', announce: '巨龙化为风暴之体！' }
             ], hp: 12000
         },
         40: {
             name: '暗影领主', desc: '诅咒之地的主宰', weakness: 'rainbow_spirit',
             phases: [
-                { emoji: '👿', hpPct: 1.0, attacks: ['lock','transform'], interval: 2, taunt: '黑暗会吞噬一切光明...' },
-                { emoji: '😈', hpPct: 0.4, attacks: ['lock','transform','steal'], interval: 2, taunt: '感受绝望吧！', announce: '暗影领主揭开面具，露出真容！' }
+                { emoji: '◆', hpPct: 1.0, attacks: ['lock','transform'], interval: 2, taunt: '黑暗会吞噬一切光明...' },
+                { emoji: '◆', hpPct: 0.4, attacks: ['lock','transform','steal'], interval: 2, taunt: '感受绝望吧！', announce: '暗影领主揭开面具，露出真容！' }
             ], hp: 18000
         },
         50: {
             name: '熔火之王', desc: '燃烧平原的炎魔', weakness: 'frost_spirit',
             phases: [
-                { emoji: '🔥', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '在烈焰中化为灰烬吧！' },
-                { emoji: '🌋', hpPct: 0.5, attacks: ['lock','steal','transform'], interval: 2, taunt: '岩浆沸腾！', announce: '熔火之王坠入熔岩，浴火重生！' },
-                { emoji: '☄️', hpPct: 0.15, attacks: ['ice','lock','shuffle','steal'], interval: 1, taunt: '这不是终结...是开始！', announce: '他从熔岩中升起，烈焰灌体！' }
+                { emoji: '☆', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '在烈焰中化为灰烬吧！' },
+                { emoji: '△', hpPct: 0.5, attacks: ['lock','steal','transform'], interval: 2, taunt: '岩浆沸腾！', announce: '熔火之王坠入熔岩，浴火重生！' },
+                { emoji: '✸', hpPct: 0.15, attacks: ['ice','lock','shuffle','steal'], interval: 1, taunt: '这不是终结...是开始！', announce: '他从熔岩中升起，烈焰灌体！' }
             ], hp: 25000
         },
         60: {
             name: '巫妖王', desc: '诺森德的终极霸主', weakness: 'phoenix_spirit',
             phases: [
-                { emoji: '💀', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '这里没有希望，只有永恒的寒冬。' },
-                { emoji: '💀', hpPct: 0.6, attacks: ['ice','lock','transform'], interval: 2, taunt: '霜之哀伤渴望鲜血...', announce: '巫妖王拔出霜之哀伤！寒气逼人！' },
-                { emoji: '👑', hpPct: 0.25, attacks: ['ice','ice','lock','steal'], interval: 1, taunt: '跪下！', announce: '巫妖王摘下头盔！"够了，不再留手。"' }
+                { emoji: '☠', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '这里没有希望，只有永恒的寒冬。' },
+                { emoji: '☠', hpPct: 0.6, attacks: ['ice','lock','transform'], interval: 2, taunt: '霜之哀伤渴望鲜血...', announce: '巫妖王拔出霜之哀伤！寒气逼人！' },
+                { emoji: '♕', hpPct: 0.25, attacks: ['ice','ice','lock','steal'], interval: 1, taunt: '跪下！', announce: '巫妖王摘下头盔！"够了，不再留手。"' }
             ], hp: 30000
         },
         70: {
             name: '虚空行者', desc: '虚空深渊的使者', weakness: 'time_spirit',
             phases: [
-                { emoji: '🌀', hpPct: 1.0, attacks: ['shuffle','transform'], interval: 2, taunt: '虚空会扭曲你所见的一切！' },
-                { emoji: '🕳️', hpPct: 0.4, attacks: ['shuffle','transform','steal'], interval: 1, taunt: '现实正在崩塌！', announce: '虚空行者撕裂空间，维度开始扭曲！' }
+                { emoji: '◎', hpPct: 1.0, attacks: ['shuffle','transform'], interval: 2, taunt: '虚空会扭曲你所见的一切！' },
+                { emoji: '●', hpPct: 0.4, attacks: ['shuffle','transform','steal'], interval: 1, taunt: '现实正在崩塌！', announce: '虚空行者撕裂空间，维度开始扭曲！' }
             ], hp: 35000
         },
         80: {
             name: '翡翠巨龙', desc: '翡翠梦境的守望者', weakness: 'chaos_spirit',
             phases: [
-                { emoji: '🐉', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '梦境与现实的界限正在模糊...' },
-                { emoji: '🐲', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '你正在沉入梦境...', announce: '翡翠巨龙吐出梦境之息！' },
-                { emoji: '💚', hpPct: 0.15, attacks: ['shuffle','shuffle','transform','steal'], interval: 1, taunt: '在梦中，我就是神。', announce: '梦境崩塌！巨龙展露真实力量！' }
+                { emoji: '龙', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '梦境与现实的界限正在模糊...' },
+                { emoji: '龙', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '你正在沉入梦境...', announce: '翡翠巨龙吐出梦境之息！' },
+                { emoji: '♥', hpPct: 0.15, attacks: ['shuffle','shuffle','transform','steal'], interval: 1, taunt: '在梦中，我就是神。', announce: '梦境崩塌！巨龙展露真实力量！' }
             ], hp: 40000
         },
         90: {
@@ -73,16 +73,16 @@ const Boss = {
             phases: [
                 { emoji: '⏳', hpPct: 1.0, attacks: ['steal','transform'], interval: 2, taunt: '时间站在我这边！' },
                 { emoji: '⏰', hpPct: 0.5, attacks: ['steal','transform','ice'], interval: 2, taunt: '我加速了时间！', announce: '时光之龙扭曲时间线！一切加速！' },
-                { emoji: '🕐', hpPct: 0.2, attacks: ['steal','steal','shuffle','lock'], interval: 1, taunt: '在时间的尽头，等待你的只有虚无。', announce: '时光之龙冻结时间！"这一刻，永恒。"' }
+                { emoji: '◎', hpPct: 0.2, attacks: ['steal','steal','shuffle','lock'], interval: 1, taunt: '在时间的尽头，等待你的只有虚无。', announce: '时光之龙冻结时间！"这一刻，永恒。"' }
             ], hp: 45000
         },
         100: {
             name: '萨格拉斯', desc: '燃烧军团的堕落泰坦', weakness: null,
             phases: [
-                { emoji: '😈', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '小小的凡人，竟敢直面泰坦？' },
-                { emoji: '👹', hpPct: 0.6, attacks: ['lock','shuffle','transform','steal'], interval: 2, taunt: '够了！让我展现真正的力量！', announce: '萨格拉斯脱去伪装！巨大的身影遮蔽天空！' },
-                { emoji: '🔥', hpPct: 0.3, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '燃烧吧！一切都将化为灰烬！', announce: '萨格拉斯拔出戈尔希法斯！大地在他脚下碎裂！' },
-                { emoji: '💥', hpPct: 0.1, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '就算倒下...我也要带走这个世界！', announce: '萨格拉斯最终形态！"这是...我最后的燃烧！"' }
+                { emoji: '◆', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '小小的凡人，竟敢直面泰坦？' },
+                { emoji: '鬼', hpPct: 0.6, attacks: ['lock','shuffle','transform','steal'], interval: 2, taunt: '够了！让我展现真正的力量！', announce: '萨格拉斯脱去伪装！巨大的身影遮蔽天空！' },
+                { emoji: '☆', hpPct: 0.3, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '燃烧吧！一切都将化为灰烬！', announce: '萨格拉斯拔出戈尔希法斯！大地在他脚下碎裂！' },
+                { emoji: '✸', hpPct: 0.1, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '就算倒下...我也要带走这个世界！', announce: '萨格拉斯最终形态！"这是...我最后的燃烧！"' }
             ], hp: 55000
         }
     },
@@ -163,7 +163,7 @@ const Boss = {
         // Check phase transition
         const newPhase = this.checkPhaseTransition();
         if (newPhase && newPhase.announce) {
-            UI.showToast(`⚠️ ${newPhase.announce}`, 'error');
+            UI.showToast(`▲ ${newPhase.announce}`, 'error');
             const bossIcon = document.getElementById('boss-icon');
             if (bossIcon) bossIcon.textContent = newPhase.emoji;
         }
@@ -187,7 +187,7 @@ const Boss = {
             setTimeout(() => hpBar.classList.remove('hp-shake'), 400);
         }
 
-        // 🔥 Floating damage number
+        // ☆ Floating damage number
         const bar = document.getElementById('boss-bar');
         if (bar && dmg > 0) {
             const popup = document.createElement('div');
@@ -200,7 +200,7 @@ const Boss = {
             setTimeout(() => popup.remove(), 1200);
         }
 
-        // 🔥 Boss rage mode — HP below 25%, attack faster
+        // ☆ Boss rage mode — HP below 25%, attack faster
         if (this.bossHP > 0 && this.bossHP / this.bossMaxHP < 0.25 && !this._rageMode) {
             this._rageMode = true;
             if (bossIcon) bossIcon.classList.add('boss-rage');
@@ -270,7 +270,7 @@ const Boss = {
         setTimeout(() => flash.remove(), 900);
 
         const phase = this.getCurrentPhase();
-        UI.showToast(`💀 ${phase?.emoji || '👹'} 终极技能！骷髅侵蚀！`, 'error');
+        UI.showToast(`☠ ${phase?.emoji || '鬼'} 终极技能！骷髅侵蚀！`, 'error');
 
         // Place 5 skulls
         const skulls = this.placeSkullGems(game, 5);
@@ -327,7 +327,7 @@ const Boss = {
             const skulls = this.placeSkullGems(game, skullCount);
             skulls.forEach(s => attacks.push({ type: 'skull', ...s }));
             if (skulls.length > 0) {
-                UI.showToast(`💀 Boss放置了${skulls.length}个骷髅！`, 'error');
+                UI.showToast(`☠ Boss放置了${skulls.length}个骷髅！`, 'error');
             }
         }
         // Pick from CURRENT PHASE's attacks (phase-specific!)
@@ -411,11 +411,11 @@ const Boss = {
             }
         }
 
-        // 🎭 Dynamic Boss dialogue — reacts to battle state
+        // ◇ Dynamic Boss dialogue — reacts to battle state
         const curPhase = this.getCurrentPhase();
         if (Math.random() < 0.25 || this._rageMode) {
             const hpPct = this.bossHP / this.bossMaxHP;
-            const emoji = curPhase?.emoji || '👹';
+            const emoji = curPhase?.emoji || '鬼';
             let line = curPhase?.taunt || '';
             // Boss gets SCARED when low HP
             if (hpPct < 0.15 && !this._saidFear) {
@@ -459,12 +459,12 @@ const Boss = {
         if (txt) txt.textContent = `${Utils.formatNumber(Math.ceil(this.bossHP))} / ${Utils.formatNumber(this.bossMaxHP)}`;
         if (nm) nm.textContent = this.currentBoss.name;
         const phase = this.getCurrentPhase();
-        if (icon) icon.textContent = phase?.emoji || this.currentBoss.phases?.[0]?.emoji || '👹';
+        if (icon) icon.textContent = phase?.emoji || this.currentBoss.phases?.[0]?.emoji || '鬼';
         // Update rage meter
         this.updateRageMeterUI();
     },
 
-    // 🏆 Boss Loot — unique rewards per boss
+    // ♕ Boss Loot — unique rewards per boss
     LOOT: {
         10: { gold: 500,  gems: 5,  title: '森林守护者', lore: '树精长老倒下了，他的根须化为一颗翠绿的芒果种子...' },
         20: { gold: 800,  gems: 8,  title: '荒野征服者', lore: '蝎王的毒刺碎裂，沙漠中涌出清澈的泉水...' },

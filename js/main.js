@@ -14,22 +14,22 @@ if ('serviceWorker' in navigator) {
 
 // 加载提示
 const LOADING_TIPS = [
-    '💡 连接4个以上可以产生特殊宝石！',
-    '💡 彩虹宝石可以消除所有同类型的宝石！',
-    '💡 两个特殊宝石交换会触发超级组合！',
-    '💡 L型和T型消除可以创建炸弹宝石！',
-    '💡 庄园种树可以获得永久增益buff！',
-    '💡 精灵技能充满后点击释放大招！',
-    '💡 Boss狂暴后每回合双重攻击，速战速决！',
-    '⚔️ 为了部落！为了芒果庄园！',
-    '🐺 萨尔说：大地在你脚下，力量与你同在。',
-    '💀 希尔瓦娜斯：黑暗女王守护你的每一步。',
-    '🐂 凯恩：只有最强的战士才能三星通关。',
-    '🧌 沃金说：去吧兄弟，打倒那些Boss！',
-    '🥭 芒果过敏，部落最可爱的战士！',
-    '🔥 洛克塔尔·奥加尔！胜利或死亡！',
-    '⚡ 萨满的力量流淌在每一次消除中...',
-    '🛡️ 奥格瑞玛的勇士，今天三星了吗？',
+    '※ 连接4个以上可以产生特殊宝石！',
+    '※ 彩虹宝石可以消除所有同类型的宝石！',
+    '※ 两个特殊宝石交换会触发超级组合！',
+    '※ L型和T型消除可以创建炸弹宝石！',
+    '※ 庄园种树可以获得永久增益buff！',
+    '※ 精灵技能充满后点击释放大招！',
+    '※ Boss狂暴后每回合双重攻击，速战速决！',
+    '⚔ 为了部落！为了芒果庄园！',
+    '狼 萨尔说：大地在你脚下，力量与你同在。',
+    '☠ 希尔瓦娜斯：黑暗女王守护你的每一步。',
+    '牛 凯恩：只有最强的战士才能三星通关。',
+    '怪 沃金说：去吧兄弟，打倒那些Boss！',
+    '芒 芒果过敏，部落最可爱的战士！',
+    '☆ 洛克塔尔·奥加尔！胜利或死亡！',
+    '↯ 萨满的力量流淌在每一次消除中...',
+    '⛊ 奥格瑞玛的勇士，今天三星了吗？',
 ];
 
 // 应用程序主类
@@ -254,14 +254,14 @@ class App {
         const cycle = ((day - 1) % 7) + 1;
         const multiplier = Math.floor((day - 1) / 7) + 1; // Week multiplier
         switch(cycle) {
-            case 1: return { gold: 100 * multiplier, gems: 0, label: '💰 金币' };
-            case 2: return { gold: 150 * multiplier, gems: 0, label: '💰 金币' };
-            case 3: return { gold: 200 * multiplier, gems: 1, label: '💎 宝石+金币' };
-            case 4: return { gold: 250 * multiplier, gems: 0, label: '💰 金币' };
-            case 5: return { gold: 300 * multiplier, gems: 1, label: '💎 宝石+金币' };
-            case 6: return { gold: 400 * multiplier, gems: 2, label: '💎💎 双倍宝石' };
-            case 7: return { gold: 500 * multiplier, gems: 3, label: '🎁 超级大礼' };
-            default: return { gold: 100, gems: 0, label: '💰 金币' };
+            case 1: return { gold: 100 * multiplier, gems: 0, label: '¤ 金币' };
+            case 2: return { gold: 150 * multiplier, gems: 0, label: '¤ 金币' };
+            case 3: return { gold: 200 * multiplier, gems: 1, label: '◆ 宝石+金币' };
+            case 4: return { gold: 250 * multiplier, gems: 0, label: '¤ 金币' };
+            case 5: return { gold: 300 * multiplier, gems: 1, label: '◆ 宝石+金币' };
+            case 6: return { gold: 400 * multiplier, gems: 2, label: '◆◆ 双倍宝石' };
+            case 7: return { gold: 500 * multiplier, gems: 3, label: '♪ 超级大礼' };
+            default: return { gold: 100, gems: 0, label: '¤ 金币' };
         }
     }
     
@@ -277,8 +277,8 @@ class App {
             const r = this.getDailyReward(d);
             days.push(`<div class="dl-day ${isPast ? 'dl-claimed' : ''} ${isCurrent ? 'dl-today' : ''}">
                 <div class="dl-day-num">Day ${d}</div>
-                <div class="dl-day-reward">${d===7?'🎁':d%3===0?'💎':'💰'}</div>
-                <div class="dl-day-amount">${r.gems ? r.gems+'💎+' : ''}${r.gold}金</div>
+                <div class="dl-day-reward">${d===7?'♪':d%3===0?'◆':'¤'}</div>
+                <div class="dl-day-amount">${r.gems ? r.gems+'◆+' : ''}${r.gold}金</div>
                 ${isCurrent ? '<div class="dl-check">✓</div>' : isPast ? '<div class="dl-check dim">✓</div>' : ''}
             </div>`);
         }
@@ -288,7 +288,7 @@ class App {
         popup.innerHTML = `
             <div class="dl-overlay" onclick="document.getElementById('daily-login-popup').remove()">
                 <div class="dl-card" onclick="event.stopPropagation()">
-                    <div class="dl-title">🔥 连续登录第 ${streak} 天</div>
+                    <div class="dl-title">☆ 连续登录第 ${streak} 天</div>
                     <div class="dl-grid">${days.join('')}</div>
                     <div class="dl-reward-text">
                         今日奖励: ${rewards.label}<br>
@@ -400,6 +400,6 @@ if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
         }
     };
     
-    console.log('%c🥭 芒果庄园 Debug Mode', 'color: #f7931e; font-size: 20px; font-weight: bold;');
+    console.log('%c芒 芒果庄园 Debug Mode', 'color: #f7931e; font-size: 20px; font-weight: bold;');
     console.log('Available commands: window.DEBUG');
 }

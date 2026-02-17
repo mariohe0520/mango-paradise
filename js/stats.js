@@ -248,7 +248,7 @@ const Stats = {
         const gems = Object.entries(data.gemStats || {})
             .map(([type, stats]) => ({
                 type,
-                emoji: (typeof GEM_TYPES !== 'undefined' && GEM_TYPES[type]) ? GEM_TYPES[type].emoji : '❓',
+                emoji: (typeof GEM_TYPES !== 'undefined' && GEM_TYPES[type]) ? GEM_TYPES[type].emoji : '?',
                 name: (typeof GEM_TYPES !== 'undefined' && GEM_TYPES[type]) ? GEM_TYPES[type].name : type,
                 ...stats
             }))

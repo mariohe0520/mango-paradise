@@ -13,7 +13,7 @@ const COLLECTION_DATA = {
         {
             id: 'murloc',
             name: '鱼人',
-            emoji: '🐟',
+            emoji: '鱼',
             rarity: 'common',
             description: '芒果庄园中最常见的小生物，虽然看起来呆萌，但千万别小看它们的数量优势！',
             lore: '"Mrglglgl!" - 鱼人的战斗号角',
@@ -23,7 +23,7 @@ const COLLECTION_DATA = {
         {
             id: 'orc',
             name: '兽人',
-            emoji: '👹',
+            emoji: '鬼',
             rarity: 'common',
             description: '来自德拉诺的勇猛战士，现在他们也被芒果的美味所征服。',
             lore: '为了部落！为了...芒果！',
@@ -33,7 +33,7 @@ const COLLECTION_DATA = {
         {
             id: 'elf',
             name: '精灵',
-            emoji: '🧝',
+            emoji: '灵',
             rarity: 'common',
             description: '优雅的精灵族，他们的魔法让芒果园更加繁茂。',
             lore: '愿艾露恩照耀你的芒果园',
@@ -43,7 +43,7 @@ const COLLECTION_DATA = {
         {
             id: 'mage',
             name: '法师',
-            emoji: '🧙',
+            emoji: '法',
             rarity: 'common',
             description: '掌握奥术的智者，他们用魔法加速芒果的成熟。',
             lore: '知识就是力量...也是好吃的芒果',
@@ -53,7 +53,7 @@ const COLLECTION_DATA = {
         {
             id: 'knight',
             name: '骑士',
-            emoji: '⚔️',
+            emoji: '⚔',
             rarity: 'common',
             description: '守护芒果庄园的忠诚卫士，他们的剑守护着每一颗芒果。',
             lore: '以光明之名，守护芒果！',
@@ -63,7 +63,7 @@ const COLLECTION_DATA = {
         {
             id: 'dwarf',
             name: '矮人',
-            emoji: '🪓',
+            emoji: '⚒',
             rarity: 'uncommon',
             description: '来自铁炉堡的工匠，他们发明了芒果收割机。',
             lore: '没有什么是一杯芒果酒解决不了的',
@@ -73,7 +73,7 @@ const COLLECTION_DATA = {
         {
             id: 'undead',
             name: '亡灵',
-            emoji: '💀',
+            emoji: '☠',
             rarity: 'uncommon',
             description: '死而复生的战士，即使在墓地里也要种芒果。',
             lore: '死亡只是开始...种芒果的开始',
@@ -83,7 +83,7 @@ const COLLECTION_DATA = {
         {
             id: 'mango',
             name: '芒果精灵',
-            emoji: '🥭',
+            emoji: '芒',
             rarity: 'rare',
             description: '传说中的芒果之神化身，拥有让一切变成芒果的神奇力量。',
             lore: '芒果过敏？那是因为你还不够爱芒果！',
@@ -93,7 +93,7 @@ const COLLECTION_DATA = {
         {
             id: 'dragon',
             name: '巨龙',
-            emoji: '🐉',
+            emoji: '龙',
             rarity: 'epic',
             description: '守护芒果宝藏的远古巨龙，它的火焰能烤出最美味的芒果干。',
             lore: '我的芒果山，凡人不得靠近！',
@@ -103,7 +103,7 @@ const COLLECTION_DATA = {
         {
             id: 'phoenix',
             name: '凤凰',
-            emoji: '🔥',
+            emoji: '☆',
             rarity: 'legendary',
             description: '浴火重生的神鸟，它的羽毛能让芒果永不腐烂。',
             lore: '在火焰中重生，在芒果中永恒',
@@ -119,7 +119,7 @@ const COLLECTION_DATA = {
         {
             id: 'hammer',
             name: '芒果锤',
-            emoji: '🔨',
+            emoji: '⚒',
             rarity: 'common',
             description: '一锤子下去，任何宝石都会被消除。据说是矮人工匠用芒果核制成。',
             lore: '这锤子闻起来有点甜...',
@@ -129,7 +129,7 @@ const COLLECTION_DATA = {
         {
             id: 'shuffle',
             name: '混乱之风',
-            emoji: '🔀',
+            emoji: '↯',
             rarity: 'uncommon',
             description: '召唤一阵魔法风，将棋盘上所有宝石重新排列。',
             lore: '风起云涌，芒果乱飞',
@@ -139,7 +139,7 @@ const COLLECTION_DATA = {
         {
             id: 'hint',
             name: '智慧之眼',
-            emoji: '💡',
+            emoji: '※',
             rarity: 'common',
             description: '能看穿一切消除机会的神奇眼睛，找不到配对时的救星。',
             lore: '我看见了...一个芒果配对！',
@@ -159,7 +159,7 @@ const COLLECTION_DATA = {
         {
             id: 'colorBomb',
             name: '彩虹炸弹',
-            emoji: '🌈',
+            emoji: '◇',
             rarity: 'epic',
             description: '传说中的神器，能消除棋盘上所有同类型的宝石。',
             lore: '彩虹的尽头不是金子，是芒果！',
@@ -175,7 +175,7 @@ const COLLECTION_DATA = {
         {
             id: 'horizontal',
             name: '横向闪电',
-            emoji: '➡️',
+            emoji: '→',
             rarity: 'uncommon',
             description: '蕴含横向能量的特殊宝石，激活时会清除整行。',
             lore: '横扫千军如卷席',
@@ -185,7 +185,7 @@ const COLLECTION_DATA = {
         {
             id: 'vertical',
             name: '纵向闪电',
-            emoji: '⬇️',
+            emoji: '↓',
             rarity: 'uncommon',
             description: '蕴含纵向能量的特殊宝石，激活时会清除整列。',
             lore: '天雷地火，纵贯乾坤',
@@ -195,7 +195,7 @@ const COLLECTION_DATA = {
         {
             id: 'bomb',
             name: '爆炸宝石',
-            emoji: '💣',
+            emoji: '✸',
             rarity: 'rare',
             description: '极其不稳定的能量结晶，激活时会产生 3x3 范围爆炸。',
             lore: '小心轻放！这不是芒果干！',
@@ -205,7 +205,7 @@ const COLLECTION_DATA = {
         {
             id: 'rainbow',
             name: '彩虹宝石',
-            emoji: '🌈',
+            emoji: '◇',
             rarity: 'legendary',
             description: '传说级的神奇宝石，能与任何宝石配对并消除所有同类型。',
             lore: '七色光芒，万物归一',
@@ -215,7 +215,7 @@ const COLLECTION_DATA = {
         {
             id: 'super_bomb',
             name: '超级炸弹',
-            emoji: '💥',
+            emoji: '✸',
             rarity: 'legendary',
             description: '两个特殊宝石组合产生的终极破坏力。',
             lore: '当两股力量合二为一...',
@@ -225,7 +225,7 @@ const COLLECTION_DATA = {
         {
             id: 'cross',
             name: '十字闪电',
-            emoji: '✝️',
+            emoji: '✚',
             rarity: 'epic',
             description: '横纵能量的完美结合，同时清除一行一列。',
             lore: '十字路口的选择？全都要！',
@@ -404,7 +404,7 @@ class CollectionManager {
         if (!isUnlocked) {
             return `
                 <div class="collection-item locked" data-id="${id}" data-category="${category}">
-                    <span class="item-icon">❓</span>
+                    <span class="item-icon">?</span>
                     <span class="item-name">???</span>
                 </div>
             `;
@@ -429,7 +429,7 @@ class CollectionManager {
         if (!isUnlocked) {
             return `
                 <div class="collection-detail-content locked">
-                    <div class="detail-icon">❓</div>
+                    <div class="detail-icon">?</div>
                     <h3>未解锁</h3>
                     <p class="unlock-hint">解锁条件：${item.unlockCondition}</p>
                 </div>
@@ -443,16 +443,16 @@ class CollectionManager {
         if (item.stats) {
             statsHtml = `
                 <div class="detail-stats">
-                    <div class="stat">⚔️ ${item.stats.attack}</div>
-                    <div class="stat">❤️ ${item.stats.health}</div>
-                    <div class="stat">💨 ${item.stats.speed}</div>
+                    <div class="stat">⚔ ${item.stats.attack}</div>
+                    <div class="stat">♥ ${item.stats.health}</div>
+                    <div class="stat">→ ${item.stats.speed}</div>
                 </div>
             `;
         }
 
         let effectHtml = '';
         if (item.effect) {
-            effectHtml = `<p class="detail-effect">✨ ${item.effect}</p>`;
+            effectHtml = `<p class="detail-effect">✦ ${item.effect}</p>`;
         }
 
         return `

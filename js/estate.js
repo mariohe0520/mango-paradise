@@ -8,7 +8,7 @@ const Estate = {
     // ── Trees: 6 trees, each upgradeable Lv1→10 ──
     TREES: {
         golden_mango: {
-            id: 'golden_mango', name: '金芒树', emoji: '🌟',
+            id: 'golden_mango', name: '金芒树', emoji: '✦',
             description: '开局自带炸弹宝石',
             baseCost: 200, buff: 'start_bomb',
             levels: [
@@ -21,7 +21,7 @@ const Estate = {
             lore: '传说中金色芒果的母树'
         },
         moonlight: {
-            id: 'moonlight', name: '月光树', emoji: '🌙',
+            id: 'moonlight', name: '月光树', emoji: '☽',
             description: '每关额外步数',
             baseCost: 400, buff: 'extra_moves',
             levels: [
@@ -34,7 +34,7 @@ const Estate = {
             lore: '月光下生长的神秘树木'
         },
         rainbow: {
-            id: 'rainbow', name: '彩虹树', emoji: '🌈',
+            id: 'rainbow', name: '彩虹树', emoji: '◇',
             description: '降低彩虹宝石需求',
             baseCost: 1200, buff: 'rainbow_4',
             levels: [
@@ -47,20 +47,20 @@ const Estate = {
             lore: '七色光芒的圣树'
         },
         crystal: {
-            id: 'crystal', name: '水晶树', emoji: '💎',
+            id: 'crystal', name: '水晶树', emoji: '◆',
             description: '通关额外宝石奖励',
             baseCost: 1500, buff: 'gem_bonus',
             levels: [
-                { desc: '通关+1💎', value: 1 },
-                { desc: '通关+2💎', value: 2 },
-                { desc: '通关+3💎', value: 3 },
-                { desc: '三星通关+5💎', value: 5 },
-                { desc: '三星通关+8💎', value: 8 },
+                { desc: '通关+1◆', value: 1 },
+                { desc: '通关+2◆', value: 2 },
+                { desc: '通关+3◆', value: 3 },
+                { desc: '三星通关+5◆', value: 5 },
+                { desc: '三星通关+8◆', value: 8 },
             ],
             lore: '折射光芒的远古水晶'
         },
         phoenix: {
-            id: 'phoenix', name: '凤凰树', emoji: '🔥',
+            id: 'phoenix', name: '凤凰树', emoji: '☆',
             description: '失败时保护',
             baseCost: 2000, buff: 'second_chance',
             levels: [
@@ -73,7 +73,7 @@ const Estate = {
             lore: '浴火重生的不死之树'
         },
         ancient: {
-            id: 'ancient', name: '远古之树', emoji: '🌳',
+            id: 'ancient', name: '远古之树', emoji: '♠',
             description: '精灵技能充能加速',
             baseCost: 3000, buff: 'skill_boost',
             levels: [
@@ -90,7 +90,7 @@ const Estate = {
     // ── Spirits: 8 spirits, each with upgradeable skills ──
     SPIRITS: {
         mango_fairy: {
-            id: 'mango_fairy', name: '芒果仙子', emoji: '🧚',
+            id: 'mango_fairy', name: '芒果仙子', emoji: '仙',
             description: '随机清除宝石',
             skillName: '芒果轰炸', unlockCost: 0,
             skillLevels: [
@@ -101,7 +101,7 @@ const Estate = {
             lore: '芒果庄园最古老的精灵'
         },
         bee_spirit: {
-            id: 'bee_spirit', name: '蜜蜂精灵', emoji: '🐝',
+            id: 'bee_spirit', name: '蜜蜂精灵', emoji: '蜂',
             description: '清除行+列',
             skillName: '蜂群横扫', unlockCost: 600,
             skillLevels: [
@@ -112,7 +112,7 @@ const Estate = {
             lore: '勤劳的蜜蜂精灵'
         },
         rainbow_spirit: {
-            id: 'rainbow_spirit', name: '彩虹精灵', emoji: '🦋',
+            id: 'rainbow_spirit', name: '彩虹精灵', emoji: '蝶',
             description: '消除最多的同色宝石',
             skillName: '彩虹裁决', unlockCost: 1000,
             skillLevels: [
@@ -123,7 +123,7 @@ const Estate = {
             lore: '虹光化身的蝴蝶精灵'
         },
         dragon_spirit: {
-            id: 'dragon_spirit', name: '龙灵', emoji: '🐉',
+            id: 'dragon_spirit', name: '龙灵', emoji: '龙',
             description: '火焰横扫',
             skillName: '龙息吐焰', unlockCost: 2000,
             skillLevels: [
@@ -134,7 +134,7 @@ const Estate = {
             lore: '远古巨龙的灵魂碎片'
         },
         phoenix_spirit: {
-            id: 'phoenix_spirit', name: '凤凰灵', emoji: '🔥',
+            id: 'phoenix_spirit', name: '凤凰灵', emoji: '☆',
             description: '全屏爆炸',
             skillName: '涅槃烈焰', unlockCost: 3000,
             skillLevels: [
@@ -145,7 +145,7 @@ const Estate = {
             lore: '浴火重生的凤凰之灵'
         },
         frost_spirit: {
-            id: 'frost_spirit', name: '冰霜精灵', emoji: '❄️',
+            id: 'frost_spirit', name: '冰霜精灵', emoji: '※',
             description: '冰冻控制',
             skillName: '绝对零度', unlockCost: 1500,
             skillLevels: [
@@ -167,7 +167,7 @@ const Estate = {
             lore: '能操控时间的神秘精灵'
         },
         chaos_spirit: {
-            id: 'chaos_spirit', name: '混沌精灵', emoji: '🌀',
+            id: 'chaos_spirit', name: '混沌精灵', emoji: '◎',
             description: '随机强力效果',
             skillName: '混沌风暴', unlockCost: 5000,
             skillLevels: [
@@ -181,18 +181,18 @@ const Estate = {
 
     // ── Decorations: collectible cosmetic items ──
     DECORATIONS: {
-        horde_banner: { id: 'horde_banner', name: '部落战旗', emoji: '🚩', cost: 100, happiness: 15 },
-        lantern: { id: 'lantern', name: '庄园灯笼', emoji: '🏮', cost: 200, happiness: 20 },
-        garden: { id: 'garden', name: '花园', emoji: '🌺', cost: 300, happiness: 25 },
-        totem: { id: 'totem', name: '萨满图腾', emoji: '⚡', cost: 400, happiness: 30 },
-        fountain: { id: 'fountain', name: '许愿喷泉', emoji: '⛲', cost: 500, happiness: 40 },
-        bridge: { id: 'bridge', name: '小桥', emoji: '🌉', cost: 600, happiness: 45 },
-        statue: { id: 'statue', name: '萨尔雕像', emoji: '🗿', cost: 800, happiness: 60 },
-        windmill: { id: 'windmill', name: '部落风车', emoji: '🎡', cost: 1000, happiness: 70 },
-        wolf_den: { id: 'wolf_den', name: '狼骑兵营', emoji: '🐺', cost: 1500, happiness: 85 },
-        war_drum: { id: 'war_drum', name: '战鼓', emoji: '🥁', cost: 2000, happiness: 100 },
-        dragon_nest: { id: 'dragon_nest', name: '龙巢', emoji: '🐲', cost: 3000, happiness: 120 },
-        org_gate: { id: 'org_gate', name: '奥格瑞玛之门', emoji: '🏰', cost: 5000, happiness: 200 },
+        horde_banner: { id: 'horde_banner', name: '部落战旗', emoji: '▶', cost: 100, happiness: 15 },
+        lantern: { id: 'lantern', name: '庄园灯笼', emoji: '◆', cost: 200, happiness: 20 },
+        garden: { id: 'garden', name: '花园', emoji: '✿', cost: 300, happiness: 25 },
+        totem: { id: 'totem', name: '萨满图腾', emoji: '↯', cost: 400, happiness: 30 },
+        fountain: { id: 'fountain', name: '许愿喷泉', emoji: '≈', cost: 500, happiness: 40 },
+        bridge: { id: 'bridge', name: '小桥', emoji: '♜', cost: 600, happiness: 45 },
+        statue: { id: 'statue', name: '萨尔雕像', emoji: '♜', cost: 800, happiness: 60 },
+        windmill: { id: 'windmill', name: '部落风车', emoji: '◇', cost: 1000, happiness: 70 },
+        wolf_den: { id: 'wolf_den', name: '狼骑兵营', emoji: '狼', cost: 1500, happiness: 85 },
+        war_drum: { id: 'war_drum', name: '战鼓', emoji: '♪', cost: 2000, happiness: 100 },
+        dragon_nest: { id: 'dragon_nest', name: '龙巢', emoji: '龙', cost: 3000, happiness: 120 },
+        org_gate: { id: 'org_gate', name: '奥格瑞玛之门', emoji: '♜', cost: 5000, happiness: 200 },
     },
 
     // ── Core Methods ──
@@ -227,7 +227,7 @@ const Estate = {
         const estate = Storage.getEstate();
         const level = this.getTreeLevel(treeId);
 
-        if (level >= tree.levels.length) { UI.showToast('已经满级了！🌟'); return false; }
+        if (level >= tree.levels.length) { UI.showToast('已经满级了！✦'); return false; }
 
         const cost = this.getTreeUpgradeCost(treeId);
         if (!Storage.spendGold(cost)) { UI.showToast('金币不足！'); return false; }
@@ -243,7 +243,7 @@ const Estate = {
             estate.treeLevels[treeId] = newLevel;
             estate.happiness = (estate.happiness || 0) + 20;
         }
-        // 🔥 Show EXACTLY what changed — feel the power
+        // ☆ Show EXACTLY what changed — feel the power
         const buffDesc = tree.levels[Math.min(newLevel-1, tree.levels.length-1)]?.desc || '';
         UI.showToast(`${tree.emoji} ${tree.name} Lv.${newLevel}！\n${buffDesc}`, 'success');
         Storage.saveEstate(estate);
@@ -282,7 +282,7 @@ const Estate = {
             estate.spirits[spiritId] = true;
             if (!estate.spiritLevels) estate.spiritLevels = {};
             estate.spiritLevels[spiritId] = 1;
-            UI.showToast(`🎉 ${spirit.name}已解锁！`);
+            UI.showToast(`♪ ${spirit.name}已解锁！`);
             // v10: Tutorial hint for spirit unlock
             try { Tutorial.onSpiritUnlock(); } catch(e) {}
         }
@@ -306,7 +306,7 @@ const Estate = {
         estate.happiness = (estate.happiness || 0) + 30;
         Storage.saveEstate(estate);
         Audio.play('levelUp');
-        // 🔥 Show skill upgrade details
+        // ☆ Show skill upgrade details
         const skillInfo = spirit.skillLevels[Math.min(newLevel-1, spirit.skillLevels.length-1)];
         UI.showToast(`${spirit.emoji} ${spirit.skillName} Lv.${newLevel}！\n${skillInfo?.desc || ''}`, 'success');
         return true;
@@ -336,7 +336,7 @@ const Estate = {
         estate.happiness = (estate.happiness || 0) + deco.happiness;
         Storage.saveEstate(estate);
         Audio.play('levelUp');
-        UI.showToast(`🎉 ${deco.name}已购买！幸福度+${deco.happiness}`);
+        UI.showToast(`♪ ${deco.name}已购买！幸福度+${deco.happiness}`);
         return true;
     },
 
@@ -392,7 +392,7 @@ const Estate = {
     },
 
     // ══════════════════════════════════════
-    // 🧚 Spirit Affinity System — use them, they grow
+    // 仙 Spirit Affinity System — use them, they grow
     // ══════════════════════════════════════
 
     // Affinity thresholds and passive bonuses
@@ -440,11 +440,11 @@ const Estate = {
         if (after > before) {
             const spirit = this.SPIRITS[spiritId];
             const lvInfo = this.AFFINITY_LEVELS[after];
-            UI.showToast(`💕 ${spirit?.emoji || ''} 亲密度提升！→${lvInfo.name}\n${lvInfo.bonus}`, 'success');
+            UI.showToast(`♥ ${spirit?.emoji || ''} 亲密度提升！→${lvInfo.name}\n${lvInfo.bonus}`, 'success');
             Audio.play('levelUp');
             // Unlock passive at level 3
             if (after >= 3 && this.AFFINITY_PASSIVES[spiritId]) {
-                UI.showToast(`✨ 解锁被动: ${this.AFFINITY_PASSIVES[spiritId]}`, 'success');
+                UI.showToast(`✦ 解锁被动: ${this.AFFINITY_PASSIVES[spiritId]}`, 'success');
             }
         }
     },
@@ -471,28 +471,28 @@ const Estate = {
     },
 
     // ══════════════════════════════════════
-    // 🏋️ Spirit Trial System — 精灵试炼
+    // ↯ Spirit Trial System — 精灵试炼
     // ══════════════════════════════════════
 
     // Each spirit has a preferred gem type for trial bonus
     SPIRIT_TRIAL_DATA: {
-        mango_fairy:    { preferredGem: 'mango',   gemEmoji: '🥭' },
-        bee_spirit:     { preferredGem: 'murloc',  gemEmoji: '🐸' },
-        rainbow_spirit: { preferredGem: 'elf',     gemEmoji: '🧝‍♀️' },
-        dragon_spirit:  { preferredGem: 'dragon',  gemEmoji: '🐉' },
-        phoenix_spirit: { preferredGem: 'phoenix', gemEmoji: '🔥' },
-        frost_spirit:   { preferredGem: 'mage',    gemEmoji: '🧙‍♂️' },
-        time_spirit:    { preferredGem: 'knight',  gemEmoji: '🛡️' },
-        chaos_spirit:   { preferredGem: 'orc',     gemEmoji: '👹' }
+        mango_fairy:    { preferredGem: 'mango',   gemEmoji: '芒' },
+        bee_spirit:     { preferredGem: 'murloc',  gemEmoji: '蛙' },
+        rainbow_spirit: { preferredGem: 'elf',     gemEmoji: '灵' },
+        dragon_spirit:  { preferredGem: 'dragon',  gemEmoji: '龙' },
+        phoenix_spirit: { preferredGem: 'phoenix', gemEmoji: '☆' },
+        frost_spirit:   { preferredGem: 'mage',    gemEmoji: '法' },
+        time_spirit:    { preferredGem: 'knight',  gemEmoji: '⛊' },
+        chaos_spirit:   { preferredGem: 'orc',     gemEmoji: '鬼' }
     },
 
     // Affection milestones — unlock spirit abilities
     TRIAL_MILESTONES: [
-        { affection: 10,  name: '初识之力',   icon: '💚' },
-        { affection: 30,  name: '信任之力',   icon: '💙' },
-        { affection: 50,  name: '羁绊之力',   icon: '💜' },
-        { affection: 80,  name: '契约之力',   icon: '💛' },
-        { affection: 100, name: '灵魂共鸣',   icon: '❤️‍🔥' }
+        { affection: 10,  name: '初识之力',   icon: '♥' },
+        { affection: 30,  name: '信任之力',   icon: '♥' },
+        { affection: 50,  name: '羁绊之力',   icon: '♥' },
+        { affection: 80,  name: '契约之力',   icon: '♥' },
+        { affection: 100, name: '灵魂共鸣',   icon: '♥' }
     ],
 
     // Per-spirit abilities at milestones
@@ -610,7 +610,7 @@ const Estate = {
             height: 8,
             moves: 15,
             gems: gems,
-            objectives: [{ type: 'score', target: 3000, icon: '⭐' }],
+            objectives: [{ type: 'score', target: 3000, icon: '★' }],
             stars: [1500, 2500, 3000],
             procedural: true,
             spiritTrial: true,
@@ -631,8 +631,8 @@ const Estate = {
         const spirit = this.SPIRITS[spiritId];
         this.addSpiritTrialAffection(spiritId, gain);
         UI.showToast(won
-            ? `🎉 试炼胜利！${spirit?.emoji || ''} 亲密度+${gain}`
-            : `💕 虽败犹荣！${spirit?.emoji || ''} 亲密度+${gain}`,
+            ? `♪ 试炼胜利！${spirit?.emoji || ''} 亲密度+${gain}`
+            : `♥ 虽败犹荣！${spirit?.emoji || ''} 亲密度+${gain}`,
             won ? 'success' : 'info');
         this._currentTrial = null;
         Achievements.check('spirit_trial');
