@@ -1,0 +1,1583 @@
+/* ==========================================
+   芒果庄园 — VISUAL CONSISTENCY POLISH
+   Final pass: every screen premium, no exceptions
+   ========================================== */
+
+/* ══════════════════════════════════════════
+   1. GEM DEPTH ENHANCEMENT
+   Stronger radial gradients, inner highlight, 3D feel
+   ══════════════════════════════════════════ */
+
+/* Base gem: add inner highlight pseudo-element for 3D glass effect */
+.gem {
+    border-radius: 10px;
+    position: relative;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+}
+
+/* Glass highlight on all gems */
+.gem::before {
+    content: '';
+    position: absolute;
+    top: 8%;
+    left: 15%;
+    width: 45%;
+    height: 35%;
+    background: radial-gradient(ellipse at 50% 40%,
+        rgba(255, 255, 255, 0.35) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Don't show highlight on matching/disappearing gems */
+.gem.matching::before {
+    display: none;
+}
+
+/* Enhanced per-type gem backgrounds — deeper, more distinct */
+.gem-murloc {
+    background: radial-gradient(circle at 35% 30%, #6ee7b7 0%, #22c55e55 40%, #15803d22 70%) !important;
+    box-shadow: inset 0 0 16px rgba(34, 197, 94, 0.45), 0 2px 8px rgba(34, 197, 94, 0.25), 0 0 2px rgba(34, 197, 94, 0.4) !important;
+}
+.gem-orc {
+    background: radial-gradient(circle at 35% 30%, #fca5a5 0%, #dc262655 40%, #991b1b22 70%) !important;
+    box-shadow: inset 0 0 16px rgba(220, 38, 38, 0.45), 0 2px 8px rgba(220, 38, 38, 0.25), 0 0 2px rgba(220, 38, 38, 0.4) !important;
+}
+.gem-elf {
+    background: radial-gradient(circle at 35% 30%, #d8b4fe 0%, #a855f755 40%, #7c3aed22 70%) !important;
+    box-shadow: inset 0 0 16px rgba(168, 85, 247, 0.45), 0 2px 8px rgba(168, 85, 247, 0.25), 0 0 2px rgba(168, 85, 247, 0.4) !important;
+}
+.gem-mage {
+    background: radial-gradient(circle at 35% 30%, #93c5fd 0%, #3b82f655 40%, #1d4ed822 70%) !important;
+    box-shadow: inset 0 0 16px rgba(59, 130, 246, 0.45), 0 2px 8px rgba(59, 130, 246, 0.25), 0 0 2px rgba(59, 130, 246, 0.4) !important;
+}
+.gem-knight {
+    background: radial-gradient(circle at 35% 30%, #fca5a5 0%, #ef444455 40%, #b9181822 70%) !important;
+    box-shadow: inset 0 0 16px rgba(239, 68, 68, 0.45), 0 2px 8px rgba(239, 68, 68, 0.25), 0 0 2px rgba(239, 68, 68, 0.4) !important;
+}
+.gem-dwarf {
+    background: radial-gradient(circle at 35% 30%, #fdba74 0%, #f9731655 40%, #c2410c22 70%) !important;
+    box-shadow: inset 0 0 16px rgba(249, 115, 22, 0.45), 0 2px 8px rgba(249, 115, 22, 0.25), 0 0 2px rgba(249, 115, 22, 0.4) !important;
+}
+.gem-undead {
+    background: radial-gradient(circle at 35% 30%, #d1d5db 0%, #6b728055 40%, #37415122 70%) !important;
+    box-shadow: inset 0 0 16px rgba(107, 114, 128, 0.45), 0 2px 8px rgba(107, 114, 128, 0.2), 0 0 2px rgba(107, 114, 128, 0.3) !important;
+}
+.gem-mango {
+    background: radial-gradient(circle at 35% 30%, #fde68a 0%, #fbbf2455 40%, #b4590622 70%) !important;
+    box-shadow: inset 0 0 16px rgba(251, 191, 36, 0.5), 0 2px 8px rgba(251, 191, 36, 0.3), 0 0 2px rgba(251, 191, 36, 0.45) !important;
+}
+.gem-dragon {
+    background: radial-gradient(circle at 35% 30%, #fca5a5 0%, #dc262655 40%, #7f1d1d22 70%) !important;
+    box-shadow: inset 0 0 16px rgba(220, 38, 38, 0.5), 0 2px 8px rgba(220, 38, 38, 0.25), 0 0 2px rgba(220, 38, 38, 0.4) !important;
+}
+.gem-phoenix {
+    background: radial-gradient(circle at 35% 30%, #fed7aa 0%, #f9731655 40%, #9a340822 70%) !important;
+    box-shadow: inset 0 0 16px rgba(249, 115, 22, 0.5), 0 2px 8px rgba(249, 115, 22, 0.25), 0 0 2px rgba(249, 115, 22, 0.4) !important;
+}
+
+/* Selected gem: bright glow ring — unmistakable */
+.gem.selected {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8)) brightness(1.15) !important;
+    z-index: 10;
+}
+.gem.selected::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: -4px !important;
+    border: 2.5px solid rgba(255, 215, 0, 0.8) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.6), inset 0 0 8px rgba(255, 215, 0, 0.3) !important;
+    background: transparent !important;
+    width: auto !important;
+    height: auto !important;
+    top: -4px !important;
+    right: -4px !important;
+    font-size: 0 !important;
+    animation: gem-select-ring 1s ease-in-out infinite !important;
+    pointer-events: none;
+}
+
+@keyframes gem-select-ring {
+    0%, 100% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.5), inset 0 0 6px rgba(255, 215, 0, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 10px rgba(255, 215, 0, 0.4); }
+}
+
+/* Special gem enhanced glow */
+.gem.horizontal { border: 1.5px solid rgba(59, 130, 246, 0.6) !important; }
+.gem.vertical { border: 1.5px solid rgba(168, 85, 247, 0.6) !important; }
+.gem.bomb {
+    border: 2px solid rgba(239, 68, 68, 0.7) !important;
+    box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.6), 0 0 12px rgba(239, 68, 68, 0.4) !important;
+}
+.gem.rainbow {
+    border: 2px solid rgba(255, 215, 0, 0.7) !important;
+    box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.5), 0 0 16px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* ══════════════════════════════════════════
+   2. BOARD TEXTURE — subtle noise pattern
+   ══════════════════════════════════════════ */
+
+.game-board {
+    background:
+        repeating-conic-gradient(rgba(255, 255, 255, 0.015) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px,
+        rgba(0, 5, 15, 0.5);
+}
+
+/* Cell subtle inner shadow for depth */
+.cell {
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.cell.selected {
+    box-shadow:
+        inset 0 0 14px rgba(255, 215, 0, 0.45),
+        0 0 10px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* ══════════════════════════════════════════
+   3. STATS SCREEN — Premium data cards
+   ══════════════════════════════════════════ */
+
+#stats-screen {
+    background:
+        radial-gradient(ellipse at top left, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(251, 191, 36, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+#stats-content {
+    padding: 12px !important;
+}
+
+/* Target the JS-generated sections */
+.stats-section,
+#stats-content > div {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    border-radius: 14px !important;
+    padding: 14px !important;
+    margin-bottom: 12px !important;
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Stat cards within stats screen */
+.stat-card,
+#stats-content .stat-card {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 1px solid rgba(80, 150, 255, 0.1) !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: scale(1.03);
+}
+
+/* Stats section headings */
+#stats-content h3 {
+    color: var(--wow-gold) !important;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    margin-bottom: 10px !important;
+}
+
+/* Gem bar backgrounds in stats */
+#stats-content [style*="background:linear-gradient(90deg,#fbbf24"] {
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.2);
+}
+
+/* Play time bars */
+#stats-content [style*="background:linear-gradient(to top,#3b82f6"] {
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.2);
+}
+
+/* ══════════════════════════════════════════
+   4. CHALLENGE TOWER — Visual Identity
+   ══════════════════════════════════════════ */
+
+#tower-screen {
+    background:
+        radial-gradient(ellipse at top, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+#tower-content {
+    padding: 12px !important;
+}
+
+.tower-progress-header {
+    font-weight: 700;
+    color: #a855f7;
+    font-size: 0.9rem;
+}
+
+/* Tower summary card */
+#tower-content > div:first-child {
+    background: linear-gradient(145deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.12)) !important;
+    border: 1.5px solid rgba(168, 85, 247, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(168, 85, 247, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Tower floor cards */
+.tower-floor-card {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.12) !important;
+    border-radius: 12px !important;
+    padding: 10px 14px !important;
+    margin-bottom: 6px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+    transition: transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+.tower-floor-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 12px rgba(168, 85, 247, 0.15) !important;
+}
+
+/* Current floor glow */
+.tower-floor-card[style*="rgba(168,85,247,0.15)"] {
+    border-color: rgba(168, 85, 247, 0.4) !important;
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    animation: tower-current-pulse 2s ease-in-out infinite;
+}
+
+@keyframes tower-current-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(168, 85, 247, 0.2); }
+    50% { box-shadow: 0 0 24px rgba(168, 85, 247, 0.4), 0 0 40px rgba(168, 85, 247, 0.15); }
+}
+
+/* Completed tower floors */
+.tower-floor-card[style*="rgba(34,197,94"] {
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Boss tower floors */
+.tower-floor-card[style*="rgba(239,68,68"] {
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+.tower-floor-card[style*="rgba(245,158,11"] {
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.12) !important;
+}
+
+/* ══════════════════════════════════════════
+   5. SEASONAL EVENTS — Theme Identity
+   ══════════════════════════════════════════ */
+
+#seasonal-screen {
+    background:
+        radial-gradient(ellipse at top, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+#seasonal-content {
+    padding: 12px !important;
+}
+
+/* Seasonal sections */
+#seasonal-content > div {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.12) !important;
+    border-radius: 14px !important;
+    padding: 14px !important;
+    margin-bottom: 12px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Season pass tier items */
+#seasonal-content [style*="display:flex"][style*="border-radius:8px"] {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border-radius: 10px !important;
+    transition: transform 0.15s ease;
+}
+
+#seasonal-content [style*="display:flex"][style*="border-radius:8px"]:hover {
+    transform: translateX(3px);
+}
+
+/* Season level buttons inside seasonal */
+#seasonal-content .level-btn {
+    background: rgba(14, 24, 48, 0.85);
+    border: 1.5px solid rgba(80, 150, 255, 0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+#seasonal-content .level-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Season claim button premium */
+.season-claim-btn {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    transition: transform 0.15s ease !important;
+}
+
+.season-claim-btn:hover {
+    transform: scale(1.08) !important;
+}
+
+.season-claim-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* Season progress bar */
+#seasonal-content [style*="background:#333"] {
+    background: rgba(20, 35, 60, 0.8) !important;
+    border: 1px solid rgba(80, 150, 255, 0.1);
+}
+
+/* ══════════════════════════════════════════
+   6. ESTATE — Premium Card Treatment
+   ══════════════════════════════════════════ */
+
+#estate-screen {
+    background:
+        radial-gradient(ellipse at top right, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(251, 191, 36, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+.estate-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(60, 110, 180, 0.3) transparent;
+}
+
+/* Estate section cards */
+.estate-section {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.estate-section h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+}
+
+/* Happiness section special treatment */
+.happiness-section {
+    border-color: rgba(236, 72, 153, 0.25) !important;
+    background: linear-gradient(145deg, rgba(14, 24, 48, 0.85), rgba(236, 72, 153, 0.05)) !important;
+}
+
+.happiness-bar {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(236, 72, 153, 0.15);
+}
+
+.happiness-fill {
+    background: linear-gradient(90deg, #ec4899, #f472b6, #fbbf24) !important;
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.4);
+}
+
+/* Tree & spirit cards premium */
+.tree-card,
+.spirit-card {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.12) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.tree-card:hover,
+.spirit-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(80, 150, 255, 0.1);
+}
+
+/* Planted tree glow */
+.tree-card.planted {
+    border-color: rgba(34, 197, 94, 0.35) !important;
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.08), rgba(20, 35, 60, 0.6)) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 12px rgba(34, 197, 94, 0.1);
+}
+
+/* Active spirit card */
+.spirit-card.active {
+    border-color: rgba(255, 209, 0, 0.4) !important;
+    background: linear-gradient(145deg, rgba(255, 209, 0, 0.08), rgba(20, 35, 60, 0.6)) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 16px rgba(255, 209, 0, 0.12);
+}
+
+/* Spirit emoji larger & centered */
+.tree-emoji,
+.spirit-emoji {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Estate action buttons */
+.tree-plant-btn,
+.spirit-select-btn,
+.spirit-unlock-btn {
+    background: linear-gradient(145deg, #c87800, #9a5500) !important;
+    border: 1px solid rgba(255, 200, 50, 0.3) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(200, 120, 0, 0.25);
+    font-weight: 700 !important;
+    transition: transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+.tree-plant-btn:hover,
+.spirit-select-btn:hover,
+.spirit-unlock-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(200, 120, 0, 0.4) !important;
+}
+
+.tree-plant-btn:active,
+.spirit-select-btn:active,
+.spirit-unlock-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* Buff summary items */
+.buff-item {
+    background: rgba(255, 209, 0, 0.08) !important;
+    border: 1px solid rgba(255, 209, 0, 0.2) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Decoration grid */
+.deco-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ══════════════════════════════════════════
+   7. DEFEAT SCREEN — Dramatic Red Treatment
+   ══════════════════════════════════════════ */
+
+.defeat-content {
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    background: linear-gradient(145deg, rgba(30, 8, 8, 0.95), rgba(12, 20, 40, 0.92)) !important;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(239, 68, 68, 0.12),
+        inset 0 0 40px rgba(239, 68, 68, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.defeat-icon {
+    font-size: 5rem !important;
+    filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.4));
+    animation: defeat-shake 0.6s ease;
+}
+
+@keyframes defeat-shake {
+    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    40% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    60% { transform: scale(0.9) rotate(-3deg); }
+    80% { transform: scale(1.05); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.defeat-content h2 {
+    color: #ef4444 !important;
+    font-size: 1.6rem !important;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.defeat-message {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+/* Defeat buttons premium */
+.defeat-buttons {
+    flex-wrap: wrap;
+}
+
+.defeat-buttons .modal-btn.gold {
+    box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.defeat-buttons .modal-btn.gold:hover {
+    box-shadow: 0 6px 24px rgba(251, 191, 36, 0.4);
+}
+
+/* ══════════════════════════════════════════
+   8. VICTORY SCREEN — Extra Epic
+   ══════════════════════════════════════════ */
+
+.victory-content {
+    background: linear-gradient(145deg, rgba(20, 15, 5, 0.95), rgba(12, 20, 40, 0.92)) !important;
+}
+
+.victory-title {
+    font-size: 1.8rem !important;
+    background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(255, 180, 0, 0.4));
+}
+
+/* Star rating with gold glow */
+.victory-stars .star {
+    filter: grayscale(1) brightness(0.4);
+    transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.victory-stars .star.earned {
+    filter: none !important;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 180, 0, 0.3);
+}
+
+/* Victory stat rows — subtle highlight */
+.victory-stats .stat-row {
+    border-bottom-color: rgba(80, 150, 255, 0.1);
+    padding: 8px 4px;
+    transition: background 0.2s ease;
+}
+
+.victory-stats .stat-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.victory-stats .stat-row.highlight {
+    background: rgba(255, 209, 0, 0.06);
+    border-radius: 8px;
+    border-bottom: none;
+}
+
+/* ══════════════════════════════════════════
+   9. SETTINGS — Clean & Professional
+   ══════════════════════════════════════════ */
+
+#settings-screen {
+    background:
+        radial-gradient(ellipse at top, rgba(80, 150, 255, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+.setting-group {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.12) !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.setting-group h3 {
+    font-family: var(--font-display) !important;
+    color: var(--wow-gold) !important;
+    letter-spacing: 0.05em;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(80, 150, 255, 0.08);
+}
+
+.setting-item {
+    border-bottom-color: rgba(80, 150, 255, 0.06) !important;
+    padding: 10px 0 !important;
+}
+
+.setting-item span {
+    font-weight: 500;
+}
+
+/* Toggle switch premium */
+.toggle-slider {
+    background: rgba(30, 50, 80, 0.8) !important;
+    border: 1px solid rgba(80, 150, 255, 0.15);
+}
+
+.toggle input:checked + .toggle-slider {
+    background: linear-gradient(135deg, #c87800, #fbbf24) !important;
+    border-color: rgba(255, 200, 50, 0.4);
+    box-shadow: 0 0 10px rgba(255, 200, 50, 0.25);
+}
+
+/* Range slider premium */
+input[type="range"] {
+    background: rgba(30, 50, 80, 0.8) !important;
+    border: 1px solid rgba(80, 150, 255, 0.1);
+    border-radius: 4px;
+    height: 8px !important;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* Text input premium */
+.setting-item input[type="text"] {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.setting-item input[type="text"]:focus {
+    border-color: rgba(255, 200, 50, 0.4) !important;
+    box-shadow: 0 0 8px rgba(255, 200, 50, 0.15);
+}
+
+/* Avatar selector */
+.avatar-option {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 2px solid rgba(80, 150, 255, 0.12) !important;
+    width: 40px !important;
+    height: 40px !important;
+    transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.avatar-option.selected {
+    border-color: rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.3) !important;
+    transform: scale(1.1);
+}
+
+/* Danger zone premium */
+.danger-zone {
+    border-color: rgba(239, 68, 68, 0.2) !important;
+    background: linear-gradient(145deg, rgba(30, 8, 8, 0.5), rgba(14, 24, 48, 0.85)) !important;
+}
+
+.danger-zone h3 {
+    color: #ef4444 !important;
+    border-bottom-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+.btn-danger {
+    background: linear-gradient(145deg, #dc2626, #991b1b) !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+    transition: transform 0.15s ease !important;
+}
+
+.btn-danger:active {
+    transform: scale(0.95);
+}
+
+.btn-export,
+.btn-import {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, border-color 0.2s ease !important;
+}
+
+.btn-export:hover,
+.btn-import:hover {
+    border-color: rgba(255, 200, 50, 0.3) !important;
+    transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════
+   10. ACHIEVEMENTS — Badge Grid Polish
+   ══════════════════════════════════════════ */
+
+#achievements-screen {
+    background:
+        radial-gradient(ellipse at top, rgba(255, 209, 0, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+.achievement-category {
+    margin-bottom: 20px;
+}
+
+.achievement-cat-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem !important;
+    letter-spacing: 0.04em;
+    color: var(--wow-gold) !important;
+    padding-bottom: 6px !important;
+    border-bottom: 1px solid rgba(255, 209, 0, 0.15) !important;
+}
+
+.achievement-badge {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.1) !important;
+    border-radius: 14px !important;
+    padding: 12px 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.achievement-badge:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.achievement-badge.unlocked {
+    border-color: rgba(255, 209, 0, 0.35) !important;
+    background: linear-gradient(145deg, rgba(255, 209, 0, 0.06), rgba(14, 24, 48, 0.85)) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 12px rgba(255, 209, 0, 0.1) !important;
+}
+
+.achievement-badge.locked {
+    opacity: 0.45 !important;
+    filter: saturate(0.3);
+}
+
+.badge-icon {
+    font-size: 1.8rem !important;
+    margin-bottom: 6px !important;
+}
+
+.badge-progress-bar {
+    background: rgba(30, 50, 80, 0.6) !important;
+    height: 4px !important;
+    border-radius: 3px;
+}
+
+.badge-progress-fill {
+    background: linear-gradient(90deg, #3b82f6, #a855f7) !important;
+    box-shadow: 0 0 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Old-style achievement list items */
+.achievement-item {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.12) !important;
+    border-radius: 14px !important;
+    padding: 14px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.achievement-item:hover {
+    transform: translateX(4px);
+}
+
+.achievement-item.unlocked {
+    border-color: rgba(255, 209, 0, 0.3) !important;
+    background: linear-gradient(145deg, rgba(255, 209, 0, 0.06), rgba(14, 24, 48, 0.85)) !important;
+}
+
+.achievement-icon {
+    background: rgba(20, 35, 60, 0.8) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(80, 150, 255, 0.1);
+}
+
+.achievement-item.unlocked .achievement-icon {
+    background: linear-gradient(135deg, rgba(255, 209, 0, 0.2), rgba(200, 120, 0, 0.15)) !important;
+    border-color: rgba(255, 209, 0, 0.3);
+    box-shadow: 0 0 10px rgba(255, 209, 0, 0.15);
+}
+
+/* ══════════════════════════════════════════
+   11. COLLECTION — Detail Panel + Grid Polish
+   ══════════════════════════════════════════ */
+
+#collection-screen {
+    background:
+        radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+.collection-item {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.collection-item:hover {
+    transform: scale(1.06);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.collection-item.unlocked {
+    border-color: rgba(255, 209, 0, 0.3) !important;
+}
+
+.collection-item.locked {
+    opacity: 0.35 !important;
+    filter: saturate(0.3);
+}
+
+.item-icon {
+    font-size: 2.2rem !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Collection detail panel */
+.collection-detail {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(12, 20, 40, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1.5px solid rgba(80, 150, 255, 0.2);
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    animation: slide-up-detail 0.3s ease;
+}
+
+@keyframes slide-up-detail {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════
+   12. LEVEL SELECT — Grid Polish
+   ══════════════════════════════════════════ */
+
+.level-btn {
+    border-radius: 12px !important;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.level-btn.completed {
+    background: linear-gradient(145deg, rgba(16, 60, 40, 0.7), rgba(10, 40, 28, 0.6)) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), 0 0 8px rgba(34, 197, 94, 0.1);
+}
+
+.level-btn.current {
+    box-shadow: 0 0 20px rgba(255, 195, 50, 0.35), 0 0 40px rgba(255, 195, 50, 0.15) !important;
+}
+
+.level-stars .star.earned {
+    color: #ffd700;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
+}
+
+/* Chapter info bar */
+.chapter-info {
+    background: rgba(12, 20, 40, 0.95) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(80, 150, 255, 0.12) !important;
+}
+
+.chapter-info h3 {
+    font-family: var(--font-display);
+}
+
+/* ══════════════════════════════════════════
+   13. LEADERBOARD — Polish
+   ══════════════════════════════════════════ */
+
+#leaderboard-screen {
+    background:
+        radial-gradient(ellipse at top, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+        var(--bg-primary);
+}
+
+.leaderboard-item {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease !important;
+}
+
+.leaderboard-item:hover {
+    transform: translateX(4px);
+}
+
+.leaderboard-item.top-1 {
+    border-color: rgba(255, 215, 0, 0.4) !important;
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.1), rgba(14, 24, 48, 0.85)) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 16px rgba(255, 215, 0, 0.1) !important;
+}
+
+.leaderboard-item.top-2 {
+    border-color: rgba(192, 192, 192, 0.35) !important;
+    background: linear-gradient(145deg, rgba(192, 192, 192, 0.06), rgba(14, 24, 48, 0.85)) !important;
+}
+
+.leaderboard-item.top-3 {
+    border-color: rgba(205, 127, 50, 0.35) !important;
+    background: linear-gradient(145deg, rgba(205, 127, 50, 0.06), rgba(14, 24, 48, 0.85)) !important;
+}
+
+.rank {
+    border: 1px solid rgba(80, 150, 255, 0.1);
+}
+
+/* ══════════════════════════════════════════
+   14. DAILY CHECK-IN — Polish
+   ══════════════════════════════════════════ */
+
+.checkin-content {
+    background: rgba(12, 20, 40, 0.95) !important;
+}
+
+.checkin-day {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 1px solid rgba(80, 150, 255, 0.1) !important;
+    border-radius: 10px !important;
+    transition: transform 0.15s ease;
+}
+
+.checkin-day.today {
+    border-color: rgba(255, 209, 0, 0.4) !important;
+    box-shadow: 0 0 12px rgba(255, 209, 0, 0.2);
+    animation: checkin-today-pulse 2s ease-in-out infinite;
+}
+
+@keyframes checkin-today-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 209, 0, 0.15); }
+    50% { box-shadow: 0 0 16px rgba(255, 209, 0, 0.35); }
+}
+
+.checkin-day.checked {
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.12), rgba(20, 35, 60, 0.6)) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* ══════════════════════════════════════════
+   15. LOADING SCREEN — Shimmer Enhancement
+   ══════════════════════════════════════════ */
+
+.loading-progress {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: loading-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Loading tips fade-in */
+.loading-tips {
+    animation: fade-in 1s ease 0.5s both;
+}
+
+/* ══════════════════════════════════════════
+   16. UNIVERSAL BUTTON PRESS STATES
+   ══════════════════════════════════════════ */
+
+.menu-btn:active,
+.modal-btn:active,
+.level-btn:active:not(.locked),
+.tab-btn:active,
+.chapter-tab:active:not(.locked),
+.btn-back:active,
+.btn-pause:active,
+.btn-claim:active,
+.btn-checkin:active,
+.tutorial-btn:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.08s ease !important;
+}
+
+/* Button inner shine — all major buttons */
+.menu-btn,
+.modal-btn,
+.level-btn {
+    position: relative;
+}
+
+/* ══════════════════════════════════════════
+   17. SCREEN HEADER CONSISTENCY
+   ══════════════════════════════════════════ */
+
+.screen-header {
+    background: rgba(12, 20, 40, 0.95) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(80, 150, 255, 0.1) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.screen-header h2 {
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+    background: var(--gold-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn-back {
+    background: rgba(20, 35, 60, 0.8) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    border-radius: 10px !important;
+    transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+
+.btn-back:hover,
+.btn-back:active {
+    background: linear-gradient(135deg, #c87800, #9a5500) !important;
+    border-color: rgba(255, 200, 50, 0.4) !important;
+}
+
+/* Header currency badges */
+.header-currency .currency {
+    background: rgba(20, 35, 60, 0.8);
+    border: 1px solid rgba(80, 150, 255, 0.12);
+    border-radius: 8px;
+    padding: 4px 8px;
+}
+
+/* ══════════════════════════════════════════
+   18. MODAL CONSISTENCY
+   ══════════════════════════════════════════ */
+
+.modal-content {
+    border-radius: 24px !important;
+}
+
+.modal-content h2 {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+}
+
+/* Modal close button */
+.modal-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(20, 35, 60, 0.6);
+    border: 1px solid rgba(80, 150, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.modal-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: scale(1.1);
+}
+
+/* ══════════════════════════════════════════
+   19. TOAST POLISH
+   ══════════════════════════════════════════ */
+
+.toast {
+    border-radius: 14px !important;
+    font-weight: 500;
+}
+
+.toast.success {
+    border-color: rgba(34, 197, 94, 0.4) !important;
+    background: rgba(12, 30, 20, 0.95) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 12px rgba(34, 197, 94, 0.1) !important;
+}
+
+.toast.error {
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    background: rgba(30, 12, 12, 0.95) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 12px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ══════════════════════════════════════════
+   20. POWERUP BUTTONS — Consistent Premium
+   ══════════════════════════════════════════ */
+
+.powerup-btn {
+    border-radius: 12px !important;
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.powerup-btn.active {
+    background: linear-gradient(145deg, #c87800, #9a5500) !important;
+    border-color: rgba(255, 200, 50, 0.5) !important;
+    box-shadow: 0 0 16px rgba(255, 200, 50, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.powerup-count {
+    background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ══════════════════════════════════════════
+   21. RESPONSIVE — Ensure no overflow on all screens
+   ══════════════════════════════════════════ */
+
+/* Stats/tower/seasonal content overflow protection */
+#stats-content,
+#tower-content,
+#seasonal-content {
+    overflow-x: hidden !important;
+    word-wrap: break-word;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure stat cards don't overflow on small screens */
+@media screen and (max-width: 375px) {
+    #stats-content .stat-card {
+        padding: 6px !important;
+    }
+
+    #stats-content .stat-card > div:first-child {
+        font-size: 1.2rem !important;
+    }
+
+    .tower-floor-card {
+        padding: 8px 10px !important;
+    }
+
+    .achievement-badge {
+        padding: 8px 4px !important;
+    }
+
+    .badge-icon {
+        font-size: 1.4rem !important;
+    }
+
+    .badge-name {
+        font-size: 0.6rem !important;
+    }
+
+    /* Estate cards compact */
+    .tree-card,
+    .spirit-card {
+        padding: 8px !important;
+        gap: 0.5rem !important;
+    }
+
+    .tree-emoji,
+    .spirit-emoji {
+        font-size: 1.8rem !important;
+        flex: 0 0 40px !important;
+    }
+}
+
+/* Touch targets minimum 44px */
+@media (hover: none) and (pointer: coarse) {
+    .achievement-badge {
+        min-height: 44px;
+    }
+
+    .checkin-day {
+        min-height: 44px;
+    }
+
+    .collection-item {
+        min-height: 44px;
+    }
+
+    .tower-floor-card {
+        min-height: 48px;
+    }
+
+    .tab-btn,
+    .chapter-tab {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* ══════════════════════════════════════════
+   22. SKILL BAR — Premium Polish
+   ══════════════════════════════════════════ */
+
+.skill-bar-track {
+    background: rgba(20, 35, 60, 0.8) !important;
+    border: 1px solid rgba(168, 85, 247, 0.2) !important;
+    border-radius: 6px !important;
+    height: 10px;
+}
+
+.skill-bar-fill {
+    background: linear-gradient(90deg, #7c3aed, #a855f7, #fbbf24) !important;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+}
+
+.skill-activate-btn {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 2px solid rgba(168, 85, 247, 0.25) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.skill-activate-btn.ready {
+    background: linear-gradient(135deg, #c87800, #fbbf24) !important;
+    border-color: rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 0 20px rgba(255, 209, 0, 0.5), 0 0 40px rgba(255, 209, 0, 0.2) !important;
+}
+
+/* ══════════════════════════════════════════
+   23. BOSS BAR — Consistent With Premium
+   ══════════════════════════════════════════ */
+
+.boss-bar {
+    background: linear-gradient(135deg, rgba(30, 8, 8, 0.6), rgba(14, 24, 48, 0.7)) !important;
+    border: 1.5px solid rgba(239, 68, 68, 0.3) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.boss-hp-bar {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px !important;
+    height: 14px !important;
+}
+
+.boss-hp-fill {
+    border-radius: 8px !important;
+    background: linear-gradient(90deg, #22c55e, #4ade80) !important;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.3);
+}
+
+/* ══════════════════════════════════════════
+   24. COMBO DISPLAY — Enhanced Juice
+   ══════════════════════════════════════════ */
+
+.combo-display {
+    text-shadow: 0 0 30px rgba(255, 195, 50, 0.6), 0 0 60px rgba(255, 150, 0, 0.3) !important;
+}
+
+.combo-count {
+    font-size: 3.5rem !important;
+    letter-spacing: 3px;
+}
+
+/* ══════════════════════════════════════════
+   25. CONFETTI — Enhanced particles
+   ══════════════════════════════════════════ */
+
+.confetti-piece {
+    border-radius: 2px;
+    box-shadow: 0 0 4px currentColor;
+}
+
+/* ══════════════════════════════════════════
+   26. PAUSE MENU — Polish
+   ══════════════════════════════════════════ */
+
+.pause-content h2 {
+    background: linear-gradient(135deg, #60a5fa, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pause-stats {
+    background: rgba(20, 35, 60, 0.4);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 12px 0;
+}
+
+.pause-stats p {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(80, 150, 255, 0.06);
+}
+
+.pause-stats p:last-child {
+    border-bottom: none;
+}
+
+/* ══════════════════════════════════════════
+   27. STORY DIALOG — Cinematic Polish
+   ══════════════════════════════════════════ */
+
+.story-dialog-content {
+    border-color: rgba(255, 209, 0, 0.4) !important;
+    background: linear-gradient(145deg, rgba(20, 15, 5, 0.95), rgba(12, 20, 40, 0.95)) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 209, 0, 0.1) !important;
+}
+
+.story-character {
+    filter: drop-shadow(0 0 24px rgba(255, 209, 0, 0.4));
+}
+
+.story-text {
+    font-size: 1.1rem !important;
+    line-height: 1.8 !important;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ══════════════════════════════════════════
+   28. TUTORIAL DIALOG — Consistent Premium
+   ══════════════════════════════════════════ */
+
+.tutorial-dialog {
+    background: rgba(12, 20, 40, 0.95) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255, 209, 0, 0.3) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 209, 0, 0.1) !important;
+    border-radius: 20px !important;
+}
+
+.tutorial-progress .dot {
+    background: rgba(30, 50, 80, 0.8) !important;
+    border: 1px solid rgba(80, 150, 255, 0.15);
+}
+
+.tutorial-progress .dot.active {
+    background: var(--wow-gold) !important;
+    box-shadow: 0 0 6px rgba(255, 209, 0, 0.4);
+}
+
+/* ══════════════════════════════════════════
+   29. ENDLESS MODE PICKER — Modal Polish
+   ══════════════════════════════════════════ */
+
+/* Endless mode buttons use inline styles from JS, target them */
+[data-endless-mode] {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1.5px solid rgba(80, 150, 255, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    transition: transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+[data-endless-mode]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), 0 0 10px rgba(80, 150, 255, 0.1) !important;
+}
+
+/* ══════════════════════════════════════════
+   30. DAILY LOGIN POPUP — Consistent
+   ══════════════════════════════════════════ */
+
+.dl-card {
+    background: rgba(12, 20, 40, 0.97) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2px solid rgba(245, 158, 11, 0.5) !important;
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.2), 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dl-day {
+    background: rgba(20, 35, 60, 0.6) !important;
+    border: 1px solid rgba(80, 150, 255, 0.1) !important;
+    border-radius: 10px !important;
+}
+
+.dl-today {
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    background: rgba(245, 158, 11, 0.12) !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.25) !important;
+}
+
+.dl-btn {
+    background: linear-gradient(145deg, #c87800, #9a5500) !important;
+    border: 1px solid rgba(255, 200, 50, 0.3) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 16px rgba(200, 120, 0, 0.3) !important;
+}
+
+.dl-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* ══════════════════════════════════════════
+   31. SCROLLBAR — Universal Premium
+   ══════════════════════════════════════════ */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(60, 110, 180, 0.25) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(60, 110, 180, 0.3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(80, 140, 220, 0.5);
+}
+
+/* ══════════════════════════════════════════
+   32. GAME OBJECTIVES — Premium
+   ══════════════════════════════════════════ */
+
+.objective {
+    background: rgba(14, 24, 48, 0.85) !important;
+    border: 1px solid rgba(80, 150, 255, 0.12) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.2s ease, background 0.2s ease !important;
+}
+
+.objective.completed {
+    border-color: rgba(34, 197, 94, 0.35) !important;
+    background: rgba(34, 197, 94, 0.1) !important;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.12);
+}
+
+/* ══════════════════════════════════════════
+   33. BOSS ENTRANCE — Consistent Premium
+   ══════════════════════════════════════════ */
+
+.boss-entrance-overlay {
+    background: radial-gradient(circle at 50% 40%, rgba(30, 5, 5, 0.95), rgba(5, 5, 15, 0.98)) !important;
+}
+
+.boss-entrance-emoji {
+    filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.7));
+}
+
+/* ══════════════════════════════════════════
+   34. MATCH FEEDBACK — Screen shake class
+   ══════════════════════════════════════════ */
+
+.board-shake {
+    animation: board-shake 0.2s ease;
+}
+
+@keyframes board-shake {
+    0%, 100% { transform: translate(0); }
+    25% { transform: translate(-3px, 1px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-1px, 2px); }
+}
+
+/* Match flash on cells */
+.cell.match-flash {
+    animation: cell-match-flash 0.3s ease;
+}
+
+@keyframes cell-match-flash {
+    0% { background: rgba(255, 255, 255, 0); }
+    30% { background: rgba(255, 255, 255, 0.6); }
+    100% { background: rgba(255, 255, 255, 0); }
+}
+
+/* ══════════════════════════════════════════
+   35. OFFLINE REWARD — Polish
+   ══════════════════════════════════════════ */
+
+.reward-content {
+    background: rgba(12, 20, 40, 0.95) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255, 209, 0, 0.4) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 209, 0, 0.15) !important;
+}
+
+.btn-claim {
+    background: linear-gradient(145deg, #c87800, #9a5500) !important;
+    border: 1px solid rgba(255, 200, 50, 0.3) !important;
+    box-shadow: 0 4px 16px rgba(200, 120, 0, 0.3) !important;
+    border-radius: 12px !important;
+}
+
+.btn-claim:active {
+    transform: scale(0.95) !important;
+}
+
+/* ══════════════════════════════════════════
+   36. PLAYER INFO — Menu Polish
+   ══════════════════════════════════════════ */
+
+.player-info {
+    border-radius: 16px !important;
+}
+
+.player-avatar {
+    background: linear-gradient(135deg, #c87800, #9a5500) !important;
+    border: 2px solid rgba(255, 215, 0, 0.5) !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.currency {
+    border-radius: 12px !important;
+}
+
+.currency.gold {
+    border-color: rgba(255, 209, 0, 0.25) !important;
+}
+
+.currency.gems {
+    border-color: rgba(168, 85, 247, 0.25) !important;
+}
+
+/* ══════════════════════════════════════════
+   37. BUFF CHIPS — Consistent Premium
+   ══════════════════════════════════════════ */
+
+.buff-chip {
+    border-radius: 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ══════════════════════════════════════════
+   38. WEEKLY CHALLENGE (likely inline-styled from JS)
+   ══════════════════════════════════════════ */
+
+[data-weekly-level] {
+    transition: transform 0.15s ease !important;
+}
+
+[data-weekly-level]:hover {
+    transform: scale(1.03);
+}
+
+/* ══════════════════════════════════════════
+   39. SEASON SYSTEM (if separate from seasonal)
+   ══════════════════════════════════════════ */
+
+[data-season-level] {
+    transition: transform 0.15s ease !important;
+}
+
+[data-season-level]:hover {
+    transform: scale(1.03);
+}
