@@ -1,30 +1,24 @@
 #!/bin/bash
-# Mango Paradise — persistent serve + Cloudflare tunnel
-# Keeps game accessible from China via trycloudflare.com
+cd /Users/mario/.openclaw/workspace/games/mango-paradise-ultimate
 
-PORT=8765
-DIR="$(cd "$(dirname "$0")" && pwd)"
-TUNNEL_LOG="/tmp/mango-tunnel.log"
+# Start HTTP server
+python3 -m http.server 8765 &
+HTTP_PID=$!
 
-# Kill existing
-pkill -f "http.server $PORT" 2>/dev/null
-pkill -f "cloudflared tunnel.*$PORT" 2>/dev/null
-sleep 1
+# Start tunnel and capture URL
+/opt/homebrew/bin/cloudflared tunnel --url http://localhost:8765 2>&1 | tee /tmp/cf-tunnel-current.log &
+TUNNEL_PID=$!
 
-# Start local server
-cd "$DIR"
-python3 -m http.server $PORT &>/dev/null &
-sleep 2
+# Wait for URL and save it
+for i in $(seq 1 30); do
+  sleep 1
+  URL=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/cf-tunnel-current.log 2>/dev/null | head -1)
+  if [ -n "$URL" ]; then
+    echo "$URL" > /tmp/mango-game-url.txt
+    echo "$(date): $URL" >> /tmp/mango-game-url-history.txt
+    break
+  fi
+done
 
-# Start Cloudflare tunnel
-cloudflared tunnel --url http://localhost:$PORT &>"$TUNNEL_LOG" &
-sleep 8
-
-# Extract URL
-URL=$(grep -o 'https://[a-z\-]*\.trycloudflare\.com' "$TUNNEL_LOG" | head -1)
-if [ -n "$URL" ]; then
-    echo "✅ Mango Paradise is live at: $URL"
-    echo "$URL" > /tmp/mango-paradise-url.txt
-else
-    echo "❌ Failed to get tunnel URL. Check $TUNNEL_LOG"
-fi
+# Wait for either to exit
+wait $HTTP_PID $TUNNEL_PID

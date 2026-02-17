@@ -109,9 +109,12 @@ class Game {
             if (this.scoreMultiplier > 1) buffMessages.push(`✨ 幸福度: 分数x${this.scoreMultiplier}`);
             if (Estate.hasBuff('rainbow_4')) buffMessages.push('🌈 彩虹树: 4消出彩虹');
             if (Estate.hasBuff('start_bomb')) buffMessages.push('🌟 金芒树: 开局炸弹');
-            // Show buff summary after short delay
+            // Show buff summary with dramatic entrance
             if (buffMessages.length > 0) {
-                setTimeout(() => UI.showToast(buffMessages.join(' | '), 'success'), 800);
+                setTimeout(() => {
+                    this.showBuffFlash('rgba(255,215,0,0.2)');
+                    UI.showToast('⚡ ' + buffMessages.join(' | '), 'success');
+                }, 800);
             }
         } catch (e) {
             console.warn('[Game.init] Estate buff error (fallback to defaults):', e);
@@ -177,6 +180,7 @@ class Game {
         }
 
         // Place start bombs if buff active (scales with tree level)
+        this._startBombPositions = [];
         try {
             if (Estate.hasBuff('start_bomb')) {
                 const bombCount = Estate.getStartBombs() || 1;
@@ -187,6 +191,16 @@ class Game {
                         const ry = Utils.randomInt(0, this.height - 1);
                         if (this.board[ry][rx] && this.board[ry][rx].special === this.SPECIAL_TYPES.NONE) {
                             this.board[ry][rx].special = this.SPECIAL_TYPES.BOMB;
+                            this._startBombPositions.push({x: rx, y: ry});
+                            // Animate bomb entrance after render
+                            setTimeout(() => {
+                                const cell = document.querySelector(`.cell[data-x="${rx}"][data-y="${ry}"]`);
+                                if (cell) {
+                                    cell.classList.add('bomb-entrance');
+                                    this.showBuffFlash('rgba(245,158,11,0.25)');
+                                    setTimeout(() => cell.classList.remove('bomb-entrance'), 600);
+                                }
+                            }, 1200 + b * 300);
                             break;
                         }
                         attempts++;
@@ -853,6 +867,17 @@ class Game {
                 specialType = this.SPECIAL_TYPES.RAINBOW;
                 specialPosition = match.cells[1];
                 Collection.checkUnlock('special_create', {specialType:'rainbow'});
+                // Rainbow burst visual!
+                setTimeout(() => {
+                    const cell = document.querySelector(`.cell[data-x="${specialPosition.x}"][data-y="${specialPosition.y}"]`);
+                    if (cell) {
+                        const burst = document.createElement('div');
+                        burst.className = 'rainbow-burst';
+                        cell.appendChild(burst);
+                        setTimeout(() => burst.remove(), 900);
+                    }
+                    this.showBuffFlash('rgba(236,72,153,0.2)');
+                }, 100);
             } else {
                 // 4 in a row → line gem
                 specialType = match.direction === 'horizontal' ? this.SPECIAL_TYPES.VERTICAL : this.SPECIAL_TYPES.HORIZONTAL;
@@ -1411,10 +1436,18 @@ class Game {
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
             const r = boardEl.getBoundingClientRect();
-            // Show multiplier if active
-            const text = this.scoreMultiplier > 1 ? `+${adjusted} (x${this.scoreMultiplier})` : `+${adjusted}`;
-            const color = this.scoreMultiplier > 1 ? '#ff8800' : '#ffd700';
-            Particles.floatingText(r.left+r.width/2, r.top+r.height/2, text, color);
+            // Show multiplier if active — bigger, bolder when buffed
+            if (this.scoreMultiplier > 1) {
+                const text = `+${adjusted} ×${this.scoreMultiplier}`;
+                Particles.floatingText(r.left+r.width/2, r.top+r.height/2, text, '#ff8800');
+                // Every 500+ points with multiplier → big popup
+                if (adjusted >= 500) {
+                    this.showScorePopup(`✨ ×${this.scoreMultiplier} → +${adjusted}`);
+                    this.showBuffFlash('rgba(255,136,0,0.2)');
+                }
+            } else {
+                Particles.floatingText(r.left+r.width/2, r.top+r.height/2, `+${adjusted}`, '#ffd700');
+            }
         }
 
         // Boss damage
@@ -1661,13 +1694,32 @@ class Game {
         container.style.display = 'flex';
         container.innerHTML = buffs.map(b => {
             switch(b) {
-                case 'start_bomb': return '<span class="buff-icon" title="开局炸弹">🌟</span>';
-                case 'extra_moves': return '<span class="buff-icon" title="额外步数">🌙</span>';
-                case 'rainbow_4': return '<span class="buff-icon" title="4消彩虹">🌈</span>';
-                case 'score_multiplier': return '<span class="buff-icon" title="1.2x分数">✨</span>';
+                case 'start_bomb': return '<span class="buff-chip buff-bomb"><span class="buff-emoji">🌟</span><span class="buff-label">炸弹</span></span>';
+                case 'extra_moves': return `<span class="buff-chip buff-moves"><span class="buff-emoji">🌙</span><span class="buff-label">+${Estate.getExtraMoves()||2}步</span></span>`;
+                case 'rainbow_4': return '<span class="buff-chip buff-rainbow"><span class="buff-emoji">🌈</span><span class="buff-label">4消彩虹</span></span>';
+                case 'score_multiplier': return `<span class="buff-chip buff-score"><span class="buff-emoji">✨</span><span class="buff-label">x${this.scoreMultiplier}</span></span>`;
+                case 'gem_bonus': return '<span class="buff-chip buff-gem"><span class="buff-emoji">💎</span><span class="buff-label">宝石加成</span></span>';
                 default: return '';
             }
         }).join('');
+    }
+
+    // Flash screen when buff triggers (score multiplier, rainbow, etc.)
+    showBuffFlash(color) {
+        const el = document.createElement('div');
+        el.className = 'buff-flash';
+        if (color) el.style.background = color;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 700);
+    }
+
+    // Big score popup for multiplied scores
+    showScorePopup(text) {
+        const el = document.createElement('div');
+        el.className = 'score-popup-multi';
+        el.textContent = text;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1100);
     }
 
     // ==========================================

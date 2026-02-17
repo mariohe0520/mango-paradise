@@ -1359,6 +1359,32 @@ const UI = {
             const msgEl = document.getElementById('victory-next-star');
             if (msgEl) msgEl.textContent = nextStarMsg;
 
+            // Buff contribution summary
+            const buffSummaryEl = document.getElementById('buff-summary');
+            if (buffSummaryEl) {
+                const buffs = Estate.getActiveBuffs();
+                if (buffs.length > 0) {
+                    const contributions = [];
+                    if (game.scoreMultiplier > 1) {
+                        const bonus = score - Math.floor(score / game.scoreMultiplier);
+                        contributions.push(`✨ 分数加成: +${Utils.formatNumber(bonus)}分`);
+                    }
+                    if (buffs.includes('extra_moves')) contributions.push(`🌙 额外步数: +${Estate.getExtraMoves()||2}步`);
+                    if (buffs.includes('rainbow_4')) contributions.push('🌈 4消彩虹: 更强消除');
+                    if (buffs.includes('start_bomb')) contributions.push('🌟 开局炸弹: 快速开局');
+                    if (buffs.includes('gem_bonus')) contributions.push('💎 通关宝石加成');
+                    if (contributions.length > 0) {
+                        buffSummaryEl.innerHTML = '<div style="font-size:0.75rem;color:#fbbf24;margin-top:6px;padding:6px;background:rgba(251,191,36,0.1);border-radius:8px;border:1px solid rgba(251,191,36,0.2)"><b>🌳 庄园Buff贡献:</b><br>' + contributions.join('<br>') + '</div>';
+                        buffSummaryEl.style.display = 'block';
+                    } else {
+                        buffSummaryEl.style.display = 'none';
+                    }
+                } else {
+                    buffSummaryEl.innerHTML = '<div style="font-size:0.7rem;color:#999;margin-top:6px">💡 升级庄园获得Buff加成 →</div>';
+                    buffSummaryEl.style.display = 'block';
+                }
+            }
+
             const starsEl = document.getElementById('victory-stars');
             if (starsEl) {
                 starsEl.querySelectorAll('.star').forEach((star, i) => {
