@@ -590,14 +590,11 @@ class Game {
         gemEl.className = `gem gem-${gem.type}`;
         gemEl.dataset.type = gem.type;
         gemEl.dataset.id = gem.id;
-        // Skull gems (placed by boss) — special skull emoji
+        // Skull gems get additional class (visual handled by CSS)
         if (gem.type === 'skull') {
-            gemEl.textContent = '💀';
             gemEl.classList.add('gem-skull');
-        } else {
-            const gemData = GEM_TYPES[gem.type];
-            gemEl.textContent = gemData ? gemData.emoji : '❓';
         }
+        // NO textContent — gem appearance is 100% CSS-rendered 3D spheres
         if (gem.special !== this.SPECIAL_TYPES.NONE) {
             gemEl.classList.add('special', gem.special);
         }
@@ -1286,7 +1283,7 @@ class Game {
         }
 
         this.render();
-        // Single particle burst for the whole match (1 reflow instead of N)
+        // Gem shatter particles for the match (colored fragments)
         if (match.cells.length > 0) {
             const boardEl = document.getElementById('game-board');
             if (boardEl) {
@@ -1296,7 +1293,9 @@ class Game {
                 const cx = r.left + mid.x * (cellPx+gap) + cellPx/2;
                 const cy = r.top + mid.y * (cellPx+gap) + cellPx/2;
                 const gd = GEM_TYPES[match.cells[0].gem.type];
-                Particles.burst(cx, cy, gd?gd.color:'#fff', Math.min(count+2, 8));
+                // Use shatter for gem fragments + burst for sparkle
+                Particles.shatter(cx, cy, gd?gd.color:'#fff', Math.min(count+2, 8));
+                if (count >= 4) Particles.burst(cx, cy, gd?gd.color:'#fff', 4);
             }
         }
         Storage.addMatch();
@@ -2023,10 +2022,10 @@ class Game {
         if (objEl) {
             objEl.innerHTML = this.objectives.map((obj, i) => {
                 const cur = this.objectiveProgress[i], tar = obj.target, done = cur >= tar;
-                // 🔧 FIX: Use actual gem emoji from GEM_TYPES, not hand-written icon
+                // Render objective icons as mini CSS gem spheres (not emoji)
                 let icon = obj.icon;
                 if (obj.gem && typeof GEM_TYPES !== 'undefined' && GEM_TYPES[obj.gem]) {
-                    icon = GEM_TYPES[obj.gem].emoji;
+                    icon = `<span class="obj-gem obj-gem-${obj.gem}"></span>`;
                 }
                 // Add tooltip for special objectives
                 let hint = '';

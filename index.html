@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/premium.css">
     <link rel="stylesheet" href="css/polish.css">
+    <link rel="stylesheet" href="css/gems.css">
 </head>
 <body>
     <!-- 加载画面 -->
@@ -79,74 +80,74 @@
 
             <div class="menu-buttons">
                 <button class="menu-btn primary" id="btn-adventure" data-sound="click">
-                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M14.5 3L12 7l-2.5-4L7 6l-3-1 1.5 5L3 14l4 1 2 6h6l2-6 4-1-2.5-4L20 5l-3 1-2.5-3z" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="7" x2="12" y2="15" stroke="currentColor" stroke-width="1.5"/></svg></span>
                     <span class="btn-text">开始冒险</span>
                     <span class="btn-subtitle">第 <span id="current-level-display">1</span> 关</span>
                 </button>
                 <button class="menu-btn" id="btn-collection" data-sound="click">
-                    <span class="btn-icon">📖</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
                     <span class="btn-text">图鉴收集</span>
                 </button>
                 <button class="menu-btn" id="btn-achievements" data-sound="click">
-                    <span class="btn-icon">🏆</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>
                     <span class="btn-text">成就殿堂</span>
                 </button>
                 <button class="menu-btn" id="btn-daily" data-sound="click">
-                    <span class="btn-icon">🎁</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
                     <span class="btn-text">每日签到</span>
                     <span class="btn-badge" id="daily-badge" style="display:none">!</span>
                 </button>
                 <button class="menu-btn" id="btn-estate" data-sound="click">
-                    <span class="btn-icon">🏡</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M10 9h4"/><path d="M10 13h4"/></svg></span>
                     <span class="btn-text">芒果庄园</span>
                     <span class="btn-subtitle">种树 · 精灵 · Buff</span>
                 </button>
                 <button class="menu-btn highlight" id="btn-daily-challenge" data-sound="click">
-                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M14.5 3L12 7l-2.5-4L7 6l-3-1 1.5 5L3 14l4 1 2 6h6l2-6 4-1-2.5-4L20 5l-3 1-2.5-3z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></span>
                     <span class="btn-text">每日挑战</span>
                     <span class="btn-subtitle">每天不同 · 限时 · 特殊规则</span>
                 </button>
                 <button class="menu-btn" id="btn-endless" data-sound="click">
-                    <span class="btn-icon">♾️</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/></svg></span>
                     <span class="btn-text">无尽模式</span>
                     <span class="btn-subtitle">经典 · 限时 · 生存</span>
                 </button>
                 <button class="menu-btn highlight" id="btn-tower" data-sound="click">
-                    <span class="btn-icon">🗼</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M7 22V2h10v20"/><path d="M4 22h16"/><path d="M7 10h10"/><path d="M7 6h10"/><path d="M7 14h10"/><path d="M7 18h10"/><path d="M10 2V0"/><path d="M14 2V0"/><rect x="10" y="18" width="4" height="4" rx="0.5"/></svg></span>
                     <span class="btn-text">挑战塔</span>
                     <span class="btn-subtitle">50层 · 特殊规则 · 终极Boss</span>
                 </button>
                 <button class="menu-btn" id="btn-stats" data-sound="click">
-                    <span class="btn-icon">📊</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
                     <span class="btn-text">统计数据</span>
                     <span class="btn-subtitle">成就 · 数据 · 趋势</span>
                 </button>
                 <button class="menu-btn highlight" id="btn-seasonal" data-sound="click">
-                    <span class="btn-icon">🎄</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
                     <span class="btn-text">季节活动</span>
                     <span class="btn-subtitle" id="seasonal-subtitle">当月活动</span>
                 </button>
                 <button class="menu-btn highlight" id="btn-weekly" data-sound="click">
-                    <span class="btn-icon">🏆</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>
                     <span class="btn-text">周赛</span>
                     <span class="btn-subtitle">每周主题 · 排行榜 · 奖励</span>
                 </button>
                 <button class="menu-btn" id="btn-revenge" data-sound="click" style="display:none;">
-                    <span class="btn-icon">👹</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 9l1.5 1.5L8 12"/><path d="M16 9l-1.5 1.5L16 12"/><path d="M8 16s1.5 2 4 2 4-2 4-2"/></svg></span>
                     <span class="btn-text">Boss复仇</span>
                     <span class="btn-subtitle">被击败的Boss回来了！</span>
                 </button>
                 <button class="menu-btn highlight" id="btn-season" data-sound="click">
-                    <span class="btn-icon">🏅</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></span>
                     <span class="btn-text">赛季</span>
                     <span class="btn-subtitle" id="season-subtitle">本月赛季</span>
                 </button>
                 <button class="menu-btn" id="btn-leaderboard" data-sound="click">
-                    <span class="btn-icon">👑</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><path d="M12 2L15 8.5 22 9.27 17 14 18.18 21 12 17.77 5.82 21 7 14 2 9.27 9 8.5z"/></svg></span>
                     <span class="btn-text">排行榜</span>
                 </button>
                 <button class="menu-btn" id="btn-settings" data-sound="click">
-                    <span class="btn-icon">⚙️</span>
+                    <span class="btn-icon"><svg class="btn-svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
                     <span class="btn-text">设置</span>
                 </button>
             </div>

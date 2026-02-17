@@ -134,9 +134,66 @@ class ParticleSystem {
         setTimeout(() => el.remove(), 600);
     }
 
-    // Combo text
-    comboText(x, y, text, color = '#ffd700') {
-        this.floatingText(x, y, text, color);
+    // Combo text with BIG scale pop animation
+    comboText(x, y, combo, color = '#ffd700') {
+        if (!this.enabled || !this.container) return;
+        const comboNames = ['', '', 'GOOD!', 'GREAT!', 'AMAZING!', 'INCREDIBLE!', 'LEGENDARY!', 'GODLIKE!'];
+        const comboName = comboNames[Math.min(combo, comboNames.length - 1)] || `x${combo}`;
+        const el = document.createElement('div');
+        el.innerHTML = `<div style="font-size:2rem;font-weight:900;line-height:1;">${comboName}</div><div style="font-size:1.2rem;opacity:0.8;">x${combo} COMBO</div>`;
+        const colors = ['', '', '#22c55e', '#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#ff0000'];
+        const c = colors[Math.min(combo, colors.length - 1)] || '#ff0000';
+        el.style.cssText = `position:absolute;left:${x}px;top:${y}px;color:${c};font-weight:900;pointer-events:none;text-shadow:0 0 20px ${c}, 0 2px 4px rgba(0,0,0,0.8);white-space:nowrap;transform:translate(-50%,-50%) scale(0.3);opacity:0;transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);text-align:center;z-index:100;`;
+        this.container.appendChild(el);
+        requestAnimationFrame(() => {
+            el.style.transform = 'translate(-50%, -80px) scale(1.2)';
+            el.style.opacity = '1';
+        });
+        setTimeout(() => {
+            el.style.transform = 'translate(-50%, -120px) scale(0.8)';
+            el.style.opacity = '0';
+        }, 500);
+        setTimeout(() => el.remove(), 1100);
+    }
+
+    // Gem shatter effect — small colored fragments flying outward
+    shatter(x, y, color, count = 8) {
+        if (!this.enabled || !this.container) return;
+        const actual = Math.min(count, 10);
+        for (let i = 0; i < actual; i++) {
+            const angle = (i / actual) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+            const dist = 25 + Math.random() * 40;
+            const tx = Math.cos(angle) * dist;
+            const ty = Math.sin(angle) * dist - 10; // slight upward bias
+            const size = 3 + Math.random() * 4;
+            const rotation = Math.random() * 360;
+            const el = document.createElement('div');
+            // Shard shape: slightly elongated, not round
+            el.style.cssText = `position:absolute;left:${x - size/2}px;top:${y - size/2}px;width:${size}px;height:${size * 1.4}px;background:${color};border-radius:2px;pointer-events:none;opacity:1;transform:rotate(${rotation}deg);transition:all 0.45s cubic-bezier(0.25,0.46,0.45,0.94);box-shadow:0 0 4px ${color};`;
+            if (this.container && this._count < this.MAX_PARTICLES) {
+                this.container.appendChild(el);
+                this._count++;
+                requestAnimationFrame(() => {
+                    el.style.transform = `translate(${tx}px, ${ty}px) rotate(${rotation + 180}deg) scale(0.2)`;
+                    el.style.opacity = '0';
+                });
+                setTimeout(() => { el.remove(); this._count--; }, 500);
+            }
+        }
+    }
+
+    // Score floating number (big, fades up)
+    scoreFloat(x, y, score, color = '#ffd700') {
+        if (!this.enabled || !this.container) return;
+        const el = document.createElement('div');
+        el.textContent = `+${score}`;
+        el.style.cssText = `position:absolute;left:${x}px;top:${y}px;color:${color};font-weight:900;font-size:1.4rem;pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,0.7), 0 0 8px ${color}40;white-space:nowrap;transform:translate(-50%,-50%);opacity:1;transition:all 0.7s ease-out;z-index:100;`;
+        this.container.appendChild(el);
+        requestAnimationFrame(() => {
+            el.style.transform = 'translate(-50%, -60px) scale(1.1)';
+            el.style.opacity = '0';
+        });
+        setTimeout(() => el.remove(), 800);
     }
 
     // Line vertical

@@ -1756,7 +1756,7 @@ const UI = {
         const gemBarsHtml = topGems.map(g => {
             const pct = Math.max(5, (g.matched / maxMatched) * 100);
             return `<div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
-                <span style="width:24px;text-align:center;">${g.emoji}</span>
+                <span style="width:24px;text-align:center;"><span class="obj-gem obj-gem-${g.type}" style="width:18px;height:18px;"></span></span>
                 <div style="flex:1;background:rgba(100,100,100,0.2);border-radius:4px;height:16px;overflow:hidden;">
                     <div style="background:linear-gradient(90deg,#fbbf24,#f97316);height:100%;width:${pct}%;border-radius:4px;transition:width 0.3s;"></div>
                 </div>
