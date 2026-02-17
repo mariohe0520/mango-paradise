@@ -41,6 +41,12 @@ class Game {
         // Boss
         this.isBossLevel = false;
 
+        // Ch7-10 Special Mechanics
+        this.fogCells = [];          // [{x, y}] fog overlay positions
+        this.gravityShiftActive = false;
+        this.chainBonusActive = false;
+        this.chainDepth = 0;         // current cascade depth for chain bonus
+
         // Special gem types
         this.SPECIAL_TYPES = {
             NONE: 'none',
@@ -258,6 +264,16 @@ class Game {
             console.warn('[Game.init] start_bomb buff error:', e);
         }
 
+        // ── Ch7-10 Special Mechanics Init ──
+        this.chainBonusActive = !!(this.level.special && this.level.special.chainBonus);
+        this.gravityShiftActive = !!(this.level.special && this.level.special.gravityShift);
+        this.fogCells = [];
+        this.chainDepth = 0;
+        if (this.level.special && this.level.special.fog) {
+            const fogCount = this.level.special.fogCount || this.level.special.fogCells || 10;
+            this.initFog(fogCount);
+        }
+
         // Timed level
         if (this.level.timed) {
             this.timeLeft = this.level.timeLimit;
@@ -343,6 +359,74 @@ class Game {
                         this.board[y][x] = this.createGem(x, y); hasMatches = true;
                     }
                 }
+            }
+        }
+    }
+
+    // ==========================================
+    // Fog Mechanic (Ch8+)
+    // ==========================================
+
+    initFog(count) {
+        this.fogCells = [];
+        const allPositions = [];
+        for (let y = 0; y < this.height; y++)
+            for (let x = 0; x < this.width; x++)
+                allPositions.push({ x, y });
+        // Shuffle and pick
+        for (let i = allPositions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allPositions[i], allPositions[j]] = [allPositions[j], allPositions[i]];
+        }
+        this.fogCells = allPositions.slice(0, Math.min(count, allPositions.length));
+    }
+
+    isFogged(x, y) {
+        return this.fogCells.some(f => f.x === x && f.y === y);
+    }
+
+    revealFogAt(x, y) {
+        // Reveal fog at exactly (x,y)
+        this.fogCells = this.fogCells.filter(f => !(f.x === x && f.y === y));
+    }
+
+    revealFogAdjacent(matchCells) {
+        // For each matched cell, reveal fog on adjacent cells
+        if (this.fogCells.length === 0) return;
+        const revealed = new Set();
+        const dirs = [{dx:-1,dy:0},{dx:1,dy:0},{dx:0,dy:-1},{dx:0,dy:1}];
+        for (const cell of matchCells) {
+            // Also reveal fog ON the matched cell itself
+            const selfKey = `${cell.x},${cell.y}`;
+            if (this.isFogged(cell.x, cell.y) && !revealed.has(selfKey)) {
+                revealed.add(selfKey);
+            }
+            for (const {dx, dy} of dirs) {
+                const nx = cell.x + dx, ny = cell.y + dy;
+                if (!this.isValidCell(nx, ny)) continue;
+                const key = `${nx},${ny}`;
+                if (this.isFogged(nx, ny) && !revealed.has(key)) {
+                    revealed.add(key);
+                }
+            }
+        }
+        if (revealed.size > 0) {
+            for (const key of revealed) {
+                const [fx, fy] = key.split(',').map(Number);
+                this.revealFogAt(fx, fy);
+                // Visual feedback: brief glow on revealed cell
+                const cell = this.getCell(fx, fy);
+                if (cell) {
+                    cell.classList.add('fog-reveal');
+                    setTimeout(() => cell.classList.remove('fog-reveal'), 600);
+                }
+            }
+            // Show floating text
+            const boardEl = document.getElementById('game-board');
+            if (boardEl) {
+                const r = boardEl.getBoundingClientRect();
+                Particles.floatingText(r.left + r.width / 2, r.top + r.height / 2,
+                    `🌫️ -${revealed.size} fog!`, '#60a5fa');
             }
         }
     }
@@ -443,6 +527,29 @@ class Game {
                         cell.classList.toggle('locked-cell', cs.locked > 0);
                         if (cs.locked > 0) cell.dataset.lockLevel = cs.locked;
                     }
+
+                    // Fog overlay (Ch8+): hide gem content behind fog
+                    const fogged = this.isFogged(x, y);
+                    cell.classList.toggle('fogged', fogged);
+                    if (fogged) {
+                        // Replace gem display with fog indicator
+                        let fogOverlay = cell.querySelector('.fog-overlay');
+                        if (!fogOverlay) {
+                            fogOverlay = document.createElement('div');
+                            fogOverlay.className = 'fog-overlay';
+                            fogOverlay.textContent = '?';
+                            cell.appendChild(fogOverlay);
+                        }
+                        // Hide the actual gem element
+                        const gemEl = cell.querySelector('.gem');
+                        if (gemEl) gemEl.style.visibility = 'hidden';
+                    } else {
+                        // Remove fog overlay if cell was unfogged
+                        const fogOverlay = cell.querySelector('.fog-overlay');
+                        if (fogOverlay) fogOverlay.remove();
+                        const gemEl = cell.querySelector('.gem');
+                        if (gemEl) gemEl.style.visibility = '';
+                    }
                 }
             }
         } catch (e) {
@@ -475,14 +582,26 @@ class Game {
         cell.innerHTML = '';
         // Reapply cell state classes
         const cs = this.cellStates[y] && this.cellStates[y][x];
-        cell.classList.remove('frozen', 'locked-cell');
+        cell.classList.remove('frozen', 'locked-cell', 'fogged');
         if (cs) {
             if (cs.frozen) cell.classList.add('frozen');
             if (cs.locked > 0) { cell.classList.add('locked-cell'); cell.dataset.lockLevel = cs.locked; }
             else { delete cell.dataset.lockLevel; }
         }
         const gem = this.board[y][x];
-        if (gem) cell.appendChild(this.createGemElement(gem));
+        if (gem) {
+            const gemEl = this.createGemElement(gem);
+            cell.appendChild(gemEl);
+            // Fog: hide gem if fogged
+            if (this.isFogged(x, y)) {
+                cell.classList.add('fogged');
+                gemEl.style.visibility = 'hidden';
+                const fogOverlay = document.createElement('div');
+                fogOverlay.className = 'fog-overlay';
+                fogOverlay.textContent = '?';
+                cell.appendChild(fogOverlay);
+            }
+        }
     }
 
     getCell(x, y) {
@@ -863,11 +982,13 @@ class Game {
     async processMatches() {
         let hasMatches = true;
         this.combo = 0;
+        this.chainDepth = 0;
         let cascadeDepth = 0;
         const MAX_CASCADE = 50; // safety valve: no infinite loops
 
         while (hasMatches && cascadeDepth < MAX_CASCADE) {
             cascadeDepth++;
+            this.chainDepth = cascadeDepth;
             const matches = this.findMatches();
             if (matches.length === 0) { hasMatches = false; break; }
 
@@ -880,6 +1001,22 @@ class Game {
                     this.objectiveProgress[i] = Math.max(this.objectiveProgress[i], this.combo);
                 }
             });
+
+            // ── Chain Bonus (Ch7+): show floating chain multiplier on cascades ──
+            if (this.chainBonusActive && cascadeDepth >= 2) {
+                const boardEl = document.getElementById('game-board');
+                if (boardEl) {
+                    const r = boardEl.getBoundingClientRect();
+                    const chainText = `⛓️ Chain x${cascadeDepth}!`;
+                    Particles.floatingText(
+                        r.left + r.width / 2,
+                        r.top + r.height * 0.3 - (cascadeDepth * 10),
+                        chainText, '#22d3ee'
+                    );
+                }
+                // Extra vibration for chain
+                Utils.vibrate([30, 15, 40 + cascadeDepth * 10]);
+            }
 
             if (this.combo > 1) {
                 this.showCombo();
@@ -976,6 +1113,11 @@ class Game {
             const comboMultiplier = this.combo >= 7 ? 3 : this.combo >= 5 ? 2 : this.combo >= 3 ? 1.5 : 1;
             score = Math.floor(score * comboMultiplier);
 
+            // ⛓️ Chain Bonus (Ch7+): multiply by cascade depth on cascades
+            if (this.chainBonusActive && this.chainDepth >= 2) {
+                score = Math.floor(score * this.chainDepth);
+            }
+
             // 🏋️ Spirit Trial: 2x points for preferred gem type
             try {
                 if (Estate.isInSpiritTrial()) {
@@ -1052,6 +1194,11 @@ class Game {
             // Lightweight clear: just CSS flash, no per-cell particles (perf)
             const cellEl = this.getCell(x, y);
             if (cellEl) cellEl.style.animation = 'cell-flash 0.15s ease';
+        }
+
+        // 🌫️ Fog mechanic (Ch8+): reveal fog adjacent to matched cells
+        if (this.fogCells.length > 0) {
+            this.revealFogAdjacent(match.cells);
         }
 
         // Create special gem
@@ -1428,23 +1575,48 @@ class Game {
 
     async dropGems() {
         let dropped = false;
-        for (let x = 0; x < this.width; x++) {
-            let emptyY = this.height - 1;
-            for (let y = this.height - 1; y >= 0; y--) {
-                if (this.board[y][x]) {
-                    if (y !== emptyY) {
-                        this.board[emptyY][x] = this.board[y][x];
-                        this.board[emptyY][x].y = emptyY;
-                        this.board[y][x] = null;
-                        // Move cell states too
-                        this.cellStates[emptyY][x] = this.cellStates[y][x];
-                        this.cellStates[y][x] = { frozen: false, locked: 0 };
-                        dropped = true;
+
+        if (this.gravityShiftActive) {
+            // ── Gravity Shift (Ch9+): gems fall LEFT instead of down ──
+            // For each row, compact gems to the left, leaving empties on the right
+            for (let y = 0; y < this.height; y++) {
+                let emptyX = 0; // fill from left
+                for (let x = 0; x < this.width; x++) {
+                    if (this.board[y][x]) {
+                        if (x !== emptyX) {
+                            this.board[y][emptyX] = this.board[y][x];
+                            this.board[y][emptyX].x = emptyX;
+                            this.board[y][x] = null;
+                            // Move cell states too
+                            this.cellStates[y][emptyX] = this.cellStates[y][x];
+                            this.cellStates[y][x] = { frozen: false, locked: 0 };
+                            dropped = true;
+                        }
+                        emptyX++;
                     }
-                    emptyY--;
+                }
+            }
+        } else {
+            // ── Normal gravity: gems fall DOWN ──
+            for (let x = 0; x < this.width; x++) {
+                let emptyY = this.height - 1;
+                for (let y = this.height - 1; y >= 0; y--) {
+                    if (this.board[y][x]) {
+                        if (y !== emptyY) {
+                            this.board[emptyY][x] = this.board[y][x];
+                            this.board[emptyY][x].y = emptyY;
+                            this.board[y][x] = null;
+                            // Move cell states too
+                            this.cellStates[emptyY][x] = this.cellStates[y][x];
+                            this.cellStates[y][x] = { frozen: false, locked: 0 };
+                            dropped = true;
+                        }
+                        emptyY--;
+                    }
                 }
             }
         }
+
         if (dropped) {
             this.render();
             Audio.play('cascade');
@@ -1455,14 +1627,29 @@ class Game {
     async fillGems() {
         let filled = false;
         let emptyCount = 0;
-        for (let x = 0; x < this.width; x++)
+
+        if (this.gravityShiftActive) {
+            // ── Gravity Shift (Ch9+): fill empty cells from the RIGHT side ──
             for (let y = 0; y < this.height; y++)
-                if (!this.board[y][x]) {
-                    this.board[y][x] = this.createGem(x, y);
-                    this.cellStates[y][x] = { frozen: false, locked: 0 };
-                    filled = true;
-                    emptyCount++;
-                }
+                for (let x = this.width - 1; x >= 0; x--)
+                    if (!this.board[y][x]) {
+                        this.board[y][x] = this.createGem(x, y);
+                        this.cellStates[y][x] = { frozen: false, locked: 0 };
+                        filled = true;
+                        emptyCount++;
+                    }
+        } else {
+            // ── Normal: fill from top ──
+            for (let x = 0; x < this.width; x++)
+                for (let y = 0; y < this.height; y++)
+                    if (!this.board[y][x]) {
+                        this.board[y][x] = this.createGem(x, y);
+                        this.cellStates[y][x] = { frozen: false, locked: 0 };
+                        filled = true;
+                        emptyCount++;
+                    }
+        }
+
         if (filled) {
             this.render();
             await Utils.wait(emptyCount > 20 ? 120 : 60);
@@ -1764,8 +1951,23 @@ class Game {
 
     showSpecialGuide() {
         const specials = this.objectives?.filter(o => o.type === 'special' || o.type === 'combo') || [];
-        if (specials.length === 0) return;
+        // Also show guide if new mechanics are active (even without special/combo objectives)
+        const hasNewMechanics = this.chainBonusActive || this.fogCells.length > 0 || this.gravityShiftActive;
+        if (specials.length === 0 && !hasNewMechanics) return;
         const hasRainbow4 = Estate.hasBuff('rainbow_4');
+
+        // Build mechanics tips for Ch7-10
+        const mechanicTips = [];
+        if (this.chainBonusActive) {
+            mechanicTips.push('<div style="font-size:1rem;margin:6px 0;">⛓️ <b>连锁加分</b>: 连锁越深分越高！x2, x3...</div>');
+        }
+        if (this.fogCells.length > 0) {
+            mechanicTips.push(`<div style="font-size:1rem;margin:6px 0;">🌫️ <b>迷雾</b>: ${this.fogCells.length}个格子被迷雾覆盖，在旁边消除可以清雾！</div>`);
+        }
+        if (this.gravityShiftActive) {
+            mechanicTips.push('<div style="font-size:1rem;margin:6px 0;">⬅️ <b>重力偏移</b>: 宝石向左滑落而非向下！新宝石从右边出现。</div>');
+        }
+
         const guides = {
             line: { icon: '⚡', how: '4个排一排', desc: '🟢🟢🟢🟢 → ⚡线宝石' },
             bomb: { icon: '💣', how: '拐个弯', desc: '🟢🟢🟢<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🟢<br>↑ 3个+拐1个就出💣' },
@@ -1785,9 +1987,15 @@ class Game {
         const guide = document.createElement('div');
         guide.id = 'special-guide';
         guide.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;';
+        const mechanicHtml = mechanicTips.length > 0 ?
+            `<div style="margin-top:12px;padding:10px;background:rgba(34,211,238,0.15);border-radius:10px;border:1px solid rgba(34,211,238,0.3);">
+                <div style="font-size:0.75rem;color:#67e8f9;margin-bottom:4px;">🔮 本章新机制</div>
+                ${mechanicTips.join('')}
+            </div>` : '';
         guide.innerHTML = `<div style="background:#1e1b4b;border:2px solid #fbbf24;border-radius:16px;padding:20px;max-width:300px;text-align:center;">
             <div style="font-size:1.2rem;font-weight:900;color:#fbbf24;margin-bottom:10px;">🎯 本关目标</div>
             ${tips.join('')}
+            ${mechanicHtml}
             <div style="margin-top:12px;padding:10px;background:rgba(139,92,246,0.2);border-radius:10px;">
                 <div style="font-size:0.75rem;color:#a5b4fc;margin-bottom:4px;">💡 怎么做？</div>
                 ${descs.map(d => `<div style="font-size:0.85rem;color:#e0e7ff;">${d}</div>`).join('')}
