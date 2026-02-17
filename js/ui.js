@@ -1431,6 +1431,12 @@ const UI = {
             }
 
             this.showModal('victory-screen');
+            // Estate nudge after level 3 if no trees planted yet
+            if (game.level.id === 3 && !Estate.isTreePlanted('golden_mango') && Storage.getGold() >= 150) {
+                setTimeout(() => {
+                    this.showToast('💡 攒够金币了！去庄园种棵金芒树，开局自带炸弹！', 'info', 4000);
+                }, 3000);
+            }
             setTimeout(() => this.showPendingAchievements(), 2000);
         } catch (e) {
             console.error('[UI.showVictory] error:', e);

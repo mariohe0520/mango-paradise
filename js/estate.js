@@ -10,7 +10,7 @@ const Estate = {
         golden_mango: {
             id: 'golden_mango', name: '金芒树', emoji: '🌟',
             description: '开局自带炸弹宝石',
-            baseCost: 500, buff: 'start_bomb',
+            baseCost: 200, buff: 'start_bomb',
             levels: [
                 { desc: '开局1个炸弹', value: 1 },
                 { desc: '开局1个炸弹+更大爆炸范围', value: 1 },
@@ -23,7 +23,7 @@ const Estate = {
         moonlight: {
             id: 'moonlight', name: '月光树', emoji: '🌙',
             description: '每关额外步数',
-            baseCost: 800, buff: 'extra_moves',
+            baseCost: 400, buff: 'extra_moves',
             levels: [
                 { desc: '+2步', value: 2 },
                 { desc: '+3步', value: 3 },
