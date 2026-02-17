@@ -717,7 +717,10 @@ const UI = {
                 special: '✨ 特殊', level: '🗺️ 关卡', stars: '⭐ 星星',
                 score: '📊 分数', daily: '📅 签到', collect: '🐟 收集',
                 play: '🎮 游玩', spirit: '🏋️ 精灵试炼', estate: '🏡 庄园',
-                boss: '👹 Boss', wealth: '💰 财富', other: '📋 其他'
+                boss: '👹 Boss', wealth: '💰 财富',
+                daily_challenge: '🌅 每日挑战', endless: '♾️ 无尽模式',
+                seasonal: '🎄 季节活动', procedural: '🗺️ 无限冒险',
+                collection: '🎨 收藏', skill: '🎯 技巧', other: '📋 其他'
             };
 
             let html = '';

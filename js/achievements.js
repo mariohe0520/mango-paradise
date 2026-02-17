@@ -974,11 +974,11 @@ const ACHIEVEMENTS = [
     {
         id: 'achievement_points_all',
         name: '完美主义者·终极',
-        description: '解锁全部 100 个成就',
+        description: '解锁全部成就',
         icon: '👑',
         category: 'collection',
         reward: { gold: 10000, gems: 200 },
-        condition: { type: 'achievement_count', target: 99 }
+        condition: { type: 'achievement_count', target: 109 }
     },
     {
         id: 'collect_all_common',
