@@ -1501,8 +1501,8 @@ const UI = {
             const msgEl = document.getElementById('victory-next-star');
             if (msgEl) msgEl.textContent = nextStarMsg;
 
-            // Buff contribution summary
-            const buffSummaryEl = document.getElementById('buff-summary');
+            // Buff contribution summary (inside victory modal)
+            const buffSummaryEl = document.getElementById('victory-buff-summary');
             if (buffSummaryEl) {
                 const buffs = Estate.getActiveBuffs();
                 if (buffs.length > 0) {
