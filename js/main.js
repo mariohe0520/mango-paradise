@@ -66,6 +66,9 @@ class App {
             this.updateProgress(85, '准备界面...');
             UI.init();
             
+            // 步骤5b：初始化教程系统
+            Tutorial.init();
+            
             // 步骤6：应用保存的设置
             this.updateProgress(95, '应用设置...');
             this.applySettings();

@@ -112,7 +112,9 @@ const Boss = {
         this.currentPhase = 0;
         this.phaseAnnounced = { 0: true };
         this._rageMode = false;
+        this._saidFear = false;
         this.rageMeter = 0;
+        this._skullCounter = 0;
         this.updateUI();
         this.updateRageMeterUI();
         return true;
@@ -227,6 +229,8 @@ const Boss = {
                         id: Utils.generateId()
                     };
                     placed.push({ x, y });
+                    // Track skull presence for achievement detection
+                    if (game._hadSkulls !== undefined) game._hadSkulls = true;
                     break;
                 }
             }

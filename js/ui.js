@@ -197,12 +197,27 @@ const UI = {
             Audio.play('click');
             this.hideModal('victory-screen');
             this.showScreen('main-menu');
+            // v10: Tutorial hint after first level complete
+            try { if (game.level && game.level.id === 1) Tutorial.onFirstLevelComplete(); } catch(e) {}
         });
         
         document.getElementById('btn-next-level')?.addEventListener('click', () => {
             Audio.play('click');
             this.hideModal('victory-screen');
-            const nextLevel = game.level.id + 1;
+            // v10: Tutorial hint after first level complete
+            try { if (game.level && game.level.id === 1) Tutorial.onFirstLevelComplete(); } catch(e) {}
+            // Special levels: return to menu or start next wave
+            const level = game.level;
+            if (level.daily || level.weekly || level.revenge) {
+                this.showScreen('main-menu');
+                return;
+            }
+            if (level.endless && typeof EndlessMode !== 'undefined') {
+                const nextWave = EndlessMode.nextWave(game.score);
+                this.startSpecialLevel(nextWave);
+                return;
+            }
+            const nextLevel = level.id + 1;
             if (nextLevel <= getTotalLevels()) {
                 this.startLevel(nextLevel);
             } else {
@@ -373,24 +388,19 @@ const UI = {
     updateMenuDisplay() {
         const player = Storage.getPlayer();
         
-        // 玩家信息
-        document.getElementById('menu-avatar')?.textContent && 
-            (document.getElementById('menu-avatar').textContent = player.avatar);
-        document.getElementById('menu-player-name')?.textContent && 
-            (document.getElementById('menu-player-name').textContent = player.name);
-        document.getElementById('menu-player-level')?.textContent && 
-            (document.getElementById('menu-player-level').textContent = player.level);
+        // 玩家信息 — use safe setter pattern
+        const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setEl('menu-avatar', player.avatar);
+        setEl('menu-player-name', player.name);
+        setEl('menu-player-level', player.level);
         
         // 货币
-        document.getElementById('menu-gold')?.textContent && 
-            (document.getElementById('menu-gold').textContent = Utils.formatNumber(Storage.getGold()));
-        document.getElementById('menu-gems')?.textContent && 
-            (document.getElementById('menu-gems').textContent = Utils.formatNumber(Storage.getGems()));
+        setEl('menu-gold', Utils.formatNumber(Storage.getGold()));
+        setEl('menu-gems', Utils.formatNumber(Storage.getGems()));
         
         // 当前关卡
         const currentLevel = Storage.getMaxUnlockedLevel();
-        document.getElementById('current-level-display')?.textContent && 
-            (document.getElementById('current-level-display').textContent = Math.min(currentLevel, getTotalLevels()));
+        setEl('current-level-display', Math.min(currentLevel, getTotalLevels()));
 
         // 每日签到徽章
         const dailyBadge = document.getElementById('daily-badge');
@@ -449,10 +459,9 @@ const UI = {
     // 渲染关卡选择
     renderLevelSelect() {
         // 更新货币显示
-        document.getElementById('levels-gold')?.textContent && 
-            (document.getElementById('levels-gold').textContent = Utils.formatNumber(Storage.getGold()));
-        document.getElementById('levels-gems')?.textContent && 
-            (document.getElementById('levels-gems').textContent = Utils.formatNumber(Storage.getGems()));
+        const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setEl('levels-gold', Utils.formatNumber(Storage.getGold()));
+        setEl('levels-gems', Utils.formatNumber(Storage.getGems()));
 
         // 渲染章节标签
         const tabsEl = document.getElementById('chapter-tabs');
@@ -490,14 +499,16 @@ const UI = {
     // 渲染章节关卡
     renderChapterLevels(chapterId) {
         const chapter = getChapter(chapterId);
-        const levels = getChapterLevels(chapterId);
+        // Use extended function to include procedural levels (101+) mapped to chapters
+        const levels = typeof getChapterLevelsExtended === 'function'
+            ? getChapterLevelsExtended(chapterId)
+            : getChapterLevels(chapterId);
         const maxUnlocked = Storage.getMaxUnlockedLevel();
         
         // 更新章节信息
-        document.getElementById('chapter-name')?.textContent && 
-            (document.getElementById('chapter-name').textContent = `${chapter.icon} ${chapter.name}`);
-        document.getElementById('chapter-desc')?.textContent && 
-            (document.getElementById('chapter-desc').textContent = chapter.description);
+        const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setEl('chapter-name', `${chapter.icon} ${chapter.name}`);
+        setEl('chapter-desc', chapter.description);
 
         // 渲染关卡按钮
         const gridEl = document.getElementById('levels-grid');
@@ -971,6 +982,9 @@ const UI = {
         
         popup.classList.add('show');
         Audio.play('achievement');
+
+        // v10: Contextual hint for first achievement
+        try { Tutorial.onAchievementUnlock(); } catch(e) {}
         
         setTimeout(() => {
             popup.classList.remove('show');
@@ -990,6 +1004,9 @@ const UI = {
     // ==========================================
 
     showEstate() {
+        // v10: Tutorial hint for estate
+        try { Tutorial.onEstateOpen(); } catch(e) {}
+
         // Update gold display
         const goldEl = document.getElementById('estate-gold');
         if (goldEl) goldEl.textContent = Utils.formatNumber(Storage.getGold());
@@ -1338,10 +1355,18 @@ const UI = {
     // Start a special/procedural level (daily challenge, endless mode)
     startSpecialLevel(levelConfig) {
         try {
+            if (!levelConfig || !levelConfig.gems || !levelConfig.objectives) {
+                throw new Error('Invalid level config');
+            }
             // Inject the level config into the levels system temporarily
             window._specialLevel = levelConfig;
             this.showScreen('game-screen');
             game.initSpecial(levelConfig);
+
+            // Update spirit icon in skill bar
+            const spiritIcon = document.getElementById('skill-spirit-icon');
+            if (spiritIcon) spiritIcon.textContent = Estate.getCurrentSpirit().emoji;
+
             const gameScreen = document.getElementById('game-screen');
             if (gameScreen) {
                 gameScreen.classList.toggle('boss-active', !!levelConfig.boss);
@@ -1349,9 +1374,21 @@ const UI = {
             }
             const bossBar = document.getElementById('boss-bar');
             if (bossBar) bossBar.style.display = levelConfig.boss ? 'block' : 'none';
+
+            // Board render verification (same as doStartLevel)
+            requestAnimationFrame(() => {
+                try {
+                    const boardEl = document.getElementById('game-board');
+                    if (boardEl && boardEl.children.length < game.width * game.height) {
+                        console.warn('[startSpecialLevel] Board incomplete, forcing re-render');
+                        game.render();
+                    }
+                } catch(e) { console.error('[startSpecialLevel] render check error:', e); }
+            });
         } catch (e) {
             console.error('[startSpecialLevel] error:', e);
             this.showToast('加载失败，请重试', 'error');
+            this.showScreen('main-menu');
         }
     },
 
@@ -1375,8 +1412,13 @@ const UI = {
                 gameScreen.dataset.theme = chapter.background || 'forest';
             }
 
-            // Tutorial disabled — match-3 is intuitive, tutorial was blocking gameplay on mobile
-            // if (!Storage.getTutorial().completed && levelId === 1) Tutorial.start();
+            // v10: New tutorial system — non-blocking onboarding
+            try { Tutorial.onLevelStart(levelId); } catch(e) { console.warn('[Tutorial] onLevelStart error:', e); }
+
+            // Boss contextual hint
+            if (isBoss) {
+                try { Tutorial.onBossEncounter(); } catch(e) {}
+            }
 
             // 🛡️ Board render fallback: verify board actually rendered
             requestAnimationFrame(() => {
@@ -1512,6 +1554,19 @@ const UI = {
             }
 
             this.showModal('victory-screen');
+            // Update next-level button text for special modes
+            const nextBtn = document.getElementById('btn-next-level');
+            if (nextBtn) {
+                const lvl = game.level;
+                if (lvl.daily || lvl.weekly || lvl.revenge) {
+                    nextBtn.textContent = '返回菜单';
+                } else if (lvl.endless) {
+                    nextBtn.textContent = `下一波 (Wave ${(lvl.wave || 1) + 1}) ➡️`;
+                } else {
+                    nextBtn.innerHTML = '下一关 ➡️';
+                }
+            }
+
             // Estate nudge after level 3 if no trees planted yet
             if (game.level.id === 3 && !Estate.isTreePlanted('golden_mango') && Storage.getGold() >= 150) {
                 setTimeout(() => {

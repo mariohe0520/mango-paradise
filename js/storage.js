@@ -208,6 +208,8 @@ class StorageSystem {
     reset() {
         this.data = Utils.deepClone(this.defaultData);
         this.save();
+        // v10: Also reset tutorial state
+        try { Tutorial.reset(); } catch(e) {}
         Utils.log.info('Save data reset');
         return this.data;
     }
@@ -345,6 +347,11 @@ class StorageSystem {
 
     addGold(amount) {
         this.data.currency.gold += amount;
+        // Track lifetime gold earned for achievements
+        if (amount > 0) {
+            if (!this.data.statistics.totalGoldEarned) this.data.statistics.totalGoldEarned = 0;
+            this.data.statistics.totalGoldEarned += amount;
+        }
         this.save();
         return this.data.currency.gold;
     }

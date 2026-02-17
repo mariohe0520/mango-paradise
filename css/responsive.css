@@ -650,8 +650,28 @@
         padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
     }
     
+    .game-bottom-bar {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+    }
+    
     .modal-content {
         margin-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .estate-content {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    }
+    
+    .achievements-list {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    }
+    
+    .settings-content {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    }
+    
+    .collection-grid {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
     }
 }
 

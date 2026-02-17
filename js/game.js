@@ -134,6 +134,9 @@ class Game {
         this.skillCharge = 0;
         this.skillMax = 100;
 
+        // Track if skulls ever appeared on board (for achievements)
+        this._hadSkulls = false;
+
         // Boss
         try {
             this.isBossLevel = Boss.isBossLevel(levelId);
@@ -373,7 +376,7 @@ class Game {
             }
 
             let cellPx = Math.min(cellFromW, cellFromH);
-            cellPx = Math.max(38, cellPx); // minimum 38px for touch targets on mobile
+            cellPx = Math.max(44, cellPx); // minimum 44px for touch targets (WCAG)
 
             // Push back to CSS so font-size: calc(var(--cell-size) * 0.65) works
             document.documentElement.style.setProperty('--cell-size', cellPx + 'px');
@@ -528,6 +531,8 @@ class Game {
             this.onCellClick(x, y);
         }
         this.touchStartCell = null;
+        // Prevent subsequent click event from firing (fixes mobile double-fire)
+        e.preventDefault();
     }
 
     onCellClick(x, y) {
@@ -615,6 +620,9 @@ class Game {
                 if (this.hasSpecialSwap(x1, y1, x2, y2)) await this.processSpecialSwap(x1, y1, x2, y2);
                 await this.processMatches();
 
+                // v10: Tutorial trigger after first match in level 1
+                try { if (this.level && this.level.id === 1) Tutorial.onFirstMatch(); } catch(e) {}
+
                 if (this.isBossLevel && Boss.currentBoss && Boss.bossHP > 0) {
                     const attacks = Boss.counterattack(this);
                     if (attacks.length > 0) await this.showBossAttack(attacks);
@@ -634,6 +642,7 @@ class Game {
             console.error('[trySwap] error:', e);
         } finally {
             // ALWAYS unlock — never leave isProcessing stuck
+            clearTimeout(this._processingTimeout);
             this.isProcessing = false;
             this.updateUI();
             this.checkGameOver();
@@ -864,6 +873,13 @@ class Game {
 
             this.combo++;
             if (this.combo > this.maxCombo) { this.maxCombo = this.combo; Storage.updateMaxCombo(this.maxCombo); }
+
+            // Update combo objectives: track max combo depth reached this level
+            this.objectives.forEach((obj, i) => {
+                if (obj.type === OBJECTIVE_TYPES.COMBO) {
+                    this.objectiveProgress[i] = Math.max(this.objectiveProgress[i], this.combo);
+                }
+            });
 
             if (this.combo > 1) {
                 this.showCombo();
@@ -1543,8 +1559,7 @@ class Game {
                     if (obj.gem === gemType || obj.gem === 'any') this.objectiveProgress[i]++;
                     break;
                 case OBJECTIVE_TYPES.COMBO:
-                    // Count total combos (combo >= 2 counts as 1 toward objective)
-                    if (this.combo >= 2) this.objectiveProgress[i]++;
+                    // Combo objective: tracks max combo depth (updated in processMatches)
                     break;
                 case OBJECTIVE_TYPES.SPECIAL:
                     if (specialType) {
@@ -1905,13 +1920,8 @@ class Game {
         }
         const gameTime = Math.floor((Date.now() - this.gameStartTime) / 1000);
         Storage.addPlayTime(gameTime);
-        // Check if board has skulls (for achievement)
-        let hadSkulls = false;
-        try {
-            for (let y = 0; y < this.height && !hadSkulls; y++)
-                for (let x = 0; x < this.width && !hadSkulls; x++)
-                    if (this.board[y][x] && this.board[y][x].type === 'skull') hadSkulls = true;
-        } catch(e) {}
+        // Use tracked skull flag (not just current board state — skulls may have been cleared)
+        const hadSkulls = this._hadSkulls || false;
         const bossRaged = this.isBossLevel && Boss._rageMode;
         Achievements.check('win', this.level.id, {
             noPowerup: this.powerupsUsed===0,
@@ -2014,6 +2024,11 @@ class Game {
             if (bossHpPct <= 15) nearMissInfo = `Boss只剩${bossHpPct}%血！再来一次稳过！`;
         }
         UI.showDefeat(this.score, pct, nearMissInfo);
+
+        // v10: Tutorial hint for out of moves
+        if (this.movesLeft <= 0 && !this.level.timed) {
+            try { Tutorial.onOutOfMoves(); } catch(e) {}
+        }
     }
 
     calculateStars() {
@@ -2097,7 +2112,14 @@ class Game {
     // Pause/Resume/Restart/Quit
     pause() { this.isPaused = true; if (this.hintTimer) clearTimeout(this.hintTimer); }
     resume() { this.isPaused = false; this.startHintTimer(); }
-    restart() { this.init(this.level.id); }
+    restart() {
+        // Special levels (daily/endless/trial) need initSpecial with the full config
+        if (this.level && (this.level.procedural || this.level.daily || this.level.endless || this.level.weekly || this.level.spiritTrial || this.level.revenge)) {
+            this.initSpecial(this.level);
+        } else {
+            this.init(this.level.id);
+        }
+    }
     quit() { if (this.hintTimer) clearTimeout(this.hintTimer); if (this.timerInterval) clearInterval(this.timerInterval); Boss.reset(); }
 }
 

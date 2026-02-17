@@ -283,6 +283,8 @@ const Estate = {
             if (!estate.spiritLevels) estate.spiritLevels = {};
             estate.spiritLevels[spiritId] = 1;
             UI.showToast(`🎉 ${spirit.name}已解锁！`);
+            // v10: Tutorial hint for spirit unlock
+            try { Tutorial.onSpiritUnlock(); } catch(e) {}
         }
         estate.activeSpirit = spiritId;
         Storage.saveEstate(estate);
