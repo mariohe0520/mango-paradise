@@ -153,11 +153,15 @@ class Game {
         // Apply blockers (frozen/locked cells) based on level config
         try {
             const levelId = this.level.id || 0;
-            // Auto-generate blockers for mid-game+ (adds challenge variety)
-            if (levelId >= 21 && levelId <= 100) {
-                const difficulty = levelId >= 31 ? Math.floor((levelId - 31) / 10) + 1 : 0;
-                // Frozen cells: 1-6 based on difficulty (starts gentle at 21)
-                const frozenCount = levelId >= 31 ? Math.min(2 + difficulty, 6) : Math.min(1 + Math.floor((levelId-21)/5), 2);
+            // Auto-generate blockers (starts chapter 2, escalates)
+            if (levelId >= 11 && levelId <= 100) {
+                const difficulty = levelId >= 31 ? Math.floor((levelId - 31) / 10) + 2 :
+                                   levelId >= 21 ? 1 :
+                                   0;
+                // Frozen cells: gentle at 11-20, more at 21+
+                const frozenCount = levelId >= 31 ? Math.min(2 + difficulty, 6) :
+                                    levelId >= 21 ? Math.min(1 + Math.floor((levelId-21)/5), 3) :
+                                    Math.min(Math.floor((levelId-11)/3), 2); // 0-2 frozen in ch2
                 for (let i = 0; i < frozenCount; i++) {
                     const fx = Utils.randomInt(0, this.width-1);
                     const fy = Utils.randomInt(0, this.height-1);
