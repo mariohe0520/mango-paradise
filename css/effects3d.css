@@ -4,22 +4,23 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ── 3D Board Perspective ── */
+/* NOTE: preserve-3d + perspective breaks touch events on iOS Safari (WebKit bug)
+   Use flat transforms only — visual depth via shadows/gradients instead */
 .game-board-container {
-  perspective: 800px !important;
-  perspective-origin: 50% 40% !important;
+  /* perspective removed — iOS touch fix */
 }
 
 #game-board {
-  transform-style: preserve-3d !important;
-  transform: rotateX(2deg) !important;
+  /* No 3D transforms — iOS Safari touch events require flat layout */
   transition: transform 0.3s cubic-bezier(.25,.46,.45,.94) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05) !important;
 }
 
-/* Subtle board tilt on interaction */
-#game-board.tilt-left  { transform: rotateX(2deg) rotateY(-1.5deg) !important; }
-#game-board.tilt-right { transform: rotateX(2deg) rotateY(1.5deg) !important; }
-#game-board.tilt-up    { transform: rotateX(4deg) !important; }
-#game-board.tilt-down  { transform: rotateX(0deg) !important; }
+/* Subtle board tilt on interaction — 2D scale only (iOS safe) */
+#game-board.tilt-left  { transform: scale(0.995) !important; }
+#game-board.tilt-right { transform: scale(0.995) !important; }
+#game-board.tilt-up    { transform: scale(1.005) !important; }
+#game-board.tilt-down  { transform: scale(0.99) !important; }
 
 /* Board depth shadow */
 #game-board::after {
@@ -33,15 +34,15 @@
   pointer-events: none;
 }
 
-/* ── 3D Gem Depth ── */
+/* ── Gem Depth (flat, iOS safe) ── */
 .gem {
-  transform-style: preserve-3d !important;
+  /* No preserve-3d — breaks iOS touch */
   backface-visibility: hidden !important;
 }
 
-/* Gem hover lift */
+/* Gem active lift — 2D only */
 .gem:active {
-  transform: scale(1.1) translateZ(8px) !important;
+  transform: scale(1.1) !important;
   filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)) brightness(1.15) !important;
 }
 

@@ -2175,8 +2175,13 @@ class Game {
             </div>
             <div style="margin-top:14px;font-size:0.75rem;color:#94a3b8;">↑ 点任意位置开始游戏</div>
         </div>`;
-        guide.addEventListener('click', () => guide.remove());
-        setTimeout(() => { if (guide.parentNode) guide.remove(); }, 6000);
+        // iOS Safari: 'click' may not fire on non-interactive fixed overlays
+        // Use both 'click' and 'touchend' for reliable dismissal
+        const dismiss = () => { if (guide.parentNode) guide.remove(); };
+        guide.addEventListener('click', dismiss);
+        guide.addEventListener('touchend', (e) => { e.preventDefault(); dismiss(); });
+        guide.style.cursor = 'pointer'; // iOS needs cursor:pointer for click on non-<a> elements
+        setTimeout(dismiss, 6000);
         document.body.appendChild(guide);
     }
 
