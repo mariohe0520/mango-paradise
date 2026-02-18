@@ -1271,9 +1271,16 @@ class Game {
             this.board[y][x] = null;
             if (this.cellStates[y][x]) { this.cellStates[y][x].frozen = false; this.cellStates[y][x].locked = 0; }
 
-            // Lightweight clear: just CSS flash, no per-cell particles (perf)
+            // Enhanced clear: flash + shockwave ring
             const cellEl = this.getCell(x, y);
-            if (cellEl) cellEl.style.animation = 'cell-flash 0.15s ease';
+            if (cellEl) {
+                cellEl.style.animation = 'cell-flash 0.2s ease';
+                // Spawn a shockwave ring on the cell
+                const ring = document.createElement('div');
+                ring.className = 'match-ring';
+                cellEl.appendChild(ring);
+                setTimeout(() => ring.remove(), 400);
+            }
         }
 
         // ≋ Fog mechanic (Ch8+): reveal fog adjacent to matched cells
@@ -1328,22 +1335,52 @@ class Game {
         this.addScore(this.SCORES.SPECIAL_ACTIVATE);
 
         switch (specialType) {
-            case this.SPECIAL_TYPES.HORIZONTAL:
+            case this.SPECIAL_TYPES.HORIZONTAL: {
                 Particles.lineHorizontal(rect.top+rect.height/2, 0, window.innerWidth, '#3b82f6');
+                // Laser line VFX
+                const boardEl_h = document.getElementById('game-board');
+                if (boardEl_h) {
+                    const laser = document.createElement('div');
+                    laser.className = 'line-blast-h';
+                    laser.style.top = rect.top - boardEl_h.getBoundingClientRect().top + rect.height/2 - 2 + 'px';
+                    boardEl_h.appendChild(laser);
+                    setTimeout(() => laser.remove(), 500);
+                }
+                this.screenShake(8, 250);
                 for (let i = 0; i < this.width; i++) {
                     if (this.board[y][i]) { this.updateObjective(this.board[y][i].type); this.board[y][i] = null; this.addScore(50); }
                     if (this.cellStates[y][i]) { this.cellStates[y][i].frozen = false; this.cellStates[y][i].locked = 0; }
                 }
                 break;
-            case this.SPECIAL_TYPES.VERTICAL:
+            }
+            case this.SPECIAL_TYPES.VERTICAL: {
                 Particles.lineVertical(rect.left+rect.width/2, 0, window.innerHeight, '#3b82f6');
+                // Laser line VFX
+                const boardEl_v = document.getElementById('game-board');
+                if (boardEl_v) {
+                    const laser = document.createElement('div');
+                    laser.className = 'line-blast-v';
+                    laser.style.left = rect.left - boardEl_v.getBoundingClientRect().left + rect.width/2 - 2 + 'px';
+                    boardEl_v.appendChild(laser);
+                    setTimeout(() => laser.remove(), 500);
+                }
+                this.screenShake(8, 250);
                 for (let i = 0; i < this.height; i++) {
                     if (this.board[i][x]) { this.updateObjective(this.board[i][x].type); this.board[i][x] = null; this.addScore(50); }
                     if (this.cellStates[i][x]) { this.cellStates[i][x].frozen = false; this.cellStates[i][x].locked = 0; }
                 }
                 break;
-            case this.SPECIAL_TYPES.BOMB:
+            }
+            case this.SPECIAL_TYPES.BOMB: {
                 Particles.explosion(rect.left+rect.width/2, rect.top+rect.height/2, '#ef4444');
+                // Bomb ripple VFX
+                if (cell) {
+                    const ripple = document.createElement('div');
+                    ripple.className = 'bomb-ripple';
+                    cell.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                }
+                this.screenShake(12, 350);
                 for (let dy=-1; dy<=1; dy++) for (let dx=-1; dx<=1; dx++) {
                     const nx=x+dx, ny=y+dy;
                     if (this.isValidCell(nx,ny)) {
@@ -1352,12 +1389,21 @@ class Game {
                     }
                 }
                 break;
+            }
             case this.SPECIAL_TYPES.RAINBOW: {
                 // Rainbow in a regular match: clear all gems of the same type as the match
                 const gem = this.board[y] && this.board[y][x];
                 const matchType = gem ? gem.type : null;
                 if (matchType) {
                     Particles.explosion(rect.left+rect.width/2, rect.top+rect.height/2, '#ffd700');
+                    Particles.rainbow(rect.left+rect.width/2, rect.top+rect.height/2);
+                    // Rainbow full screen flash
+                    const rainbowFlash = document.createElement('div');
+                    rainbowFlash.className = 'combo-screen-flash';
+                    rainbowFlash.style.background = 'linear-gradient(135deg, #ef4444, #f97316, #fbbf24, #22c55e, #3b82f6, #8b5cf6)';
+                    document.body.appendChild(rainbowFlash);
+                    setTimeout(() => rainbowFlash.remove(), 500);
+                    this.screenShake(10, 300);
                     await this.clearGemType(matchType);
                 } else {
                     // Fallback: clear a random gem type on the board
@@ -1906,6 +1952,15 @@ class Game {
 
         // ☆ Screen shake — intensity scales with combo
         this.screenShake(Math.min(this.combo * 2, 12), 200 + this.combo * 50);
+
+        // ★ Full screen flash on big combos
+        if (this.combo >= 3) {
+            const flash = document.createElement('div');
+            flash.className = 'combo-screen-flash';
+            flash.style.background = colors[Math.min(this.combo, colors.length - 1)] || '#ff0000';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 400);
+        }
 
         // ✦ Particle burst at board center
         const boardEl = document.getElementById('game-board');
