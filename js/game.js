@@ -1081,6 +1081,16 @@ class Game {
                 // ☆ Escalating vibration pattern
                 const vib = this.combo >= 6 ? [50,30,80,30,120,30,150] : this.combo >= 4 ? [40,20,60,20,80] : [30,15,50];
                 Utils.vibrate(vib);
+                // ☆ 3D Board shake on combos
+                try {
+                  const boardEl = document.getElementById('game-board');
+                  if (boardEl) {
+                    boardEl.classList.remove('shake', 'shake-heavy');
+                    void boardEl.offsetWidth; // force reflow
+                    boardEl.classList.add(this.combo >= 5 ? 'shake-heavy' : 'shake');
+                    setTimeout(() => boardEl.classList.remove('shake', 'shake-heavy'), 500);
+                  }
+                } catch(e) {}
                 // [限时] Slow-motion on big combos: cascade wait gets shorter = feels faster & more intense
                 if (this.combo >= 5) this._cascadeSpeed = 60;
                 else if (this.combo >= 3) this._cascadeSpeed = 90;
