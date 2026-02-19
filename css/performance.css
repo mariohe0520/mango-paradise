@@ -1,0 +1,168 @@
+/* ═══════════════════════════════════════════════════════════════
+   ⚡ PERFORMANCE NUCLEAR FIX — Kill all GPU killers
+   Priority: HIGHEST (loaded last, overrides everything)
+   Problem: game freezes on iPhone due to CSS animation overload
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Kill preserve-3d everywhere (iOS WebKit compositing layer bomb) ── */
+*,
+*::before,
+*::after {
+  transform-style: flat !important;
+  -webkit-transform-style: flat !important;
+}
+
+/* ── 2. Kill all infinite filter animations on gems (THE #1 KILLER) ── */
+.gem.special.row-blast,
+.gem.special.col-blast {
+  animation: none !important;
+  /* Static glow via box-shadow instead of animated filter */
+  box-shadow: 0 0 6px rgba(255,215,0,0.4) !important;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)) !important;
+}
+
+.gem.special.bomb {
+  animation: none !important;
+  box-shadow: 0 0 8px rgba(255,100,0,0.4) !important;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)) !important;
+}
+
+.gem.special.rainbow,
+.gem[data-special="rainbow"],
+.gem.rainbow {
+  animation: none !important;
+  /* Static rainbow via background gradient, no filter animation */
+  box-shadow: 0 0 8px rgba(168,85,247,0.5) !important;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)) saturate(1.3) !important;
+}
+
+/* ── 3. Kill ambient background animation (full-screen GPU waste) ── */
+.game-screen::before {
+  animation: none !important;
+  display: none !important;
+}
+
+/* ── 4. Kill all backdrop-filter: blur() (each one = separate GPU layer) ── */
+.game-header,
+.game-topbar,
+.level-select-overlay,
+.modal-overlay,
+.boss-entrance-overlay,
+.checkin-modal,
+.achievement-popup,
+.tower-modal,
+[class*="overlay"],
+[class*="modal"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  /* Use solid semi-transparent background instead */
+  background-color: rgba(15, 10, 25, 0.92) !important;
+}
+/* Keep game board area transparent */
+.game-board-container,
+#game-board,
+.cell,
+.gem {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ── 5. Simplify board shadows (3 stacked box-shadows + filter = murder) ── */
+#game-board {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+  border: 1px solid rgba(168,85,247,0.12) !important;
+  filter: none !important;
+}
+#game-board::after {
+  display: none !important; /* kill the under-board blur shadow */
+}
+
+/* ── 6. Kill infinite gem selection/hint animations ── */
+.grid-cell.selected .gem {
+  animation: none !important;
+  /* Static highlight instead */
+  filter: brightness(1.2) !important;
+  box-shadow: 0 0 8px rgba(255,255,255,0.5) !important;
+}
+
+.gem.hint {
+  animation: none !important;
+  box-shadow: 0 0 6px rgba(255,215,0,0.4) !important;
+}
+
+/* ── 7. Simplify gem base filter (every gem has drop-shadow = N×64 repaints) ── */
+.gem {
+  filter: none !important;
+  /* Use box-shadow for depth instead of filter: drop-shadow */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+  backface-visibility: hidden !important;
+  will-change: transform !important;
+}
+
+/* ── 8. Kill infinite CSS utility animations that stack up ── */
+.float-animation,
+.pulse,
+.glow-pulse,
+.heartbeat,
+.loading-shimmer,
+.gradient-flow {
+  animation-play-state: paused !important;
+}
+
+/* ── 9. Grid cell: remove preserve-3d and transition stacking ── */
+.grid-cell,
+.cell {
+  transform-style: flat !important;
+  transition: none !important;
+}
+.grid-cell:active,
+.cell:active {
+  transform: scale(0.95) !important;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.2) !important;
+}
+
+/* ── 10. Combo display: simple, no 3D ── */
+#combo-display {
+  filter: none !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+}
+
+/* ── 11. Score popup: simplified ── */
+.score-popup {
+  filter: none !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+}
+
+/* ── 12. Keep TRANSIENT animations (match/drop/swap) — these are brief ── */
+/* These are OK because they run once and stop: */
+/* .gem.matching — 0.2-0.4s, one-shot */
+/* .gem.dropping — 0.35s, one-shot */
+/* swap animations — 0.3s, one-shot */
+/* They do NOT need to be killed */
+
+/* ── 13. Reduce particle system cap further ── */
+/* (Handled in JS — see game.js patch) */
+
+/* ── 14. Tower current pulse — kill ── */
+.tower-current {
+  animation: none !important;
+}
+
+/* ── 15. Boss fight overlay — simplify ── */
+.boss-fight-active #game-board {
+  box-shadow: 0 0 10px rgba(239,68,68,0.2) !important;
+  border-color: rgba(239,68,68,0.2) !important;
+}
+
+/* ── MEDIA QUERY: Extra aggressive on small/old devices ── */
+@media (max-width: 414px) {
+  .gem {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25) !important;
+  }
+  #game-board {
+    box-shadow: 0 1px 6px rgba(0,0,0,0.25) !important;
+  }
+  .score-popup {
+    display: none !important; /* skip floating scores on small screens */
+  }
+}

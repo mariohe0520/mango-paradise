@@ -8,7 +8,7 @@ class ParticleSystem {
         this.container = null;
         this.enabled = true;
         this._count = 0;
-        this.MAX_PARTICLES = 30; // hard cap
+        this.MAX_PARTICLES = 15; // hard cap (was 30 — too many for iPhone)
     }
 
     init(containerId = 'game-particles') {
@@ -210,7 +210,7 @@ class ParticleSystem {
     confetti() {
         if (!this.enabled || !this.container) return;
         const colors = ['#ef4444', '#f97316', '#fbbf24', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             const el = document.createElement('div');
             const c = colors[i % colors.length];
             const x = Math.random() * window.innerWidth;
