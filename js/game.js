@@ -1879,6 +1879,17 @@ class Game {
         // Real-time score display update during chains (don't wait for updateUI)
         const scoreEl = document.getElementById('current-score');
         if (scoreEl) scoreEl.textContent = Utils.formatNumber(this.score);
+        
+        // Show/hide score multiplier badge
+        const multiplierEl = document.getElementById('score-multiplier');
+        if (multiplierEl) {
+            if (this.scoreMultiplier > 1) {
+                multiplierEl.textContent = `×${this.scoreMultiplier}`;
+                multiplierEl.style.display = 'inline';
+            } else {
+                multiplierEl.style.display = 'none';
+            }
+        }
 
         const boardEl = document.getElementById('game-board');
         if (boardEl) {
