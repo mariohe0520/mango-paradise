@@ -2043,8 +2043,25 @@ class Game {
 
     updateUI() {
         const movesEl = document.getElementById('moves-left');
+        const movesContainer = movesEl?.closest('.moves');
         if (movesEl) {
             movesEl.textContent = this.movesLeft;
+            
+            // Show buff source tooltip
+            let buffTooltip = '';
+            if (Estate.hasBuff('extra_moves')) {
+                const tree = Estate.TREES['moonlight'];
+                const level = Estate.getTreeLevel('moonlight') - 1;
+                if (level >= 0 && tree?.levels?.[level]) {
+                    buffTooltip += `<span class="buff-tooltip" style="color:#a855f7;font-size:9px;margin-left:2px">☽+${tree.levels[level].value}</span>`;
+                }
+            }
+            if (movesContainer && buffTooltip) {
+                let existingTooltip = movesContainer.querySelector('.buff-tooltip');
+                if (existingTooltip) existingTooltip.remove();
+                movesEl.insertAdjacentHTML('afterend', buffTooltip);
+            }
+            
             // Last moves tension: pulse + shake + board tint when ≤3 moves
             if (this.movesLeft <= 3 && this.movesLeft > 0 && !this.level.timed) {
                 movesEl.style.color = '#ef4444';
