@@ -82,22 +82,28 @@
   100% { transform: translateY(0) scale(1); }
 }
 
-/* ── Screen Shake ── */
+/* ── Screen Shake — ENHANCED FOR IMPACT ── */
 @keyframes boardShake {
   0%, 100% { transform: rotateX(2deg) translate(0,0); }
-  10% { transform: rotateX(2deg) translate(-3px, 2px); }
-  20% { transform: rotateX(2deg) translate(3px, -2px); }
-  30% { transform: rotateX(2deg) translate(-2px, 1px); }
-  40% { transform: rotateX(2deg) translate(2px, -1px); }
-  50% { transform: rotateX(2deg) translate(-1px, 1px); }
+  10% { transform: rotateX(2deg) translate(-4px, 3px); }
+  20% { transform: rotateX(2deg) translate(4px, -3px); }
+  30% { transform: rotateX(2deg) translate(-3px, 2px); }
+  40% { transform: rotateX(2deg) translate(3px, -2px); }
+  50% { transform: rotateX(2deg) translate(-2px, 2px); }
 }
 
 @keyframes boardShakeHeavy {
-  0%, 100% { transform: rotateX(2deg) translate(0,0); }
-  10% { transform: rotateX(3deg) translate(-6px, 4px) rotate(-0.5deg); }
-  20% { transform: rotateX(1deg) translate(6px, -4px) rotate(0.5deg); }
-  30% { transform: rotateX(3deg) translate(-4px, 2px) rotate(-0.3deg); }
-  40% { transform: rotateX(1deg) translate(4px, -2px) rotate(0.3deg); }
+  0%, 100% { transform: rotateX(3deg) translate(0,0) scale(1); }
+  5% { transform: rotateX(4deg) translate(-8px, 5px) scale(1.02); }
+  10% { transform: rotateX(2deg) translate(8px, -5px) scale(0.98); }
+  20% { transform: rotateX(5deg) translate(-6px, 4px) scale(1.03); }
+  30% { transform: rotateX(1deg) translate(6px, -4px) scale(0.97); }
+  40% { transform: rotateX(4deg) translate(-4px, 3px) scale(1.02); }
+  50% { transform: rotateX(2deg) translate(4px, -3px) scale(0.98); }
+  60% { transform: rotateX(3deg) translate(-2px, 2px) scale(1.01); }
+  70% { transform: rotateX(2deg) translate(2px, -2px) scale(0.99); }
+  80% { transform: rotateX(3deg) translate(-1px, 1px) scale(1); }
+}
   50% { transform: rotateX(2deg) translate(-2px, 1px); }
 }
 
