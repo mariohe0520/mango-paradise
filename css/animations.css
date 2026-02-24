@@ -648,11 +648,11 @@
    ========================================== */
 
 .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 3s ease-in-out 1;
 }
 
 .animate-pulse {
-    animation: pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out 2;
 }
 
 .animate-bounce {
@@ -664,7 +664,7 @@
 }
 
 .animate-glow {
-    animation: glow-pulse 2s ease-in-out infinite;
+    animation: glow-pulse 2s ease-in-out 2;
 }
 
 .animate-wiggle {
@@ -721,7 +721,7 @@
 /* Glow Effect */
 .glow {
     box-shadow: 0 0 20px currentColor;
-    animation: glow-pulse 2s ease-in-out infinite;
+    animation: glow-pulse 2s ease-in-out 2;
 }
 
 /* Rainbow Border */
