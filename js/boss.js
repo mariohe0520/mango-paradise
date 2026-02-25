@@ -9,80 +9,80 @@ const Boss = {
     // weakness: which spirit type deals 2x damage
     BOSSES: {
         10: {
-            name: '树精长老', desc: '芒果林的古老守护者', weakness: 'phoenix_spirit',
+            name: '霍格', desc: '艾尔文森林的恐怖匪首', weakness: 'phoenix_spirit',
             phases: [
-                { emoji: '♠', hpPct: 1.0, attacks: ['ice'], interval: 3, taunt: '树木会记住你的傲慢！' },
-                { emoji: '♠', hpPct: 0.4, attacks: ['ice','transform'], interval: 2, taunt: '吾根深不可拔！', announce: '树精长老进入根系形态！' }
+                { emoji: '斧', hpPct: 1.0, attacks: ['ice'], interval: 3, taunt: '暴风城的走狗！' },
+                { emoji: '斧', hpPct: 0.4, attacks: ['ice','transform'], interval: 2, taunt: '你低估了我的力量！', announce: '霍格狂暴了！他召唤了更多匪徒！' }
             ], hp: 5000
         },
         20: {
-            name: '沙漠蝎王', desc: '阳光沙滩的霸主', weakness: 'frost_spirit',
+            name: '奥妮克希亚', desc: '黑龙公主，暗影潜伏者', weakness: 'frost_spirit',
             phases: [
-                { emoji: '蝎', hpPct: 1.0, attacks: ['lock'], interval: 3, taunt: '我的毒液会让你动弹不得！' },
-                { emoji: '蝎', hpPct: 0.3, attacks: ['lock','steal'], interval: 2, taunt: '毒性全开！', announce: '蝎王狂暴了！尾刺开始发光！' }
+                { emoji: '龙', hpPct: 1.0, attacks: ['lock'], interval: 3, taunt: '渺小的凡人，你不知道你在挑战什么！' },
+                { emoji: '龙', hpPct: 0.3, attacks: ['lock','steal'], interval: 2, taunt: '感受我的怒火吧！', announce: '奥妮克希亚升空！深呼吸准备中！' }
             ], hp: 8000
         },
         30: {
-            name: '风暴巨龙', desc: '芒果城上空的阴影', weakness: 'dragon_spirit',
+            name: '奈法利安', desc: '黑翼之巢的主人，黑龙太子', weakness: 'dragon_spirit',
             phases: [
-                { emoji: '龙', hpPct: 1.0, attacks: ['ice','shuffle'], interval: 2, taunt: '风暴洗礼，凡人颤抖吧！' },
-                { emoji: '龙', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '让风暴更猛烈些吧！', announce: '风暴巨龙展开双翼，风暴升级！' },
-                { emoji: '◎', hpPct: 0.2, attacks: ['shuffle','shuffle','steal'], interval: 1, taunt: '我就是风暴本身！', announce: '巨龙化为风暴之体！' }
+                { emoji: '龙', hpPct: 1.0, attacks: ['ice','shuffle'], interval: 2, taunt: '我才是真正的黑龙之王！' },
+                { emoji: '龙', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '看看我的造物！', announce: '奈法利安召唤了五色龙人！色彩扭曲！' },
+                { emoji: '◎', hpPct: 0.2, attacks: ['shuffle','shuffle','steal'], interval: 1, taunt: '不可能！我是完美的创造者！', announce: '奈法利安化为巨龙形态！黑翼展开！' }
             ], hp: 12000
         },
         40: {
-            name: '暗影领主', desc: '迷雾沼泽的主宰', weakness: 'rainbow_spirit',
+            name: '凯尔萨斯', desc: '堕落的血精灵王子', weakness: 'rainbow_spirit',
             phases: [
-                { emoji: '◆', hpPct: 1.0, attacks: ['lock','transform'], interval: 2, taunt: '黑暗会吞噬一切光明...' },
-                { emoji: '◆', hpPct: 0.4, attacks: ['lock','transform','steal'], interval: 2, taunt: '感受绝望吧！', announce: '暗影领主揭开面具，露出真容！' }
+                { emoji: '☆', hpPct: 1.0, attacks: ['lock','transform'], interval: 2, taunt: '为了太阳之井的荣耀！' },
+                { emoji: '☆', hpPct: 0.4, attacks: ['lock','transform','steal'], interval: 2, taunt: '你们不过是临时的挫折！', announce: '凯尔萨斯吸收了魔法水晶的力量！邪能爆发！' }
             ], hp: 18000
         },
         50: {
-            name: '熔火之王', desc: '火山岛的炎魔', weakness: 'frost_spirit',
+            name: '拉格纳罗斯', desc: '火焰之王，熔火之心的主宰', weakness: 'frost_spirit',
             phases: [
-                { emoji: '☆', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '在烈焰中化为灰烬吧！' },
-                { emoji: '△', hpPct: 0.5, attacks: ['lock','steal','transform'], interval: 2, taunt: '岩浆沸腾！', announce: '熔火之王坠入熔岩，浴火重生！' },
-                { emoji: '✸', hpPct: 0.15, attacks: ['ice','lock','shuffle','steal'], interval: 1, taunt: '这不是终结...是开始！', announce: '他从熔岩中升起，烈焰灌体！' }
+                { emoji: '☆', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '太早了！你们来得太早了！' },
+                { emoji: '△', hpPct: 0.5, attacks: ['lock','steal','transform'], interval: 2, taunt: '为了萨弗拉斯！', announce: '拉格纳罗斯从熔岩中升起！大地在燃烧！' },
+                { emoji: '✸', hpPct: 0.15, attacks: ['ice','lock','shuffle','steal'], interval: 1, taunt: '化为灰烬吧！', announce: '萨弗拉斯高举！熔岩席卷一切！' }
             ], hp: 25000
         },
         60: {
-            name: '冰霜君主', desc: '冰霜雪原的终极霸主', weakness: 'phoenix_spirit',
+            name: '巫妖王', desc: '阿尔萨斯·米奈希尔，冰封王座的主人', weakness: 'phoenix_spirit',
             phases: [
-                { emoji: '☠', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '这里没有希望，只有永恒的寒冬。' },
-                { emoji: '☠', hpPct: 0.6, attacks: ['ice','lock','transform'], interval: 2, taunt: '寒冰之刃渴望鲜血...', announce: '冰霜君主举起寒冰之刃！寒气逼人！' },
-                { emoji: '♕', hpPct: 0.25, attacks: ['ice','ice','lock','steal'], interval: 1, taunt: '跪下！', announce: '冰霜君主摘下面具！"够了，不再留手。"' }
+                { emoji: '☠', hpPct: 1.0, attacks: ['ice','lock'], interval: 2, taunt: '在这里，只有一个结局。' },
+                { emoji: '☠', hpPct: 0.6, attacks: ['ice','lock','transform'], interval: 2, taunt: '霜之哀伤渴望你的灵魂...', announce: '巫妖王举起霜之哀伤！寒冰蔓延！' },
+                { emoji: '♕', hpPct: 0.25, attacks: ['ice','ice','lock','steal'], interval: 1, taunt: '你们都将成为天灾的一员！', announce: '巫妖王解除全部封印！"够了，不再留手！"' }
             ], hp: 30000
         },
         70: {
-            name: '水晶守卫', desc: '水晶洞穴的守护者', weakness: 'time_spirit',
+            name: '伊瑟拉', desc: '翡翠巨龙，被噩梦腐蚀的梦境守护者', weakness: 'time_spirit',
             phases: [
-                { emoji: '◎', hpPct: 1.0, attacks: ['shuffle','transform'], interval: 2, taunt: '水晶会扭曲你所见的一切！' },
-                { emoji: '●', hpPct: 0.4, attacks: ['shuffle','transform','steal'], interval: 1, taunt: '现实正在崩塌！', announce: '水晶守卫撕裂空间，维度开始扭曲！' }
+                { emoji: '龙', hpPct: 1.0, attacks: ['shuffle','transform'], interval: 2, taunt: '我...控制不住...噩梦太强了...' },
+                { emoji: '●', hpPct: 0.4, attacks: ['shuffle','transform','steal'], interval: 1, taunt: '救...救我...', announce: '伊瑟拉被噩梦完全吞噬！绿色变为紫黑！' }
             ], hp: 35000
         },
         80: {
-            name: '翡翠巨龙', desc: '翡翠森林的守望者', weakness: 'chaos_spirit',
+            name: '死亡之翼', desc: '世界毁灭者，大灾变的元凶', weakness: 'chaos_spirit',
             phases: [
-                { emoji: '龙', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '梦境与现实的界限正在模糊...' },
-                { emoji: '龙', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '你正在沉入梦境...', announce: '翡翠巨龙吐出梦境之息！' },
-                { emoji: '♥', hpPct: 0.15, attacks: ['shuffle','shuffle','transform','steal'], interval: 1, taunt: '在梦中，我就是神。', announce: '梦境崩塌！巨龙展露真实力量！' }
+                { emoji: '龙', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '我就是大灾变本身！' },
+                { emoji: '龙', hpPct: 0.5, attacks: ['ice','shuffle','transform'], interval: 2, taunt: '世界将在烈焰中重生！', announce: '死亡之翼的装甲板开始脱落！岩浆从体内涌出！' },
+                { emoji: '✸', hpPct: 0.15, attacks: ['shuffle','shuffle','transform','steal'], interval: 1, taunt: '不...不可能...', announce: '死亡之翼最终形态！整个大地在崩裂！' }
             ], hp: 40000
         },
         90: {
-            name: '时光之龙', desc: '时光之穴的永恒守护', weakness: 'time_spirit',
+            name: '基尔加丹', desc: '欺诈者，燃烧军团的代行者', weakness: 'time_spirit',
             phases: [
-                { emoji: '⏳', hpPct: 1.0, attacks: ['steal','transform'], interval: 2, taunt: '时间站在我这边！' },
-                { emoji: '⏰', hpPct: 0.5, attacks: ['steal','transform','ice'], interval: 2, taunt: '我加速了时间！', announce: '时光之龙扭曲时间线！一切加速！' },
-                { emoji: '◎', hpPct: 0.2, attacks: ['steal','steal','shuffle','lock'], interval: 1, taunt: '在时间的尽头，等待你的只有虚无。', announce: '时光之龙冻结时间！"这一刻，永恒。"' }
+                { emoji: '◎', hpPct: 1.0, attacks: ['steal','transform'], interval: 2, taunt: '凡人...你以为战胜了巫妖王就无敌了？' },
+                { emoji: '◎', hpPct: 0.5, attacks: ['steal','transform','ice'], interval: 2, taunt: '让我教你什么是真正的力量！', announce: '基尔加丹展开邪能之翼！虚空在燃烧！' },
+                { emoji: '✸', hpPct: 0.2, attacks: ['steal','steal','shuffle','lock'], interval: 1, taunt: '萨格拉斯会替我完成一切...', announce: '基尔加丹最终形态！"这不是结束..."' }
             ], hp: 45000
         },
         100: {
-            name: '深渊之王', desc: '黑暗深渊的终极存在', weakness: null,
+            name: '恩佐斯', desc: '古神，疯狂的低语者', weakness: null,
             phases: [
-                { emoji: '◆', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '小小的凡人，竟敢直面深渊？' },
-                { emoji: '鬼', hpPct: 0.6, attacks: ['lock','shuffle','transform','steal'], interval: 2, taunt: '够了！让我展现真正的力量！', announce: '深渊之王脱去伪装！巨大的身影遮蔽天空！' },
-                { emoji: '☆', hpPct: 0.3, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '毁灭吧！一切都将化为虚无！', announce: '深渊之王拔出暗影之刃！大地在他脚下碎裂！' },
-                { emoji: '✸', hpPct: 0.1, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '就算倒下...我也要带走这个世界！', announce: '深渊之王最终形态！"这是...我最后的力量！"' }
+                { emoji: '◆', hpPct: 1.0, attacks: ['ice','lock','shuffle'], interval: 2, taunt: '你已经疯了...只是你还不知道。' },
+                { emoji: '☠', hpPct: 0.6, attacks: ['lock','shuffle','transform','steal'], interval: 2, taunt: '现实只是我编织的梦！', announce: '恩佐斯的眼睛布满了天空！疯狂在蔓延！' },
+                { emoji: '☆', hpPct: 0.3, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '你看到了吗？真相就是虚无！', announce: '恩佐斯的触须从大地裂缝中涌出！' },
+                { emoji: '✸', hpPct: 0.1, attacks: ['ice','lock','shuffle','transform','steal'], interval: 1, taunt: '就算我倒下...疯狂永远不会消失...', announce: '恩佐斯最终形态！一切都是幻觉——还是一切都是真实？' }
             ], hp: 55000
         }
     },

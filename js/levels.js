@@ -3,33 +3,41 @@
    含Boss关、限时关、收集关
    ========================================== */
 
-// 宝石类型定义
+// 宝石类型定义 — 魔兽世界种族战争
+// faction: 'alliance'|'horde'|'neutral' — 同阵营连消触发阵营之力
 const GEM_TYPES = {
-    murloc:  { id:'murloc',  emoji:'蛙', name:'鱼人',     color:'#22c55e', rarity:'common' },
-    orc:     { id:'orc',     emoji:'鬼', name:'兽人',     color:'#dc2626', rarity:'common' },
-    elf:     { id:'elf',     emoji:'灵', name:'精灵',  color:'#a855f7', rarity:'common' },
-    mage:    { id:'mage',    emoji:'法', name:'法师',  color:'#3b82f6', rarity:'common' },
-    knight:  { id:'knight',  emoji:'⛊', name:'骑士',     color:'#ef4444', rarity:'common' },
-    dwarf:   { id:'dwarf',   emoji:'⚒', name:'矮人',     color:'#f97316', rarity:'common' },
-    undead:  { id:'undead',  emoji:'☠', name:'亡灵',     color:'#6b7280', rarity:'common' },
-    mango:   { id:'mango',   emoji:'芒', name:'芒果',     color:'#fbbf24', rarity:'rare' },
-    dragon:  { id:'dragon',  emoji:'龙', name:'巨龙',     color:'#dc2626', rarity:'epic' },
-    phoenix: { id:'phoenix', emoji:'☆', name:'凤凰',     color:'#f97316', rarity:'legendary' },
-    skull:   { id:'skull',   emoji:'☠', name:'骷髅',     color:'#6b7280', rarity:'special' }
+    murloc:  { id:'murloc',  emoji:'蛙', name:'鱼人',     color:'#22c55e', rarity:'common',    faction:'neutral' },
+    orc:     { id:'orc',     emoji:'斧', name:'兽人勇士', color:'#dc2626', rarity:'common',    faction:'horde' },
+    elf:     { id:'elf',     emoji:'月', name:'暗夜精灵', color:'#a855f7', rarity:'common',    faction:'alliance' },
+    mage:    { id:'mage',    emoji:'杖', name:'奥术法师', color:'#3b82f6', rarity:'common',    faction:'neutral' },
+    knight:  { id:'knight',  emoji:'盾', name:'圣骑士',   color:'#ef4444', rarity:'common',    faction:'alliance' },
+    dwarf:   { id:'dwarf',   emoji:'锤', name:'矮人战士', color:'#f97316', rarity:'common',    faction:'alliance' },
+    undead:  { id:'undead',  emoji:'骸', name:'亡灵术士', color:'#6b7280', rarity:'common',    faction:'horde' },
+    mango:   { id:'mango',   emoji:'牛', name:'牛头人',   color:'#fbbf24', rarity:'rare',      faction:'horde' },
+    dragon:  { id:'dragon',  emoji:'龙', name:'巨龙',     color:'#dc2626', rarity:'epic',      faction:'neutral' },
+    phoenix: { id:'phoenix', emoji:'凰', name:'凤凰',     color:'#f97316', rarity:'legendary', faction:'neutral' },
+    skull:   { id:'skull',   emoji:'☠', name:'骷髅',     color:'#6b7280', rarity:'special',   faction:'horde' }
 };
 
-// 章节定义 - 10 chapters
+// 阵营战争系统 — 连消同阵营单位触发额外效果
+const FACTION_SYSTEM = {
+    alliance: { name:'联盟', color:'#3b82f6', icon:'⚔', bonus:'联盟之力：额外清除1行' },
+    horde:    { name:'部落', color:'#dc2626', icon:'☠', bonus:'部落之怒：伤害+50%' },
+    neutral:  { name:'中立', color:'#a855f7', icon:'✦', bonus:'奥术共鸣：生成特殊宝石' }
+};
+
+// 章节定义 - 10 chapters (魔兽世界经典副本)
 const CHAPTERS = [
-    { id:1,  name:'芒果林',     description:'芒果树林中潜伏着神秘的力量...',      icon:'♠', levels:[1,10],   unlockLevel:0,  background:'forest' },
-    { id:2,  name:'阳光沙滩',   description:'在沙滩中寻找珍贵的芒果矿石...',      icon:'△', levels:[11,20],  unlockLevel:10, background:'desert' },
-    { id:3,  name:'芒果城',     description:'芒果王国的中心，贸易的枢纽...',       icon:'♜', levels:[21,30],  unlockLevel:20, background:'castle' },
-    { id:4,  name:'迷雾沼泽',   description:'被黑暗力量笼罩的神秘沼泽...',         icon:'●', levels:[31,40],  unlockLevel:30, background:'dark' },
-    { id:5,  name:'火山岛',     description:'熔岩与火焰的试炼之地...',             icon:'△', levels:[41,50],  unlockLevel:40, background:'fire' },
-    { id:6,  name:'冰霜雪原',   description:'冰晶王座的极寒挑战...',               icon:'※', levels:[51,60],  unlockLevel:50, background:'ice' },
-    { id:7,  name:'翡翠森林',   description:'连锁反应在翡翠丛林中回荡...',          icon:'♧', levels:[61,70],  unlockLevel:60, background:'emerald' },
-    { id:8,  name:'水晶洞穴',   description:'迷雾笼罩的水晶洞穴，视野受限...',     icon:'◆', levels:[71,80],  unlockLevel:70, background:'crystal' },
-    { id:9,  name:'星空之境',   description:'重力在星光下不再恒定...',              icon:'★', levels:[81,90],  unlockLevel:80, background:'starlight' },
-    { id:10, name:'芒果天堂',   description:'终极挑战——所有机制的融合！',           icon:'芒', levels:[91,100], unlockLevel:90, background:'paradise' }
+    { id:1,  name:'艾尔文森林',   description:'联盟起源之地，暗影在森林蔓延...',      icon:'♠', levels:[1,10],   unlockLevel:0,  background:'forest' },
+    { id:2,  name:'贫瘠之地',     description:'部落的荒芜领土，战火燃遍大地...',      icon:'△', levels:[11,20],  unlockLevel:10, background:'desert' },
+    { id:3,  name:'暴风城',       description:'人类王国的心脏，阴谋暗流涌动...',      icon:'♜', levels:[21,30],  unlockLevel:20, background:'castle' },
+    { id:4,  name:'悲伤沼泽',     description:'被诅咒的沼泽，亡灵大军潜伏...',        icon:'●', levels:[31,40],  unlockLevel:30, background:'dark' },
+    { id:5,  name:'黑石山',       description:'熔火之心，拉格纳罗斯的领地...',        icon:'△', levels:[41,50],  unlockLevel:40, background:'fire' },
+    { id:6,  name:'诺森德',       description:'冰封王座，巫妖王的永恒寒冬...',        icon:'※', levels:[51,60],  unlockLevel:50, background:'ice' },
+    { id:7,  name:'翡翠梦境',     description:'德鲁伊的梦境之地，噩梦已觉醒...',      icon:'♧', levels:[61,70],  unlockLevel:60, background:'emerald' },
+    { id:8,  name:'深岩之洲',     description:'元素位面的裂隙，大地在哀嚎...',        icon:'◆', levels:[71,80],  unlockLevel:70, background:'crystal' },
+    { id:9,  name:'扭曲虚空',     description:'燃烧军团的次元门已开启...',            icon:'★', levels:[81,90],  unlockLevel:80, background:'starlight' },
+    { id:10, name:'艾泽拉斯之心', description:'终极决战——为了艾泽拉斯！',             icon:'♕', levels:[91,100], unlockLevel:90, background:'paradise' }
 ];
 
 // 目标类型

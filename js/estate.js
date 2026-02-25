@@ -5,49 +5,49 @@
    ========================================== */
 
 const Estate = {
-    // ── Trees: 6 trees, each upgradeable Lv1→10 ──
+    // ── 要塞建筑: 6 buildings, each upgradeable Lv1→5 ──
     TREES: {
         golden_mango: {
-            id: 'golden_mango', name: '金芒树', emoji: '✦',
+            id: 'golden_mango', name: '军械库', emoji: '⚔',
             description: '开局自带炸弹宝石',
             baseCost: 200, buff: 'start_bomb',
             levels: [
-                { desc: '开局1个炸弹', value: 1 },
+                { desc: '开局1个攻城炸弹', value: 1 },
                 { desc: '开局1个炸弹+更大爆炸范围', value: 1 },
-                { desc: '开局2个炸弹', value: 2 },
+                { desc: '开局2个攻城炸弹', value: 2 },
                 { desc: '开局2个炸弹+更大范围', value: 2 },
-                { desc: '开局3个炸弹', value: 3 },
+                { desc: '开局3个攻城炸弹', value: 3 },
             ],
-            lore: '传说中金色芒果的母树'
+            lore: '联盟与部落的武器都在这里锻造'
         },
         moonlight: {
-            id: 'moonlight', name: '月光树', emoji: '☽',
+            id: 'moonlight', name: '月光哨塔', emoji: '☽',
             description: '每关额外步数',
             baseCost: 400, buff: 'extra_moves',
             levels: [
-                { desc: '+2步', value: 2 },
-                { desc: '+3步', value: 3 },
-                { desc: '+4步', value: 4 },
-                { desc: '+5步', value: 5 },
-                { desc: '+6步', value: 6 },
+                { desc: '+2步行动力', value: 2 },
+                { desc: '+3步行动力', value: 3 },
+                { desc: '+4步行动力', value: 4 },
+                { desc: '+5步行动力', value: 5 },
+                { desc: '+6步行动力', value: 6 },
             ],
-            lore: '月光下生长的神秘树木'
+            lore: '暗夜精灵建造的月光哨塔，洞察一切'
         },
         rainbow: {
-            id: 'rainbow', name: '彩虹树', emoji: '◇',
+            id: 'rainbow', name: '奥术塔', emoji: '◇',
             description: '降低彩虹宝石需求',
             baseCost: 1200, buff: 'rainbow_4',
             levels: [
-                { desc: '5消→4消出彩虹', value: 4 },
-                { desc: '4消出彩虹+彩虹更强', value: 4 },
-                { desc: '4消出彩虹+偶尔3消出彩虹(20%)', value: 3 },
-                { desc: '3消30%出彩虹', value: 3 },
-                { desc: '3消50%出彩虹', value: 3 },
+                { desc: '5消→4消出奥术宝石', value: 4 },
+                { desc: '4消出奥术+奥术更强', value: 4 },
+                { desc: '4消出奥术+偶尔3消出奥术(20%)', value: 3 },
+                { desc: '3消30%出奥术宝石', value: 3 },
+                { desc: '3消50%出奥术宝石', value: 3 },
             ],
-            lore: '七色光芒的圣树'
+            lore: '达拉然法师建造的奥术研究塔'
         },
         crystal: {
-            id: 'crystal', name: '水晶树', emoji: '◆',
+            id: 'crystal', name: '矿场', emoji: '◆',
             description: '通关额外宝石奖励',
             baseCost: 1500, buff: 'gem_bonus',
             levels: [
@@ -57,10 +57,10 @@ const Estate = {
                 { desc: '三星通关+5◆', value: 5 },
                 { desc: '三星通关+8◆', value: 8 },
             ],
-            lore: '折射光芒的远古水晶'
+            lore: '矮人开采的艾泽瑞特矿场'
         },
         phoenix: {
-            id: 'phoenix', name: '凤凰树', emoji: '☆',
+            id: 'phoenix', name: '圣光大教堂', emoji: '☆',
             description: '失败时保护',
             baseCost: 2000, buff: 'second_chance',
             levels: [
@@ -70,11 +70,11 @@ const Estate = {
                 { desc: '失败时50%概率+5步', value: 50 },
                 { desc: '失败时60%概率+5步', value: 60 },
             ],
-            lore: '浴火重生的不死之树'
+            lore: '圣光的力量能让勇士浴火重生'
         },
         ancient: {
-            id: 'ancient', name: '远古之树', emoji: '♠',
-            description: '精灵技能充能加速',
+            id: 'ancient', name: '世界之树', emoji: '♠',
+            description: '英雄技能充能加速',
             baseCost: 3000, buff: 'skill_boost',
             levels: [
                 { desc: '充能+10%', value: 10 },
@@ -83,116 +83,116 @@ const Estate = {
                 { desc: '充能+40%', value: 40 },
                 { desc: '充能+50%', value: 50 },
             ],
-            lore: '世界树的分支，蕴含原始力量'
+            lore: '诺达希尔的分支，蕴含原始自然之力'
         }
     },
 
-    // ── Spirits: 8 spirits, each with upgradeable skills ──
+    // ── 英雄: 8 WoW heroes, each with upgradeable skills ──
     SPIRITS: {
         mango_fairy: {
-            id: 'mango_fairy', name: '芒果仙子', emoji: '仙',
-            description: '随机清除宝石',
-            skillName: '芒果轰炸', unlockCost: 0,
+            id: 'mango_fairy', name: '吉安娜', emoji: '❄',
+            description: '奥术轰炸·随机清除宝石',
+            skillName: '暴风雪', unlockCost: 0,
             skillLevels: [
-                { desc: '清除10个', value: 10 },
-                { desc: '清除15个', value: 15 },
-                { desc: '清除20个', value: 20 },
+                { desc: '奥术清除10个', value: 10 },
+                { desc: '奥术清除15个', value: 15 },
+                { desc: '奥术清除20个', value: 20 },
             ],
-            lore: '芒果庄园最古老的精灵'
+            lore: '达拉然的大法师，艾泽拉斯最强法师之一'
         },
         bee_spirit: {
-            id: 'bee_spirit', name: '蜜蜂精灵', emoji: '蜂',
-            description: '清除行+列',
-            skillName: '蜂群横扫', unlockCost: 600,
+            id: 'bee_spirit', name: '萨尔', emoji: '⚡',
+            description: '闪电链·清除行+列',
+            skillName: '闪电链', unlockCost: 600,
             skillLevels: [
-                { desc: '清除1行+1列', value: 1 },
-                { desc: '清除2行+2列', value: 2 },
-                { desc: '清除3行+3列', value: 3 },
+                { desc: '闪电清除1行+1列', value: 1 },
+                { desc: '闪电清除2行+2列', value: 2 },
+                { desc: '闪电清除3行+3列', value: 3 },
             ],
-            lore: '勤劳的蜜蜂精灵'
+            lore: '部落大酋长，元素萨满的传承者'
         },
         rainbow_spirit: {
-            id: 'rainbow_spirit', name: '彩虹精灵', emoji: '蝶',
-            description: '消除最多的同色宝石',
-            skillName: '彩虹裁决', unlockCost: 1000,
+            id: 'rainbow_spirit', name: '希尔瓦娜斯', emoji: '♛',
+            description: '暗影箭·消除最多的同色宝石',
+            skillName: '暗影齐射', unlockCost: 1000,
             skillLevels: [
-                { desc: '清除1种颜色', value: 1 },
-                { desc: '清除1种+生成3个彩虹', value: 1 },
-                { desc: '清除2种颜色', value: 2 },
+                { desc: '暗影清除1种颜色', value: 1 },
+                { desc: '清除1种+生成3个奥术宝石', value: 1 },
+                { desc: '暗影清除2种颜色', value: 2 },
             ],
-            lore: '虹光化身的蝴蝶精灵'
+            lore: '被遗忘者的女王，曾经的游侠将军'
         },
         dragon_spirit: {
-            id: 'dragon_spirit', name: '龙灵', emoji: '龙',
-            description: '火焰横扫',
-            skillName: '龙息吐焰', unlockCost: 2000,
+            id: 'dragon_spirit', name: '阿莱克斯塔萨', emoji: '龙',
+            description: '龙息·火焰横扫',
+            skillName: '生命之焰', unlockCost: 2000,
             skillLevels: [
-                { desc: '火焰清除2行', value: 2 },
-                { desc: '火焰清除3行', value: 3 },
-                { desc: '火焰清除3行+所有冰冻', value: 3 },
+                { desc: '龙焰清除2行', value: 2 },
+                { desc: '龙焰清除3行', value: 3 },
+                { desc: '龙焰清除3行+解除所有冰冻', value: 3 },
             ],
-            lore: '远古巨龙的灵魂碎片'
+            lore: '红龙女王，生命的守护者'
         },
         phoenix_spirit: {
-            id: 'phoenix_spirit', name: '凤凰灵', emoji: '☆',
-            description: '全屏爆炸',
-            skillName: '涅槃烈焰', unlockCost: 3000,
+            id: 'phoenix_spirit', name: '伊利丹', emoji: '☆',
+            description: '恶魔之怒·全屏爆炸',
+            skillName: '恶魔变身', unlockCost: 3000,
             skillLevels: [
-                { desc: '3x3区域x3次爆炸', value: 3 },
-                { desc: '3x3区域x5次爆炸', value: 5 },
-                { desc: '全屏炸弹雨', value: 8 },
+                { desc: '3x3区域x3次邪能爆炸', value: 3 },
+                { desc: '3x3区域x5次邪能爆炸', value: 5 },
+                { desc: '全屏邪能风暴', value: 8 },
             ],
-            lore: '浴火重生的凤凰之灵'
+            lore: '背叛者，也是拯救者。你们还没准备好！'
         },
         frost_spirit: {
-            id: 'frost_spirit', name: '冰霜精灵', emoji: '※',
-            description: '冰冻控制',
-            skillName: '绝对零度', unlockCost: 1500,
+            id: 'frost_spirit', name: '弗丁', emoji: '✟',
+            description: '圣光·冰冻控制',
+            skillName: '灰烬使者', unlockCost: 1500,
             skillLevels: [
-                { desc: '解除所有冰冻+清除5个', value: 5 },
-                { desc: '解除所有冰冻+清除10个', value: 10 },
-                { desc: '解除所有冰冻+冻结Boss2回合', value: 15 },
+                { desc: '圣光净化所有冰冻+清除5个', value: 5 },
+                { desc: '圣光净化所有冰冻+清除10个', value: 10 },
+                { desc: '圣光净化+冻结Boss2回合', value: 15 },
             ],
-            lore: '极地冰原的精灵守护者'
+            lore: '白银之手骑士团的最后荣光'
         },
         time_spirit: {
-            id: 'time_spirit', name: '时光精灵', emoji: '⏳',
+            id: 'time_spirit', name: '诺兹多姆', emoji: '⏳',
             description: '时间操控',
             skillName: '时光倒流', unlockCost: 2500,
             skillLevels: [
-                { desc: '+5步', value: 5 },
+                { desc: '+5步行动力', value: 5 },
                 { desc: '+5步+随机3个特殊宝石', value: 5 },
                 { desc: '+8步+随机5个特殊宝石', value: 8 },
             ],
-            lore: '能操控时间的神秘精灵'
+            lore: '青铜龙王，时间线的守护者'
         },
         chaos_spirit: {
-            id: 'chaos_spirit', name: '混沌精灵', emoji: '◎',
+            id: 'chaos_spirit', name: '麦迪文', emoji: '◎',
             description: '随机强力效果',
-            skillName: '混沌风暴', unlockCost: 5000,
+            skillName: '守护者之力', unlockCost: 5000,
             skillLevels: [
-                { desc: '随机发动1个其他精灵技能', value: 1 },
-                { desc: '随机发动2个其他精灵技能', value: 2 },
-                { desc: '随机发动3个其他精灵技能', value: 3 },
+                { desc: '随机发动1个英雄技能', value: 1 },
+                { desc: '随机发动2个英雄技能', value: 2 },
+                { desc: '随机发动3个英雄技能', value: 3 },
             ],
-            lore: '混沌之力的化身，不可预测'
+            lore: '最后的守护者，力量不可预测'
         }
     },
 
-    // ── Decorations: collectible cosmetic items ──
+    // ── 要塞装饰: collectible cosmetic items ──
     DECORATIONS: {
-        mango_banner: { id: 'mango_banner', name: '庄园旗帜', emoji: '▶', cost: 100, happiness: 15 },
-        lantern: { id: 'lantern', name: '庄园灯笼', emoji: '◆', cost: 200, happiness: 20 },
-        garden: { id: 'garden', name: '芒果花园', emoji: '✿', cost: 300, happiness: 25 },
-        totem: { id: 'totem', name: '守护图腾', emoji: '↯', cost: 400, happiness: 30 },
-        fountain: { id: 'fountain', name: '许愿喷泉', emoji: '≈', cost: 500, happiness: 40 },
-        bridge: { id: 'bridge', name: '小桥', emoji: '♜', cost: 600, happiness: 45 },
-        statue: { id: 'statue', name: '芒果之神像', emoji: '♜', cost: 800, happiness: 60 },
-        windmill: { id: 'windmill', name: '热带风车', emoji: '◇', cost: 1000, happiness: 70 },
-        treehouse: { id: 'treehouse', name: '芒果树屋', emoji: '♠', cost: 1500, happiness: 85 },
-        drum: { id: 'drum', name: '丰收之鼓', emoji: '♪', cost: 2000, happiness: 100 },
-        dragon_nest: { id: 'dragon_nest', name: '龙巢', emoji: '龙', cost: 3000, happiness: 120 },
-        paradise_gate: { id: 'paradise_gate', name: '芒果天堂之门', emoji: '♜', cost: 5000, happiness: 200 },
+        mango_banner: { id: 'mango_banner', name: '联盟战旗', emoji: '▶', cost: 100, happiness: 15 },
+        lantern: { id: 'lantern', name: '部落火盆', emoji: '◆', cost: 200, happiness: 20 },
+        garden: { id: 'garden', name: '月光花园', emoji: '✿', cost: 300, happiness: 25 },
+        totem: { id: 'totem', name: '萨满图腾', emoji: '↯', cost: 400, happiness: 30 },
+        fountain: { id: 'fountain', name: '月光喷泉', emoji: '≈', cost: 500, happiness: 40 },
+        bridge: { id: 'bridge', name: '矮人石桥', emoji: '♜', cost: 600, happiness: 45 },
+        statue: { id: 'statue', name: '洛萨雕像', emoji: '♜', cost: 800, happiness: 60 },
+        windmill: { id: 'windmill', name: '地精风车', emoji: '◇', cost: 1000, happiness: 70 },
+        treehouse: { id: 'treehouse', name: '精灵树屋', emoji: '♠', cost: 1500, happiness: 85 },
+        drum: { id: 'drum', name: '战争之鼓', emoji: '♪', cost: 2000, happiness: 100 },
+        dragon_nest: { id: 'dragon_nest', name: '巨龙巢穴', emoji: '龙', cost: 3000, happiness: 120 },
+        paradise_gate: { id: 'paradise_gate', name: '黑暗之门', emoji: '♜', cost: 5000, happiness: 200 },
     },
 
     // ── Core Methods ──
@@ -406,14 +406,14 @@ const Estate = {
 
     // Passive bonuses per spirit at affinity level 3+ (挚友)
     AFFINITY_PASSIVES: {
-        mango_fairy:    '每次消除芒果宝石额外+50分',
-        bee_spirit:     '每回合有10%概率自动消除1个',
-        rainbow_spirit: '彩虹宝石出现概率+15%',
-        dragon_spirit:  '对Boss额外伤害+25%',
-        phoenix_spirit: '每关额外1次复活机会',
-        frost_spirit:   '冰冻格子自动减少1层',
-        time_spirit:    '每5回合自动+1步',
-        chaos_spirit:   '每次消除10%概率触发随机技能'
+        mango_fairy:    '吉安娜：每次消除牛头人宝石额外+50分',
+        bee_spirit:     '萨尔：每回合10%概率自动消除1个',
+        rainbow_spirit: '希尔瓦娜斯：奥术宝石出现概率+15%',
+        dragon_spirit:  '阿莱克斯塔萨：对Boss额外伤害+25%',
+        phoenix_spirit: '伊利丹：每关额外1次复活机会',
+        frost_spirit:   '弗丁：冰冻格子自动减少1层',
+        time_spirit:    '诺兹多姆：每5回合自动+1步',
+        chaos_spirit:   '麦迪文：每次消除10%概率触发随机技能'
     },
 
     getSpiritAffinity(spiritId) {

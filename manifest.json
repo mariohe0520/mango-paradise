@@ -1,19 +1,19 @@
 {
-  "name": "芒果庄园 - Mango Paradise",
-  "short_name": "芒果庄园",
-  "description": "消除冒险·精灵大招·Boss战·庄园养成",
+  "name": "艾泽拉斯战纪 - Chronicles of Azeroth",
+  "short_name": "艾泽拉斯战纪",
+  "description": "魔兽种族战争·三消史诗·英雄大招·Boss团战·要塞养成",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#1a1a2e",
-  "theme_color": "#fbbf24",
+  "background_color": "#0a0503",
+  "theme_color": "#b8860b",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='mg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23fef3c7'/><stop offset='50%25' stop-color='%23f59e0b'/><stop offset='100%25' stop-color='%23d97706'/></linearGradient></defs><ellipse cx='50' cy='52' rx='38' ry='42' fill='url(%23mg)' stroke='%23b45309' stroke-width='2'/><path d='M50 10 Q55 0 60 5 Q58 12 50 10Z' fill='%2322c55e'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='mg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23dc2626'/><stop offset='50%25' stop-color='%23b8860b'/><stop offset='100%25' stop-color='%233b82f6'/></linearGradient></defs><circle cx='50' cy='50' r='42' fill='url(%23mg)' stroke='%23b8860b' stroke-width='3'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23ffd700' font-weight='bold'>⚔</text></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }
   ],
-  "categories": ["games", "puzzle"]
+  "categories": ["games", "puzzle", "strategy"]
 }

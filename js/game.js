@@ -111,12 +111,15 @@ class Game {
                 const extraMoves = Estate.getExtraMoves() || 2;
                 this.movesLeft += extraMoves;
                 buffMessages.push(`☽ 月光树: +${extraMoves}步`);
+                // Floating text showing buff source after render
+                setTimeout(() => this.showMovesBuffFloat(extraMoves, '月光树'), 1600);
             }
             // Spirit Trial buffs: extra moves from affection abilities
             const trialExtraMoves = Estate.getTrialExtraMoves();
             if (trialExtraMoves > 0) {
                 this.movesLeft += trialExtraMoves;
                 buffMessages.push(`♥ 精灵羁绊: +${trialExtraMoves}步`);
+                setTimeout(() => this.showMovesBuffFloat(trialExtraMoves, '精灵羁绊'), 1900);
             }
             if (this.scoreMultiplier > 1) buffMessages.push(`✦ 幸福度: 分数x${this.scoreMultiplier}`);
             if (Estate.hasBuff('rainbow_4')) buffMessages.push('◇ 彩虹树: 4消出彩虹');
@@ -129,6 +132,14 @@ class Game {
                 setTimeout(() => {
                     this.showBuffFlash('rgba(255,215,0,0.2)');
                     UI.showToast('↯ ' + buffMessages.join(' | '), 'success');
+                    // Flash the stats bar to show buffs are active
+                    const statsBar = document.querySelector('.game-stats');
+                    if (statsBar) {
+                        statsBar.classList.remove('stats-buff-flash');
+                        void statsBar.offsetWidth;
+                        statsBar.classList.add('stats-buff-flash');
+                        setTimeout(() => statsBar.classList.remove('stats-buff-flash'), 1200);
+                    }
                 }, 800);
             }
         } catch (e) {
@@ -250,8 +261,12 @@ class Game {
                                 const cell = document.querySelector(`.cell[data-x="${rx}"][data-y="${ry}"]`);
                                 if (cell) {
                                     cell.classList.add('bomb-entrance');
-                                    this.showBuffFlash('rgba(245,158,11,0.25)');
+                                    cell.classList.add('bomb-start-glow');
+                                    this.showBuffFlash('rgba(245,158,11,0.3)');
+                                    Audio.play('powerup');
                                     setTimeout(() => cell.classList.remove('bomb-entrance'), 600);
+                                    // Keep glow for a few seconds then fade
+                                    setTimeout(() => cell.classList.remove('bomb-start-glow'), 4000);
                                 }
                             }, 1200 + b * 300);
                             break;
@@ -1195,6 +1210,29 @@ class Game {
                 score = Math.floor(score * this.chainDepth);
             }
 
+            // ⚔ 阵营战争系统: 同阵营3+消触发阵营之力
+            try {
+                const gemData = GEM_TYPES[match.type];
+                if (gemData && gemData.faction && gemData.faction !== 'neutral' && count >= 3) {
+                    const factionInfo = typeof FACTION_SYSTEM !== 'undefined' ? FACTION_SYSTEM[gemData.faction] : null;
+                    if (factionInfo) {
+                        score = Math.floor(score * 1.3); // 阵营加成30%
+                        if (count >= 4) {
+                            // 4+消触发阵营特效
+                            const boardEl = document.getElementById('game-board');
+                            if (boardEl) {
+                                const r = boardEl.getBoundingClientRect();
+                                Particles.floatingText(
+                                    r.left + r.width / 2,
+                                    r.top + r.height * 0.2,
+                                    `${factionInfo.icon} ${factionInfo.name}之力!`, factionInfo.color
+                                );
+                            }
+                        }
+                    }
+                }
+            } catch(e) {}
+
             // ↯ Spirit Trial: 2x points for preferred gem type
             try {
                 if (Estate.isInSpiritTrial()) {
@@ -1228,14 +1266,12 @@ class Game {
         this.updateSkillBarUI();
         // Notify when skill becomes ready
         if (prevCharge < this.skillMax && this.skillCharge >= this.skillMax) {
-            UI.showToast('↯ 精灵大招已充满！点击释放！', 'success');
+            UI.showToast('⚔ 英雄大招已充满！点击释放！', 'success');
             Utils.vibrate([30, 20, 50, 20, 80]);
         }
 
-        // Sound
-        if (count >= 5) Audio.play('match5');
-        else if (count >= 4) Audio.play('match4');
-        else Audio.play('match3');
+        // Sound — gem-type specific pitch + count-based variation
+        Audio.playGemMatchSound(match.type, count);
 
         // Process each cell in match
         for (const cell of match.cells) {
@@ -1501,7 +1537,7 @@ class Game {
 
         try {
         const spirit = Estate.getCurrentSpirit();
-        Audio.play('special');
+        Audio.playUltimateSound();
 
         // ── EPIC skill activation sequence ──
         // 1. Full-screen flash
@@ -1897,6 +1933,8 @@ class Game {
             if (this.scoreMultiplier > 1) {
                 const text = `+${adjusted} ×${this.scoreMultiplier}`;
                 Particles.floatingText(r.left+r.width/2, r.top+r.height/2, text, '#ff8800');
+                // Show rainbow "×N" float near score counter
+                if (adjusted >= 100) this.showScoreMultiplierFloat(this.scoreMultiplier);
                 if (adjusted >= 500) {
                     this.showScorePopup(`✦ ×${this.scoreMultiplier} → +${adjusted}`);
                     this.showBuffFlash('rgba(255,136,0,0.2)');
@@ -2236,25 +2274,82 @@ class Game {
         const bd = Boss.BOSSES[levelId];
         if (!bd) return;
         const phase = bd.phases[0];
+
+        // ── Enhanced Boss Entrance v2: dark overlay + zoom + typewriter ──
         const overlay = document.createElement('div');
-        overlay.className = 'boss-entrance-overlay';
+        overlay.className = 'boss-entrance-overlay boss-entrance-v2';
         overlay.innerHTML = `
             <div class="boss-entrance-content">
-                <div class="boss-entrance-emoji">${phase.emoji}</div>
+                <div class="boss-entrance-emoji boss-entrance-emoji-zoom">${phase.emoji}</div>
                 <div class="boss-entrance-name">${bd.name}</div>
                 <div class="boss-entrance-desc">${bd.desc}</div>
-                <div class="boss-entrance-taunt">"${phase.taunt}"</div>
+                <div class="boss-entrance-taunt boss-entrance-typewriter" id="boss-tw-text"></div>
             </div>
         `;
         document.body.appendChild(overlay);
+
+        // Enhanced audio + haptics
         Audio.play('boss_appear');
-        this.screenShake(5, 400);
-        Utils.vibrate([50, 30, 80, 30, 120]);
+        Audio.playBossStinger();
+        this.screenShake(10, 600);
+        Utils.vibrate([80, 40, 120, 40, 200, 60, 150]);
+
+        // Typewriter effect: start after 900ms (emoji zoom visible)
+        const tauntStr = `"${phase.taunt}"`;
+        const twEl = overlay.querySelector('#boss-tw-text');
+        let charIdx = 0;
+        let twTimer;
         setTimeout(() => {
+            twTimer = setInterval(() => {
+                if (charIdx < tauntStr.length) {
+                    twEl.textContent = tauntStr.substring(0, ++charIdx);
+                } else {
+                    clearInterval(twTimer);
+                }
+            }, 55);
+        }, 900);
+
+        // Dismiss after 3.5 seconds
+        setTimeout(() => {
+            clearInterval(twTimer);
             overlay.style.opacity = '0';
-            overlay.style.transition = 'opacity 0.5s';
-            setTimeout(() => overlay.remove(), 600);
-        }, 2500);
+            overlay.style.transition = 'opacity 0.7s ease';
+            setTimeout(() => overlay.remove(), 800);
+        }, 3500);
+    }
+
+    // Floating text near moves counter when buff adds moves
+    showMovesBuffFloat(extraMoves, sourceName) {
+        try {
+            const movesEl = document.getElementById('moves-left') || document.getElementById('moves-count') || document.querySelector('.moves-count') || document.querySelector('[data-moves]');
+            if (!movesEl) return;
+            const r = movesEl.getBoundingClientRect();
+            if (!r.width) return;
+            const el = document.createElement('div');
+            el.className = 'moves-buff-float';
+            el.textContent = `+${extraMoves} 来自${sourceName}`;
+            el.style.cssText = `position:fixed;left:${Math.max(4, r.left - 10)}px;top:${r.top - 8}px;z-index:9999;pointer-events:none;font-size:0.82rem;font-weight:800;color:#ffd700;text-shadow:0 1px 6px rgba(0,0,0,0.9),0 0 10px rgba(255,215,0,0.6);white-space:nowrap;animation:movesBuffFloat 1.6s ease-out forwards;`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1700);
+        } catch(e) {}
+    }
+
+    // Floating "×N" text near score when score multiplier fires
+    showScoreMultiplierFloat(multiplier) {
+        try {
+            const scoreEl = document.getElementById('current-score');
+            if (!scoreEl) return;
+            const r = scoreEl.getBoundingClientRect();
+            if (!r.width) return;
+            const el = document.createElement('div');
+            el.className = 'score-mult-float';
+            el.textContent = `×${multiplier}`;
+            const colors = ['#ff4488','#ff8800','#ffdd00','#44ff88','#00ccff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            el.style.cssText = `position:fixed;left:${r.right + 6}px;top:${r.top}px;z-index:9999;pointer-events:none;font-size:1.1rem;font-weight:900;color:${color};text-shadow:0 0 12px ${color};animation:scoreMultFloat 1.2s ease-out forwards;`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1300);
+        } catch(e) {}
     }
 
     // Flash screen when buff triggers (score multiplier, rainbow, etc.)
