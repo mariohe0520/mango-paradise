@@ -223,7 +223,7 @@ const Seasons = {
             case 'exp_boost': return type === 'exp' ? 2.0 : 1.0;
             case 'special_boost': return type === 'special' ? 1.25 : 1.0;
             case 'daily_boost': return type === 'daily' ? 2.0 : 1.0;
-            case 'all_boost': return type === 'all' ? 1.3 : 1.3; // 30% to everything
+            case 'all_boost': return 1.3; // 30% to everything
             default: return 1.0;
         }
     },

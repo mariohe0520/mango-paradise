@@ -92,7 +92,8 @@ const UI = {
             const revenge = typeof BossRevenge !== 'undefined' ? BossRevenge.getRevengeBoss() : null;
             if (revenge) {
                 revengeBtn.style.display = '';
-                revengeBtn.querySelector('.btn-subtitle').textContent = `${revenge.name} 等你再战！`;
+                const revSub = revengeBtn.querySelector('.btn-subtitle');
+                if (revSub) revSub.textContent = `${revenge.name} 等你再战！`;
                 revengeBtn.addEventListener('click', () => {
                     Audio.play('click');
                     const level = BossRevenge.generateRevengeLevel(revenge);

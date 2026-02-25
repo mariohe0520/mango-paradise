@@ -913,7 +913,7 @@ class Game {
                 const nx=cx+dx, ny=cy+dy;
                 if (this.isValidCell(nx,ny) && this.board[ny][nx]) {
                     this.updateObjective(this.board[ny][nx].type); this.board[ny][nx]=null; this.addScore(50);
-                    if (this.cellStates[ny]?.[nx]) { this.cellStates[ny][nx].frozen=false; this.cellStates[ny][nx].locked=0; }
+                    if (this.cellStates[ny] && this.cellStates[ny][nx]) { this.cellStates[ny][nx].frozen=false; this.cellStates[ny][nx].locked=0; }
                 }
             }
             this.addScore(2000);
@@ -1062,7 +1062,7 @@ class Game {
             if (matches.length === 0) { hasMatches = false; break; }
 
             this.combo++;
-            if (this.combo > this.maxCombo) { this.maxCombo = this.combo; Storage.updateMaxCombo(this.maxCombo); }
+            if (this.combo > this.maxCombo) { this.maxCombo = this.combo; }
 
             // ── Hardcore: onCombo hook ──
             try { if (typeof HardcoreMode !== 'undefined') HardcoreMode.onCombo(this.combo, this); } catch(e) {}
@@ -1487,10 +1487,10 @@ class Game {
         for (const atk of attacks) {
             switch (atk.type) {
                 case 'ice':
-                    if (this.cellStates[atk.y]?.[atk.x]) this.cellStates[atk.y][atk.x].frozen = true;
+                    if (this.cellStates[atk.y] && this.cellStates[atk.y][atk.x]) this.cellStates[atk.y][atk.x].frozen = true;
                     break;
                 case 'lock':
-                    if (this.cellStates[atk.y]?.[atk.x]) this.cellStates[atk.y][atk.x].locked = 2;
+                    if (this.cellStates[atk.y] && this.cellStates[atk.y][atk.x]) this.cellStates[atk.y][atk.x].locked = 2;
                     break;
                 case 'shuffle':
                     if (!attackMsgs.includes('shuffle')) attackMsgs.push('shuffle');
@@ -1609,7 +1609,7 @@ class Game {
                     const c = this.getCell(x, row);
                     if (c) c.style.animation = 'cell-flash 0.15s ease';
                     if (this.board[row][x]) { this.addScore(50); this.updateObjective(this.board[row][x].type); this.board[row][x] = null; }
-                    if (this.cellStates[row][x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
+                    if (this.cellStates[row] && this.cellStates[row][x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
                 }
                 Audio.play('match4');
                 this.screenShake(4, 150);
@@ -1619,7 +1619,7 @@ class Game {
                     const c = this.getCell(col, y);
                     if (c) c.style.animation = 'cell-flash 0.15s ease';
                     if (this.board[y][col]) { this.addScore(50); this.updateObjective(this.board[y][col].type); this.board[y][col] = null; }
-                    if (this.cellStates[y][col]) { this.cellStates[y][col].frozen = false; this.cellStates[y][col].locked = 0; }
+                    if (this.cellStates[y] && this.cellStates[y][col]) { this.cellStates[y][col].frozen = false; this.cellStates[y][col].locked = 0; }
                 }
                 Audio.play('match5');
                 this.screenShake(8, 300);
@@ -1646,13 +1646,13 @@ class Game {
                 for (const row of rows) {
                     for (let x = 0; x < this.width; x++) {
                         if (this.board[row][x]) { this.addScore(50); this.updateObjective(this.board[row][x].type); this.board[row][x] = null; }
-                        if (this.cellStates[row]?.[x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
+                        if (this.cellStates[row] && this.cellStates[row][x]) { this.cellStates[row][x].frozen = false; this.cellStates[row][x].locked = 0; }
                     }
                 }
                 // Lv3: also clear all frozen
                 if (dragonLv >= 3) {
                     for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++)
-                        if (this.cellStates[y]?.[x]?.frozen) this.cellStates[y][x].frozen = false;
+                        if (this.cellStates[y] && this.cellStates[y][x] && this.cellStates[y][x].frozen) this.cellStates[y][x].frozen = false;
                 }
                 Audio.play('match5'); this.screenShake(10, 400);
                 break;
@@ -1680,7 +1680,7 @@ class Game {
                 const clearCount = frostLv >= 3 ? 15 : frostLv >= 2 ? 10 : 5;
                 // Defrost all
                 for (let y=0;y<this.height;y++) for (let x=0;x<this.width;x++)
-                    if (this.cellStates[y]?.[x]?.frozen) this.cellStates[y][x].frozen = false;
+                    if (this.cellStates[y] && this.cellStates[y][x] && this.cellStates[y][x].frozen) this.cellStates[y][x].frozen = false;
                 // Clear random gems
                 let cleared = 0;
                 while (cleared < clearCount) {
@@ -1733,7 +1733,7 @@ class Game {
                         const row = Utils.randomInt(0,this.height-1);
                         for (let x=0;x<this.width;x++) if(this.board[row]?.[x]){this.addScore(50);this.board[row][x]=null;}
                     } else if (pick === 'frost_spirit') {
-                        for(let y=0;y<this.height;y++) for(let x=0;x<this.width;x++) if(this.cellStates[y]?.[x]?.frozen) this.cellStates[y][x].frozen=false;
+                        for(let y=0;y<this.height;y++) for(let x=0;x<this.width;x++) if(this.cellStates[y]&&this.cellStates[y][x]&&this.cellStates[y][x].frozen) this.cellStates[y][x].frozen=false;
                     } else if (pick === 'time_spirit') {
                         this.movesLeft += 3;
                     } else {
@@ -2068,7 +2068,7 @@ class Game {
         for (const {dx, dy} of shuffled) {
             const nx = src.x + dx, ny = src.y + dy;
             if (nx >= 0 && nx < this.width && ny >= 0 && ny < this.height
-                && this.cellStates[ny]?.[nx] && !this.cellStates[ny][nx].frozen) {
+                && this.cellStates[ny] && this.cellStates[ny][nx] && !this.cellStates[ny][nx].frozen) {
                 this.cellStates[ny][nx].frozen = true;
                 this.render();
                 return;
@@ -2399,6 +2399,7 @@ class Game {
             return;
         }
 
+        Storage.updateMaxCombo(this.maxCombo);
         const stars = this.calculateStars();
         const goldReward = Math.floor(this.score / 100) + stars * 50;
         Storage.completedLevel(this.level.id, stars, this.score);
@@ -2546,6 +2547,7 @@ class Game {
 
         this.isGameOver = true;
         if (this.timerInterval) clearInterval(this.timerInterval);
+        Storage.updateMaxCombo(this.maxCombo);
         Storage.recordGame(false);
         const defeatTime = Math.floor((Date.now()-this.gameStartTime)/1000);
         Storage.addPlayTime(defeatTime);

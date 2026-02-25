@@ -121,7 +121,7 @@ const Boss = {
     },
 
     getCurrentPhase() {
-        if (!this.currentBoss || !this.currentBoss.phases) return this.currentBoss?.phases?.[0] || null;
+        if (!this.currentBoss || !this.currentBoss.phases) return null;
         const hpPct = this.bossHP / this.bossMaxHP;
         for (let i = this.currentBoss.phases.length - 1; i >= 0; i--) {
             if (hpPct <= this.currentBoss.phases[i].hpPct) {
@@ -230,7 +230,7 @@ const Boss = {
                     };
                     placed.push({ x, y });
                     // Track skull presence for achievement detection
-                    if (game._hadSkulls !== undefined) game._hadSkulls = true;
+                    game._hadSkulls = true;
                     break;
                 }
             }
